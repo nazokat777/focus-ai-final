@@ -1,0 +1,17 @@
+node_modules/
+android/app/build/
+android/build/
+ios/App/Pods/
+ios/App/build/
+.gradle/
+*.keystore
+
+# maxfiy — release imzo parollari
+KEYSTORE.md
+
+# lokal dev scratch (test/skrinshot)
+_*.cjs
+_*.png
+_*.js
+
+.DS_Store

@@ -1,0 +1,22 @@
+{
+  "appId": "uz.lumnaara.focusai",
+  "appName": "Focus AI",
+  "webDir": "www",
+  "backgroundColor": "#030806",
+  "android": {
+    "allowMixedContent": false
+  },
+  "ios": {
+    "contentInset": "always"
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0,
+      "backgroundColor": "#020604"
+    },
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_icon",
+      "iconColor": "#39FF8C"
+    }
+  }
+}
