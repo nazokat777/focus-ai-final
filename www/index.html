@@ -19,7 +19,7 @@
   --neon:#0E9F55; --neon-br:#16c26c; --neon-dp:#0a7a41; --onneon:#ffffff;
   --text:#0a1f12; --muted:#5b7a66;
 }
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 html,body{height:100%}
 body{background:#000;color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;
   display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -368,7 +368,7 @@ input{font-family:inherit}
 #trace{width:100%;height:110px;border-radius:14px;background:var(--elev);border:1px solid var(--line)}
 
 /* budilnik */
-.alarm{position:absolute;inset:0;z-index:130;background:#050b07;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center}
+.alarm{position:absolute;inset:0;z-index:130;background:#050b07;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;touch-action:none}
 .alarm.open{display:flex}
 .alarm .aico{font-size:56px;animation:shake .5s linear infinite}
 @keyframes shake{0%,100%{transform:rotate(-10deg)}50%{transform:rotate(10deg)}}
@@ -383,7 +383,7 @@ input{font-family:inherit}
 .alarm .aerr{color:var(--danger);font-size:13px;min-height:18px}
 
 /* PIN qulf */
-.pinlock{position:absolute;inset:0;z-index:140;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.pinlock{position:absolute;inset:0;z-index:140;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;touch-action:none}
 .pinlock.open{display:flex}
 .pinlock h2{font-size:19px;font-weight:600}
 .pin-dots{display:flex;gap:14px;margin:4px 0 8px}
