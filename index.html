@@ -810,7 +810,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   tab_home:"Asosiy",tab_stats:"Statistika",tab_you:"Profil",
   gm:"Xayrli tong",ga:"Xayrli kun",ge:"Xayrli kech",
   start:"Boshlash",pause:"Pauza",resume:"Davom etish",finish:"Yakunlash",
-  remain:function(t){return "qoldi: "+t;},deep_off:"Telefonni yuztuban qo'y — bonus vaqt",deep_on:"Telefonsiz rejim faol · +10% bonus",
+  remain:function(t){return "qoldi: "+t;},day_done:"Kunlik norma bajarildi ✓",deep_off:"Telefonni yuztuban qo'y — bonus vaqt",deep_on:"Telefonsiz rejim faol · +10% bonus",
   rain:"Yomg'ir",ach_t:"Maqsad bajarildi!",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Hali odat yo'q",empty2:"Yuqoridagi + tugmasini bosib birinchi odatni qo'sh — vaqt hisobi boshlanadi.",
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
@@ -855,7 +855,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   tab_home:"Главная",tab_stats:"Статы",tab_you:"Профиль",
   gm:"Доброе утро",ga:"Добрый день",ge:"Добрый вечер",
   start:"Старт",pause:"Пауза",resume:"Продолжить",finish:"Завершить",
-  remain:function(t){return "осталось: "+t;},deep_off:"Положи телефон экраном вниз — бонус",deep_on:"Режим без телефона · +10% бонус",
+  remain:function(t){return "осталось: "+t;},day_done:"Дневная норма выполнена ✓",deep_off:"Положи телефон экраном вниз — бонус",deep_on:"Режим без телефона · +10% бонус",
   rain:"Дождь",ach_t:"Цель достигнута!",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Пока нет привычек",empty2:"Нажми + вверху и добавь первую привычку — начнётся честный счёт времени.",
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
@@ -900,7 +900,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   tab_home:"Home",tab_stats:"Stats",tab_you:"Profile",
   gm:"Good morning",ga:"Good afternoon",ge:"Good evening",
   start:"Start",pause:"Pause",resume:"Resume",finish:"Finish",
-  remain:function(t){return "left: "+t;},deep_off:"Place phone face down — bonus time",deep_on:"Deep mode active · +10% bonus",
+  remain:function(t){return "left: "+t;},day_done:"Daily goal reached ✓",deep_off:"Place phone face down — bonus time",deep_on:"Deep mode active · +10% bonus",
   rain:"Rain",ach_t:"Goal achieved!",ach_sub:function(n){return "“"+n+"” — 100%";},
   empty1:"No habits yet",empty2:"Tap + above to add your first habit — honest time tracking begins.",
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
@@ -1574,9 +1574,13 @@ $('#sClose').addEventListener('click',function(){
 function renderSession(){
   var h=getH(openHabitId);if(!h)return;
   if(h.type==='check')return;
-  var e=elapsedOf(h),g=goalMs(h),f=e/g;
-  $('#sPct').textContent=Math.min(100,Math.floor(f*100))+'%';
-  $('#sElapsed').textContent=fmtHMS(e);
+  /* topilma #2: halqa 10 000 soatga emas, BUGUNGI kunlik normaga bog'lanadi (har sessiya ko'rinarli to'ladi) */
+  var today=h.dayMs[TODAY]||0;
+  if(h.runningSince&&h.lastFlush)today+=Math.max(0,Date.now()-h.lastFlush);
+  var norm=(h.dailyMin||30)*60000;
+  var f=norm>0?Math.min(1,today/norm):0;
+  $('#sPct').textContent=Math.floor(f*100)+'%';
+  $('#sElapsed').textContent=fmtHMS(today);
   /* blok F: 5-daqiqalik mikro-sessiya nishoni */
   var micro=false;
   if(h._micro&&h.runningSince){
@@ -1584,7 +1588,7 @@ function renderSession(){
     if(mel>=300000){h._micro=0;save();buzz([12,40,12,40,16]);toast(T('micro_done'));}
     else{micro=true;$('#sRemain').textContent=T('micro_left')(fmtHMS(300000-mel));}
   }
-  if(!micro)$('#sRemain').textContent=T('remain')(fmtHMS(Math.max(0,g-e)));
+  if(!micro)$('#sRemain').textContent=(today>=norm)?T('day_done'):T('remain')(fmtHMS(norm-today));
   var on=Math.round(f*sSegs.length);
   sSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
   $('#sRing').classList.toggle('run',!!h.runningSince);
