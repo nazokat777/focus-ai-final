@@ -603,6 +603,11 @@ input{font-family:inherit}
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="pin"></span></div><button class="tog" id="pinTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z"/><path d="M9 8.5l5 2.5-5 2.5z"/><path d="M8 20h8"/></svg><span data-i18n="replay_onb"></span></div>
           <button class="tog" id="onbReplay" style="width:auto;height:auto;padding:8px 14px;border-radius:10px;background:var(--elev2);font-size:12px;color:var(--neon)">▶</button></div>
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg><span data-i18n="backup"></span></div>
+          <button class="tog" id="exportBtn" style="width:auto;height:auto;padding:8px 16px;border-radius:10px;background:var(--elev2);font-size:12px;color:var(--neon);font-weight:600">⬇</button></div>
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 21V9M8 13l4-4 4 4M5 3h14"/></svg><span data-i18n="restore"></span></div>
+          <button class="tog" id="importBtn" style="width:auto;height:auto;padding:8px 16px;border-radius:10px;background:var(--elev2);font-size:12px;color:var(--neon);font-weight:600">⬆</button></div>
+        <input type="file" id="importInput" accept=".json,application/json" style="display:none">
       </div>
       <input type="file" id="avatarInput" accept="image/*" style="display:none">
       <button class="logout" id="logoutBtn" data-i18n="logout"></button>
@@ -814,6 +819,8 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
+  backup:"Zaxira nusxa",restore:"Tiklash",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
+  imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
   pin_set:"Yangi PIN o'rnating",pin_confirm:"PIN'ni tasdiqlang",pin_enter:"PIN kiriting",pin_wrong:"Noto'g'ri PIN",pin_mismatch:"Mos kelmadi, qaytadan",
   lvls:["Boshlovchi","O'quvchi","Izlanuvchi","Usta","Ustoz","Afsona"],
@@ -854,6 +861,8 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
+  backup:"Резервная копия",restore:"Восстановить",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
+  imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
   pin_set:"Задайте новый PIN",pin_confirm:"Подтвердите PIN",pin_enter:"Введите PIN",pin_wrong:"Неверный PIN",pin_mismatch:"Не совпало, заново",
   lvls:["Новичок","Ученик","Искатель","Мастер","Наставник","Легенда"],
@@ -894,6 +903,8 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
+  backup:"Backup",restore:"Restore",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
+  imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
   pin_set:"Set a new PIN",pin_confirm:"Confirm PIN",pin_enter:"Enter PIN",pin_wrong:"Wrong PIN",pin_mismatch:"Didn't match, again",
   lvls:["Novice","Learner","Seeker","Adept","Mentor","Legend"],
@@ -908,13 +919,20 @@ var KEY='focusai.tz1';
 function dayOffsetMs(){return (typeof store!=='undefined'&&store&&store.settings?(store.settings.dayOffsetH||0):0)*3600000;}
 function dayKey(d){d=d||new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000-dayOffsetMs())/86400000);}
 var TODAY=dayKey();
+var SCHEMA_VERSION=1;
 function defaultStore(){
   return {user:{name:null,onboarded:false},
     settings:{lang:'uz',theme:'dark',sound:true},
-    habits:[],nextId:1,wins:0};
+    habits:[],nextId:1,wins:0,schemaVersion:SCHEMA_VERSION};
 }
 var store;
-try{store=JSON.parse(localStorage.getItem(KEY))||defaultStore();}catch(e){store=defaultStore();}
+/* blok E: buzilgan store'da avto-backup nusxasidan tiklash */
+try{store=JSON.parse(localStorage.getItem(KEY))||defaultStore();}
+catch(e){
+  try{store=JSON.parse(localStorage.getItem(KEY+'.bak'))||defaultStore();}
+  catch(e2){store=defaultStore();}
+}
+if(!store.schemaVersion)store.schemaVersion=SCHEMA_VERSION;
 if(!store.settings)store.settings=defaultStore().settings;
 if(!store.user)store.user=defaultStore().user;
 /* migratsiya: eski 10-soatlik maqsadlar → 10 000 soat qoidasi */
@@ -931,6 +949,15 @@ if(store.settings.dayOffsetH===undefined)store.settings.dayOffsetH=0; /* blok B:
 TODAY=dayKey(); /* store yuklandi — ofsetni hisobga olib qayta hisoblaymiz */
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
 function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish */
+/* blok E: avto-backup — har 24 soatda oldingi holat nusxasi (buzilishdan himoya) */
+(function(){try{
+  var last=store.settings.lastBackup||0,now=Date.now();
+  if(now-last>86400000){
+    var cur=localStorage.getItem(KEY);
+    if(cur)localStorage.setItem(KEY+'.bak',cur);
+    store.settings.lastBackup=now;save();
+  }
+}catch(e){}})();
 
 var soundOn=store.settings.sound!==false;
 var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2324,6 +2351,37 @@ $('#soundTog').addEventListener('click',function(){
   if(soundOn)sTap();buzz(8);
 });
 $('#soundTog').classList.toggle('on',soundOn);
+/* ============ blok E: zaxira (export) va tiklash (import) ============ */
+function exportData(){
+  try{
+    var data=JSON.stringify(store);
+    var blob=new Blob([data],{type:'application/json'});
+    var url=URL.createObjectURL(blob);
+    var a=document.createElement('a');
+    a.href=url;a.download='focus-ai-backup-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();
+    setTimeout(function(){document.body.removeChild(a);URL.revokeObjectURL(url);},120);
+    toast(T('exp_ok'));sTap();
+  }catch(e){toast(T('exp_bad'));}
+}
+function importData(file){
+  var rd=new FileReader();
+  rd.onload=function(){
+    try{
+      var data=JSON.parse(rd.result);
+      if(!data||!data.habits||!Object.prototype.toString.call(data.habits).match(/Array/)){toast(T('imp_bad'));return;}
+      if(data.schemaVersion&&data.schemaVersion>SCHEMA_VERSION){toast(T('imp_newer'));return;}
+      if(!confirm(T('imp_confirm')(data.habits.length)))return;
+      window._skipUnloadSave=true; /* reload'da eski store qayta yozilmasin */
+      localStorage.setItem(KEY,JSON.stringify(data));
+      location.reload();
+    }catch(e){toast(T('imp_bad'));}
+  };
+  rd.readAsText(file);
+}
+$('#exportBtn').addEventListener('click',exportData);
+$('#importBtn').addEventListener('click',function(){$('#importInput').click();});
+$('#importInput').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)importData(f);this.value='';});
 /* blok B: kun almashish ofseti sozlamasi */
 (function(){
   var sel=$('#dayOffsetSel');if(!sel)return;
@@ -2344,6 +2402,7 @@ $('#soundTog').classList.toggle('on',soundOn);
 function refreshAll(){applyI18N();renderHabits();refreshChips();computeTarget();}
 refreshAll();
 window.addEventListener('beforeunload',function(){
+  if(window._skipUnloadSave)return; /* blok E: import paytida eski holatni saqlab yubormaslik */
   store.habits.forEach(function(h){flushDay(h);});save();
 });
 })();
