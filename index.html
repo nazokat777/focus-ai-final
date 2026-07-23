@@ -337,6 +337,16 @@ input{font-family:inherit}
   color:var(--muted);font-size:12.5px;font-weight:500;transition:.2s var(--ease)}
 .s-skip.on{background:rgba(180,140,255,.14);border-color:rgba(180,140,255,.5);color:#c9aaff}
 .s-skip:active{transform:scale(.96)}
+.s-micro{display:none;margin:14px auto 0;padding:11px 22px;border-radius:13px;background:rgba(57,255,140,.12);
+  border:1px solid rgba(57,255,140,.4);color:var(--neon);font-size:13.5px;font-weight:600;transition:.2s var(--ease)}
+.s-micro.show{display:block}
+.s-micro:active{transform:scale(.96)}
+.toast{position:absolute;left:50%;bottom:calc(var(--nav-h) + 28px);transform:translate(-50%,14px);z-index:95;
+  max-width:82%;background:rgba(16,26,19,.94);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(57,255,140,.35);border-radius:14px;padding:12px 18px;color:var(--text);font-size:13px;
+  line-height:1.4;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.35s var(--ease)}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.device[data-theme="light"] .toast{background:rgba(255,255,255,.94)}
 
 /* natija kartasi */
 .result{position:absolute;inset:0;z-index:118;background:rgba(2,8,4,.9);backdrop-filter:blur(6px);
@@ -660,6 +670,7 @@ input{font-family:inherit}
         </div>
         <div class="grid" id="sCal" style="grid-template-columns:repeat(14,1fr);gap:4px"></div>
       </div>
+      <button class="s-micro" id="sMicro"></button>
       <button class="s-skip" id="sSkip"></button>
       <div class="u-check">
         <button class="u-btn" id="uBtn"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>
@@ -783,6 +794,8 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   ready:"tayyor",focusing:"fokusda",paused:"pauza",done:"tugadi ✓",reset:"Qayta",cal_lbl:"Faol kunlar",
   cal_streak:function(n,m){return "🔥 "+n+" kun · max "+m;},
   zen_hint:"chiqish uchun ekranga tegin",skip_day:"Bugun dam",skip_undo:"Damni bekor qilish",
+  micro_5:"⚡ Faqat 5 daqiqa boshla",micro_hint:"Boshlash — eng qiyin qadam. Qolganini o'zing his qilasan 💪",
+  micro_left:function(t){return "5 daqiqa rejim · "+t;},micro_done:"🎉 5 daqiqa to'ldi! Zo'r ketyapsan — davom et",
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
@@ -820,6 +833,8 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   ready:"готов",focusing:"фокус",paused:"пауза",done:"готово ✓",reset:"Сброс",cal_lbl:"Активные дни",
   cal_streak:function(n,m){return "🔥 "+n+" дн. · макс "+m;},
   zen_hint:"коснитесь, чтобы выйти",skip_day:"Сегодня отдых",skip_undo:"Отменить отдых",
+  micro_5:"⚡ Начни всего с 5 минут",micro_hint:"Начать — самое трудное. Дальше пойдёт само 💪",
+  micro_left:function(t){return "Режим 5 минут · "+t;},micro_done:"🎉 5 минут позади! Отлично идёшь — продолжай",
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
@@ -857,6 +872,8 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   ready:"ready",focusing:"focusing",paused:"paused",done:"done ✓",reset:"Reset",cal_lbl:"Active days",
   cal_streak:function(n,m){return "🔥 "+n+" days · max "+m;},
   zen_hint:"tap to wake",skip_day:"Rest today",skip_undo:"Cancel rest",
+  micro_5:"⚡ Just start 5 minutes",micro_hint:"Starting is the hardest part. The rest follows 💪",
+  micro_left:function(t){return "5-min mode · "+t;},micro_done:"🎉 5 minutes done! Great momentum — keep going",
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
@@ -1473,11 +1490,22 @@ function renderSession(){
   var e=elapsedOf(h),g=goalMs(h),f=e/g;
   $('#sPct').textContent=Math.min(100,Math.floor(f*100))+'%';
   $('#sElapsed').textContent=fmtHMS(e);
-  $('#sRemain').textContent=T('remain')(fmtHMS(Math.max(0,g-e)));
+  /* blok F: 5-daqiqalik mikro-sessiya nishoni */
+  var micro=false;
+  if(h._micro&&h.runningSince){
+    var mel=Date.now()-h._micro;
+    if(mel>=300000){h._micro=0;save();buzz([12,40,12,40,16]);toast(T('micro_done'));}
+    else{micro=true;$('#sRemain').textContent=T('micro_left')(fmtHMS(300000-mel));}
+  }
+  if(!micro)$('#sRemain').textContent=T('remain')(fmtHMS(Math.max(0,g-e)));
   var on=Math.round(f*sSegs.length);
   sSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
   $('#sRing').classList.toggle('run',!!h.runningSince);
   $('#sMain').textContent=h.completed?'✓':(h.runningSince?T('pause'):(h.accMs>0?T('resume'):T('start')));
+  /* blok F: mikro-start tugmasi faqat taymer to'xtaganda ko'rinadi */
+  var showMicro=!h.runningSince&&!h.completed;
+  $('#sMicro').classList.toggle('show',showMicro);
+  if(showMicro)$('#sMicro').textContent=T('micro_5');
 }
 $('#sMain').addEventListener('click',function(){
   var h=getH(openHabitId);if(!h||h.completed)return;
@@ -1503,6 +1531,13 @@ $('#sSkip').addEventListener('click',function(){
   var h=getH(openHabitId);if(!h)return;
   toggleSkip(h);sTap();buzz(8);
   refreshSkipBtn(h);renderSessionCal(h);refreshCards();refreshChips();
+});
+/* blok F: "faqat 5 daqiqa" mikro-start — aktivatsiya energiyasini kamaytiradi */
+$('#sMicro').addEventListener('click',function(){
+  var h=getH(openHabitId);if(!h||h.runningSince||h.completed)return;
+  h._micro=Date.now();startH(h);
+  toast(T('micro_hint'));
+  renderSession();
 });
 
 /* ============ odat detal / statistika ============ */
@@ -1636,6 +1671,13 @@ try{window.addEventListener('deviceorientation',handleOrient);}catch(e){}
 
 /* ============ achievement ============ */
 var confCv=$('#confetti'),confCtx=confCv.getContext('2d'),confs=[];
+/* umumiy toast (blok F/G/H) */
+function toast(msg){
+  var t=$('#toast');
+  if(!t){t=document.createElement('div');t.id='toast';t.className='toast';$('#device').appendChild(t);}
+  t.innerHTML=msg;t.classList.add('show');
+  clearTimeout(t._tm);t._tm=setTimeout(function(){t.classList.remove('show');},2800);
+}
 function showAch(h){
   $('#achSub').textContent=T('ach_sub')(h.name);
   $('#ach').classList.add('open');
