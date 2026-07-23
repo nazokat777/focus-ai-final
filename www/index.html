@@ -569,6 +569,9 @@ input{font-family:inherit}
           <input type="time" id="remTime" style="background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M5 3 3 5M19 3l2 2"/></svg><span data-i18n="alarm"></span></div>
           <input type="time" id="alarmTime" style="background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"></div>
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 1.5"/></svg><span data-i18n="dayoffset"></span></div>
+          <select id="dayOffsetSel" style="background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none">
+            <option value="0">00:00</option><option value="2">02:00</option><option value="3">03:00</option><option value="4">04:00</option></select></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="pin"></span></div><button class="tog" id="pinTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z"/><path d="M9 8.5l5 2.5-5 2.5z"/><path d="M8 20h8"/></svg><span data-i18n="replay_onb"></span></div>
           <button class="tog" id="onbReplay" style="width:auto;height:auto;padding:8px 14px;border-radius:10px;background:var(--elev2);font-size:12px;color:var(--neon)">▶</button></div>
@@ -777,7 +780,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
-  reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",
+  reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
   al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
   pin_set:"Yangi PIN o'rnating",pin_confirm:"PIN'ni tasdiqlang",pin_enter:"PIN kiriting",pin_wrong:"Noto'g'ri PIN",pin_mismatch:"Mos kelmadi, qaytadan",
   lvls:["Boshlovchi","O'quvchi","Izlanuvchi","Usta","Ustoz","Afsona"],
@@ -814,7 +817,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
-  reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",
+  reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
   al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
   pin_set:"Задайте новый PIN",pin_confirm:"Подтвердите PIN",pin_enter:"Введите PIN",pin_wrong:"Неверный PIN",pin_mismatch:"Не совпало, заново",
   lvls:["Новичок","Ученик","Искатель","Мастер","Наставник","Легенда"],
@@ -851,7 +854,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
-  reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",
+  reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
   al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
   pin_set:"Set a new PIN",pin_confirm:"Confirm PIN",pin_enter:"Enter PIN",pin_wrong:"Wrong PIN",pin_mismatch:"Didn't match, again",
   lvls:["Novice","Learner","Seeker","Adept","Mentor","Legend"],
@@ -862,7 +865,9 @@ function T(k){var d=I18N[store.settings.lang]||I18N.uz;return d[k]!==undefined?d
 
 /* ============ storage ============ */
 var KEY='focusai.tz1';
-function dayKey(d){d=d||new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000)/86400000);}
+/* blok B: kun almashish ofseti — dayOffsetH soatgacha bo'lgan faoliyat kechagi kunga yoziladi */
+function dayOffsetMs(){return (typeof store!=='undefined'&&store&&store.settings?(store.settings.dayOffsetH||0):0)*3600000;}
+function dayKey(d){d=d||new Date();return Math.floor((d.getTime()-d.getTimezoneOffset()*60000-dayOffsetMs())/86400000);}
 var TODAY=dayKey();
 function defaultStore(){
   return {user:{name:null,onboarded:false},
@@ -880,6 +885,7 @@ if(!store.user)store.user=defaultStore().user;
   if(!h.skips)h.skips=[];                          /* blok C: rejali dam kunlari */
 });
 if(store.settings.dayOffsetH===undefined)store.settings.dayOffsetH=0; /* blok B: kun almashish ofseti */
+TODAY=dayKey(); /* store yuklandi — ofsetni hisobga olib qayta hisoblaymiz */
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
 function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish */
 
@@ -2164,6 +2170,15 @@ $('#soundTog').addEventListener('click',function(){
   if(soundOn)sTap();buzz(8);
 });
 $('#soundTog').classList.toggle('on',soundOn);
+/* blok B: kun almashish ofseti sozlamasi */
+(function(){
+  var sel=$('#dayOffsetSel');if(!sel)return;
+  sel.value=String(store.settings.dayOffsetH||0);
+  sel.addEventListener('change',function(){
+    store.settings.dayOffsetH=parseInt(sel.value,10)||0;save();sTap();
+    var nd=dayKey();if(nd!==TODAY){TODAY=nd;}refreshAll();
+  });
+})();
 
 /* ============ init ============ */
 /* overflow:hidden bo'lsa ham brauzer fokusda #device'ni scroll qilib qo'yishi mumkin
