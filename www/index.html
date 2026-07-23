@@ -57,6 +57,8 @@ input{font-family:inherit}
 
 .chips{display:flex;gap:10px;margin:14px 0 14px}
 .chip{flex:1;background:var(--elev);border:1px solid var(--line);border-radius:15px;padding:11px 13px}
+.chip[data-help]{cursor:pointer}
+.chip[data-help]:active{transform:scale(.97)}
 .chip .k{font-size:10px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
 .chip .v{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:18px;margin-top:3px}
 .chip .v .fire{color:var(--neon)}
@@ -518,9 +520,9 @@ input{font-family:inherit}
     <section class="view active" id="v-home">
       <div class="greet"><h1 id="greetTxt"></h1><p data-i18n="tagline"></p></div>
       <div class="chips">
-        <div class="chip"><div class="k" data-i18n="streak"></div><div class="v"><span class="fire">🔥</span> <span id="streakN">0</span></div></div>
-        <div class="chip"><div class="k" data-i18n="today_time"></div><div class="v" id="todayTime">0m</div></div>
-        <div class="chip"><div class="k" data-i18n="growth"></div><div class="v" id="gPct">0%</div></div>
+        <div class="chip" data-help="streak"><div class="k" data-i18n="streak"></div><div class="v"><span class="fire">🔥</span> <span id="streakN">0</span></div></div>
+        <div class="chip" data-help="today"><div class="k" data-i18n="today_time"></div><div class="v" id="todayTime">0m</div></div>
+        <div class="chip" data-help="growth"><div class="k" data-i18n="growth"></div><div class="v" id="gPct">0%</div></div>
       </div>
       <div class="sec-lbl"><span data-i18n="my_habits"></span>
         <button class="add" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -719,7 +721,7 @@ input{font-family:inherit}
       <div class="cal-tap" data-i18n="cal_tap_hint"></div>
     </div>
     <div class="d-sec">
-      <div class="d-score-top"><div class="grid-lbl" style="margin:0" data-i18n="d_score"></div><span class="d-score-now mono" id="dScoreNow">0%</span></div>
+      <div class="d-score-top" data-help="strength" style="cursor:pointer"><div class="grid-lbl" style="margin:0" data-i18n="d_score"></div><span class="d-score-now mono" id="dScoreNow">0%</span></div>
       <svg class="d-chart" id="dChart" preserveAspectRatio="none"></svg>
       <div class="d-empty" id="dScoreEmpty" data-i18n="d_empty" style="display:none"></div>
     </div>
@@ -815,6 +817,8 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   start:"Boshlash",pause:"Pauza",resume:"Davom etish",finish:"Yakunlash",
   remain:function(t){return "qoldi: "+t;},day_done:"Kunlik norma bajarildi ✓",deep_off:"Telefonni yuztuban qo'y — bonus vaqt",deep_on:"Telefonsiz rejim faol · +10% bonus",
   deep_hint:"💡 Telefonni yuztuban qo'ysang — chalg'imaysan va +10% bonus vaqt olasan",cal_tap_hint:"Batafsil ko'rish uchun kunni bosing",
+  help_streak:"🔥 Seriya — ketma-ket faol kunlar. Bugun biror odatga vaqt ajratsang, uzilmaydi.",help_today:"Bugun barcha odatlarga jami sarflangan vaqt.",
+  help_growth:"O'sish — bugungi kunlik me'yorlaring o'rtacha bajarilishi.",help_strength:"⚡ Kuch — izchillik indeksi. Har kun me'yorni bajarsang o'sadi, o'tkazsang ozgina tushadi. Bitta o'tkazilgan kun hammasini nolga tushirmaydi.",
   rain:"Yomg'ir",ach_t:"Maqsad bajarildi!",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Hali odat yo'q",empty2:"Yuqoridagi + tugmasini bosib birinchi odatni qo'sh — vaqt hisobi boshlanadi.",
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
@@ -861,6 +865,8 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   start:"Старт",pause:"Пауза",resume:"Продолжить",finish:"Завершить",
   remain:function(t){return "осталось: "+t;},day_done:"Дневная норма выполнена ✓",deep_off:"Положи телефон экраном вниз — бонус",deep_on:"Режим без телефона · +10% бонус",
   deep_hint:"💡 Положи телефон экраном вниз — не будешь отвлекаться и получишь +10% бонуса",cal_tap_hint:"Нажми на день для подробностей",
+  help_streak:"🔥 Серия — дни подряд с активностью. Уделишь сегодня время любой привычке — не прервётся.",help_today:"Всего времени, потраченного сегодня на все привычки.",
+  help_growth:"Рост — среднее выполнение твоих дневных норм за сегодня.",help_strength:"⚡ Сила — индекс постоянства. Выполняешь норму каждый день — растёт, пропустишь — чуть падает. Один пропуск не обнуляет всё.",
   rain:"Дождь",ach_t:"Цель достигнута!",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Пока нет привычек",empty2:"Нажми + вверху и добавь первую привычку — начнётся честный счёт времени.",
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
@@ -907,6 +913,8 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   start:"Start",pause:"Pause",resume:"Resume",finish:"Finish",
   remain:function(t){return "left: "+t;},day_done:"Daily goal reached ✓",deep_off:"Place phone face down — bonus time",deep_on:"Deep mode active · +10% bonus",
   deep_hint:"💡 Place your phone face down — no distractions and +10% bonus time",cal_tap_hint:"Tap a day for details",
+  help_streak:"🔥 Streak — consecutive active days. Give any habit some time today and it won't break.",help_today:"Total time spent on all habits today.",
+  help_growth:"Growth — your average daily-goal completion for today.",help_strength:"⚡ Strength — a consistency index. Meet your goal daily and it grows; skip and it dips slightly. One missed day doesn't reset everything.",
   rain:"Rain",ach_t:"Goal achieved!",ach_sub:function(n){return "“"+n+"” — 100%";},
   empty1:"No habits yet",empty2:"Tap + above to add your first habit — honest time tracking begins.",
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
@@ -1478,6 +1486,11 @@ $('#photoInput').addEventListener('change',function(){
 function openSheet(o){$('#scrim').classList.toggle('open',o);$('#sheet').classList.toggle('open',o);
   if(o){$('#addErr').textContent='';setTimeout(function(){$('#hName').focus();},200);}}
 $('#addBtn').addEventListener('click',function(){sTap();resetSheet();openSheet(true);});
+/* topilma #5/#7: tushunchalar yordami — chip yoki ko'rsatkich bosilganda tushuntirish */
+$('#device').addEventListener('click',function(e){
+  var el=e.target.closest('[data-help]');if(!el)return;
+  toast(T('help_'+el.getAttribute('data-help')));
+});
 $('#scrim').addEventListener('click',function(){openSheet(false);});
 var pickType='timed',editingId=null;
 /* topilma #1: sheet'ni yangi/tahrirlash rejimiga sozlash */
