@@ -122,6 +122,8 @@ input{font-family:inherit}
 .hm .hcell.skip{background:repeating-linear-gradient(45deg,var(--elev2),var(--elev2) 1.5px,rgba(180,140,255,.5) 1.5px,rgba(180,140,255,.5) 3px)}
 .hm .hcell.today{outline:1.5px solid var(--neon-br);outline-offset:1px}
 .hm .hcell[data-day]{cursor:pointer}
+.hm .hcell[data-day]:active{transform:scale(.85)}
+.cal-tap{margin-top:9px;font-size:11.5px;color:var(--muted);text-align:center;opacity:.75}
 /* score chart */
 .d-score-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
 .d-score-now{font-size:24px;color:var(--neon)}
@@ -714,6 +716,7 @@ input{font-family:inherit}
     <div class="d-sec">
       <div class="grid-lbl" data-i18n="d_cal"></div>
       <div class="hm-wrap"><div class="hm-days" id="dCalDays"></div><div class="hm" id="dCal"></div></div>
+      <div class="cal-tap" data-i18n="cal_tap_hint"></div>
     </div>
     <div class="d-sec">
       <div class="d-score-top"><div class="grid-lbl" style="margin:0" data-i18n="d_score"></div><span class="d-score-now mono" id="dScoreNow">0%</span></div>
@@ -811,6 +814,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   gm:"Xayrli tong",ga:"Xayrli kun",ge:"Xayrli kech",
   start:"Boshlash",pause:"Pauza",resume:"Davom etish",finish:"Yakunlash",
   remain:function(t){return "qoldi: "+t;},day_done:"Kunlik norma bajarildi ✓",deep_off:"Telefonni yuztuban qo'y — bonus vaqt",deep_on:"Telefonsiz rejim faol · +10% bonus",
+  deep_hint:"💡 Telefonni yuztuban qo'ysang — chalg'imaysan va +10% bonus vaqt olasan",cal_tap_hint:"Batafsil ko'rish uchun kunni bosing",
   rain:"Yomg'ir",ach_t:"Maqsad bajarildi!",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Hali odat yo'q",empty2:"Yuqoridagi + tugmasini bosib birinchi odatni qo'sh — vaqt hisobi boshlanadi.",
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
@@ -856,6 +860,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   gm:"Доброе утро",ga:"Добрый день",ge:"Добрый вечер",
   start:"Старт",pause:"Пауза",resume:"Продолжить",finish:"Завершить",
   remain:function(t){return "осталось: "+t;},day_done:"Дневная норма выполнена ✓",deep_off:"Положи телефон экраном вниз — бонус",deep_on:"Режим без телефона · +10% бонус",
+  deep_hint:"💡 Положи телефон экраном вниз — не будешь отвлекаться и получишь +10% бонуса",cal_tap_hint:"Нажми на день для подробностей",
   rain:"Дождь",ach_t:"Цель достигнута!",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Пока нет привычек",empty2:"Нажми + вверху и добавь первую привычку — начнётся честный счёт времени.",
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
@@ -901,6 +906,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   gm:"Good morning",ga:"Good afternoon",ge:"Good evening",
   start:"Start",pause:"Pause",resume:"Resume",finish:"Finish",
   remain:function(t){return "left: "+t;},day_done:"Daily goal reached ✓",deep_off:"Place phone face down — bonus time",deep_on:"Deep mode active · +10% bonus",
+  deep_hint:"💡 Place your phone face down — no distractions and +10% bonus time",cal_tap_hint:"Tap a day for details",
   rain:"Rain",ach_t:"Goal achieved!",ach_sub:function(n){return "“"+n+"” — 100%";},
   empty1:"No habits yet",empty2:"Tap + above to add your first habit — honest time tracking begins.",
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
@@ -1565,6 +1571,11 @@ function openSession(id){
   auroraSize();
   if(!auRAF)auRAF=requestAnimationFrame(auroraLoop);
   zenArm();
+  /* topilma #3: deep mode yashirin funksiya — birinchi sessiyada bir marta ko'rsatma */
+  if(h.type!=='check'&&!store.settings.deepHintShown){
+    store.settings.deepHintShown=true;save();
+    setTimeout(function(){if(sessionOpen)toast(T('deep_hint'));},1400);
+  }
 }
 $('#sClose').addEventListener('click',function(){
   $('#session').classList.remove('open','zen');$('#session').classList.remove('zen');
