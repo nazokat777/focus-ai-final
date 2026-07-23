@@ -606,6 +606,12 @@ input{font-family:inherit}
       <button data-type="check" data-i18n="t_check"></button>
     </div>
     <div id="goalWrap">
+    <div class="f-lbl" data-i18n="f_daily"></div>
+    <div class="goalrow">
+      <button id="dMinus">−</button>
+      <div class="gval mono"><span id="dVal">30</span> <span style="font-size:14px" data-i18n="minutes"></span></div>
+      <button id="dPlus">+</button>
+    </div>
     <div class="f-lbl" data-i18n="f_goal"></div>
     <div class="goalrow">
       <button id="gMinus">−</button>
@@ -742,7 +748,8 @@ var $=function(s){return document.querySelector(s);},
 var I18N={
 uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",today_time:"Bugun",my_habits:"Odatlarim",
   d_cal:"Kalendar",d_score:"Odat kuchi",d_streaks:"Eng uzun seriyalar",d_weekly:"Haftalik faollik",d_empty:"Ma'lumot hali yo'q — bir necha kun kuzating",
-  new_habit:"Yangi odat",f_name:"Nomi",f_icon:"Belgi",f_color:"Rang",f_goal:"Maqsad",f_photo:"Rasm (ixtiyoriy)",hours:"soat",add:"Odat qo'shish",
+  new_habit:"Yangi odat",f_name:"Nomi",f_icon:"Belgi",f_color:"Rang",f_goal:"Umumiy maqsad",f_daily:"Kunlik norma",minutes:"daqiqa",f_photo:"Rasm (ixtiyoriy)",hours:"soat",add:"Odat qo'shish",
+  strength:"Kuch",strength_sub:"Izchillik indeksi",
   photo_none:"Rasm tanlash…",photo_ok:"Rasm tanlandi ✓",
   err_name:"Odat nomini kiriting",err_name_auth:"Iltimos, ismingizni kiriting",
   ob1t:"Vaqtingni <b>o'lcha</b>",ob1p:"Boshqa ilovalar «qildingmi?» deb so'raydi. Focus AI haqiqiy sarflangan vaqtni hisoblaydi.",
@@ -778,7 +785,8 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   prof:function(s){return "seriya: "+s+" kun";}},
 ru:{tagline:"Время — самая честная мера.",growth:"Рост",streak:"Серия",today_time:"Сегодня",my_habits:"Мои привычки",
   d_cal:"Календарь",d_score:"Сила привычки",d_streaks:"Лучшие серии",d_weekly:"Активность за неделю",d_empty:"Данных пока нет — отслеживайте несколько дней",
-  new_habit:"Новая привычка",f_name:"Название",f_icon:"Значок",f_color:"Цвет",f_goal:"Цель",f_photo:"Фото (необязательно)",hours:"часов",add:"Добавить",
+  new_habit:"Новая привычка",f_name:"Название",f_icon:"Значок",f_color:"Цвет",f_goal:"Общая цель",f_daily:"Дневная норма",minutes:"минут",f_photo:"Фото (необязательно)",hours:"часов",add:"Добавить",
+  strength:"Сила",strength_sub:"Индекс постоянства",
   photo_none:"Выбрать фото…",photo_ok:"Фото выбрано ✓",
   err_name:"Введите название привычки",err_name_auth:"Пожалуйста, введите имя",
   ob1t:"<b>Измеряй</b> время",ob1p:"Другие приложения спрашивают «сделал?». Focus AI считает реально потраченное время.",
@@ -814,7 +822,8 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   prof:function(s){return "серия: "+s+" дн.";}},
 en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today_time:"Today",my_habits:"My habits",
   d_cal:"Calendar",d_score:"Habit strength",d_streaks:"Best streaks",d_weekly:"Weekly activity",d_empty:"No data yet — track for a few days",
-  new_habit:"New habit",f_name:"Name",f_icon:"Icon",f_color:"Color",f_goal:"Goal",f_photo:"Photo (optional)",hours:"hours",add:"Add habit",
+  new_habit:"New habit",f_name:"Name",f_icon:"Icon",f_color:"Color",f_goal:"Total goal",f_daily:"Daily goal",minutes:"min",f_photo:"Photo (optional)",hours:"hours",add:"Add habit",
+  strength:"Strength",strength_sub:"Consistency index",
   photo_none:"Choose photo…",photo_ok:"Photo selected ✓",
   err_name:"Please enter a habit name",err_name_auth:"Please enter your name",
   ob1t:"<b>Measure</b> your time",ob1p:"Other apps ask “did you do it?”. Focus AI counts the time you actually spend.",
@@ -867,7 +876,10 @@ if(!store.user)store.user=defaultStore().user;
 /* migratsiya: eski 10-soatlik maqsadlar → 10 000 soat qoidasi */
 (store.habits||[]).forEach(function(h){
   if(h.type!=='check'&&h.goalH&&h.goalH<100){h.goalH=10000;if(h.completed&&h.accMs<h.goalH*3600000)h.completed=false;}
+  if(h.type!=='check'&&!h.dailyMin)h.dailyMin=30; /* blok A: kunlik norma (daqiqa) */
+  if(!h.skips)h.skips=[];                          /* blok C: rejali dam kunlari */
 });
+if(store.settings.dayOffsetH===undefined)store.settings.dayOffsetH=0; /* blok B: kun almashish ofseti */
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
 function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish */
 
@@ -1162,13 +1174,11 @@ $('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:
 /* ============ kunlik o'sish foizi ============ */
 function RNG(seed){var s=seed>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
 function neonRGB(){return $('#device').getAttribute('data-theme')==='light'?'14,159,85':'57,255,140';}
+/* blok A: "O'sish %" = bugungi kunlik norma bajarilishi o'rtachasi (dayRatio) */
 function computeTarget(){
   var hs=store.habits;
   if(!hs.length){setPct(0);return;}
-  var sum=0;hs.forEach(function(h){
-    if(h.type==='check')sum+=(h.days&&h.days.indexOf(TODAY)!==-1)?1:0;
-    else sum+=elapsedOf(h)/goalMs(h);
-  });
+  var sum=0;hs.forEach(function(h){sum+=dayRatio(h,TODAY);});
   setPct(sum/hs.length*100);
 }
 
@@ -1188,6 +1198,32 @@ function hMaxRun(h){
   var best=0,run=0,prev=null,i;
   for(i=0;i<keys.length;i++){if(keys[i]===prev)continue;run=(prev!==null&&keys[i]===prev+1)?run+1:1;if(run>best)best=run;prev=keys[i];}
   return best;
+}
+/* ============ blok A: "kuch" (izchillik) indeksi — uhabits EMA formulasi ============ */
+/* strength_bugun = strength_kecha*m + kunlik_nisbat*(1-m),  m = 0.5^(1/13) ≈ 0.9481.
+   Bitta o'tkazilgan kun kuchni ~5% kamaytiradi (0 ga emas). SKIP kun kuchni muzlatadi. */
+var EMA_M=Math.pow(0.5,1/13);
+function dayRatio(h,day){
+  if(h.type==='check')return hDayOn(h,day)?1:0;
+  var norm=(h.dailyMin||30)*60000;
+  return norm>0?Math.min(1,(h.dayMs[day]||0)/norm):0;
+}
+function firstActiveDay(h){
+  var min=null,k;
+  if(h.type==='check'){(h.days||[]).forEach(function(d){if(min===null||d<min)min=d;});}
+  else{for(k in h.dayMs){if(h.dayMs[k]>0){var d=+k;if(min===null||d<min)min=d;}}}
+  (h.skips||[]).forEach(function(d){if(min===null||d<min)min=d;});
+  return min;
+}
+function habitStrength(h){
+  var first=firstActiveDay(h);
+  if(first===null)return 0;
+  var s=0,skips=h.skips||[],d;
+  for(d=first;d<=TODAY;d++){
+    if(skips.indexOf(d)!==-1)continue; /* rejali dam — jazolamaydi, kuchaytirmaydi */
+    s=s*EMA_M+dayRatio(h,d)*(1-EMA_M);
+  }
+  return s;
 }
 function checksDone(day){var n=0;store.habits.forEach(function(h){if(h.type==='check'&&h.days&&h.days.indexOf(day)!==-1)n++;});return n;}
 function dayActive(day){return dayTotalMs(day)>=60000||checksDone(day)>0;}
@@ -1283,20 +1319,31 @@ function refreshCards(){
       el.querySelector('.el').textContent='🔥 '+hStreak(h)+' '+T('days');
       return;
     }
-    var e=elapsedOf(h),f=e/goalMs(h);
-    el.querySelector('.hc-pct').textContent=fmtPct(Math.min(100,f*100));
-    el.querySelector('.hc-fill').style.width=(f*100)+'%';
-    el.querySelector('.el').textContent=fmtHM(e);
+    /* blok A: kartada bugungi kunlik progress + "kuch" indeksi */
+    var today=h.dayMs[TODAY]||0;
+    if(h.runningSince&&h.lastFlush)today+=Math.max(0,Date.now()-h.lastFlush);
+    var norm=(h.dailyMin||30)*60000;
+    var dayF=norm>0?Math.min(1,today/norm):0;
+    el.querySelector('.hc-pct').textContent='⚡'+Math.round(habitStrength(h)*100)+'%';
+    el.querySelector('.hc-fill').style.width=(dayF*100)+'%';
+    el.querySelector('.el').textContent=fmtHM(today)+' / '+fmtHM(norm);
   });
   computeTarget();
   $('#todayTime').textContent=fmtHM(dayTotalMs(TODAY));
 }
 
 /* ============ add habit sheet ============ */
-var pickIconK='read',pickColor=COLORS[0],goalH=10000,photoData=null;
+var pickIconK='read',pickColor=COLORS[0],goalH=10000,dailyMin=30,photoData=null;
 /* 10 000 soat qoidasi: maqsad mahorat miqyosida, qadam moslashuvchan */
 function fmtNum(n){return String(n).replace(/\B(?=(\d{3})+(?!\d))/g,' ');}
 function goalStep(h){return h>=1000?500:100;}
+/* blok A: kunlik norma bosqichlari (daqiqa) */
+var DAILY_STEPS=[5,10,15,20,25,30,45,60,90,120,180,240];
+function dailyStep(cur,dir){
+  var i=DAILY_STEPS.indexOf(cur);
+  if(i===-1){i=0;for(var j=0;j<DAILY_STEPS.length;j++)if(DAILY_STEPS[j]<=cur)i=j;}
+  return DAILY_STEPS[Math.max(0,Math.min(DAILY_STEPS.length-1,i+dir))];
+}
 (function(){
   var ip=$('#iconPicks');
   ICON_KEYS.forEach(function(k){
@@ -1313,6 +1360,8 @@ function goalStep(h){return h>=1000?500:100;}
 })();
 $('#gMinus').addEventListener('click',function(){goalH=Math.max(100,goalH-goalStep(goalH));$('#gVal').textContent=fmtNum(goalH);sTap();});
 $('#gPlus').addEventListener('click',function(){goalH=Math.min(20000,goalH+goalStep(goalH));$('#gVal').textContent=fmtNum(goalH);sTap();});
+$('#dMinus').addEventListener('click',function(){dailyMin=dailyStep(dailyMin,-1);$('#dVal').textContent=dailyMin;sTap();});
+$('#dPlus').addEventListener('click',function(){dailyMin=dailyStep(dailyMin,1);$('#dVal').textContent=dailyMin;sTap();});
 $('#photoBtn').addEventListener('click',function(){$('#photoInput').click();});
 $('#photoInput').addEventListener('change',function(){
   var f=this.files&&this.files[0];if(!f)return;
@@ -1335,7 +1384,7 @@ $('#saveHabit').addEventListener('click',function(){
   var v=esc($('#hName').value.trim());
   if(!v){$('#addErr').textContent=T('err_name');buzz(20);return;}
   store.habits.push({id:store.nextId++,name:v,icon:pickIconK,color:pickColor,type:pickType,
-    goalH:goalH,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],completed:false,image:photoData});
+    goalH:goalH,dailyMin:dailyMin,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],skips:[],completed:false,image:photoData});
   save();
   $('#hName').value='';photoData=null;$('#photoLbl').textContent=T('photo_none');
   openSheet(false);sGo();buzz(10);
