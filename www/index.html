@@ -1085,7 +1085,7 @@ function startH(h){
   if(h.completed)return;
   var now=Date.now();
   h.runningSince=now;h.lastFlush=now;h._b=now; /* deep-mode bonus bazasi — pauza vaqtini qo'shmaslik uchun */
-  save();sGo();buzz(12);askNotify();
+  save();sGo();buzz(12);askNotify();armOrient(); /* iOS akselerometr ruxsati shu user-gesture ichida */
 }
 function pauseH(h){
   if(!h.runningSince)return;
@@ -1717,8 +1717,8 @@ function openDetail(id){
 function closeDetail(){$('#detail').classList.remove('open');detailOpen=false;openDetailId=null;sTap();}
 $('#dClose').addEventListener('click',closeDetail);
 
-/* ============ deep mode — yuztuban (bonus) ============ */
-var deepOn=false;
+/* ============ deep mode — yuztuban (bonus + avtomatik zen) ============ */
+var deepOn=false,orientReady=false;
 function handleOrient(e){
   var b=e.beta;if(b===null||b===undefined)return;
   var fd=(b>150||b<-150); /* ekran pastga */
@@ -1726,10 +1726,21 @@ function handleOrient(e){
     deepOn=fd;
     $('#deepInd').classList.toggle('on',deepOn);
     $('#deepTxt').textContent=deepOn?T('deep_on'):T('deep_off');
-    if(deepOn){buzz(20);}
+    if(deepOn){buzz(20);if(sessionOpen)$('#session').classList.add('zen');} /* yuztuban → darhol to'liq zen */
+    else if(sessionOpen)zenArm();                                          /* ko'tarilganda zen chiqadi */
   }
 }
-try{window.addEventListener('deviceorientation',handleOrient);}catch(e){}
+/* iOS 13+ akselerometr ruxsati faqat user-gesture ichida so'raladi (taymer boshlash) */
+function armOrient(){
+  if(orientReady)return;
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      DeviceOrientationEvent.requestPermission().then(function(s){
+        if(s==='granted'){window.addEventListener('deviceorientation',handleOrient);orientReady=true;}
+      }).catch(function(){});
+    }else{window.addEventListener('deviceorientation',handleOrient);orientReady=true;} /* Android/desktop */
+  }catch(e){}
+}
 
 /* ============ achievement ============ */
 var confCv=$('#confetti'),confCtx=confCv.getContext('2d'),confs=[];
