@@ -821,6 +821,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
   backup:"Zaxira nusxa",restore:"Tiklash",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
+  rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",
   al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
   pin_set:"Yangi PIN o'rnating",pin_confirm:"PIN'ni tasdiqlang",pin_enter:"PIN kiriting",pin_wrong:"Noto'g'ri PIN",pin_mismatch:"Mos kelmadi, qaytadan",
   lvls:["Boshlovchi","O'quvchi","Izlanuvchi","Usta","Ustoz","Afsona"],
@@ -863,6 +864,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
   backup:"Резервная копия",restore:"Восстановить",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
+  rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",
   al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
   pin_set:"Задайте новый PIN",pin_confirm:"Подтвердите PIN",pin_enter:"Введите PIN",pin_wrong:"Неверный PIN",pin_mismatch:"Не совпало, заново",
   lvls:["Новичок","Ученик","Искатель","Мастер","Наставник","Легенда"],
@@ -905,6 +907,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
   backup:"Backup",restore:"Restore",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
+  rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",
   al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
   pin_set:"Set a new PIN",pin_confirm:"Confirm PIN",pin_enter:"Enter PIN",pin_wrong:"Wrong PIN",pin_mismatch:"Didn't match, again",
   lvls:["Novice","Learner","Seeker","Adept","Mentor","Legend"],
@@ -2227,8 +2230,41 @@ $('#onbReplay').addEventListener('click',function(){
 });
 $('#remTime').value=store.settings.remTime||'';
 $('#alarmTime').value=store.settings.alarmTime||'';
-$('#remTime').addEventListener('change',function(){store.settings.remTime=this.value||null;save();askNotify();sTap();});
+$('#remTime').addEventListener('change',function(){store.settings.remTime=this.value||null;save();askNotify();scheduleReminders();sTap();});
 $('#alarmTime').addEventListener('change',function(){store.settings.alarmTime=this.value||null;save();sTap();});
+/* ============ blok D: aqlli eslatma ============ */
+/* bugun norma bajarilmagan odat bormi (dam kunlarni hisobga olmasdan) */
+function hasUnfinishedToday(){
+  return store.habits.some(function(h){return !isSkip(h,TODAY)&&dayRatio(h,TODAY)<1;});
+}
+/* Capacitor LocalNotifications — ilova yopiq bo'lsa ham keladi ("Boshlash" action bilan) */
+var LN=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.LocalNotifications)||null;
+function scheduleReminders(){
+  if(!LN)return;
+  try{
+    if(LN.requestPermissions)LN.requestPermissions();
+    LN.cancel({notifications:[{id:1001}]});
+    if(!store.settings.remTime)return;
+    var p=store.settings.remTime.split(':');
+    LN.schedule({notifications:[{
+      id:1001,title:'Focus AI',body:T('rem_body'),
+      schedule:{on:{hour:parseInt(p[0],10),minute:parseInt(p[1],10)},repeats:true},
+      actionTypeId:'FOCUS_START'
+    }]});
+  }catch(e){}
+}
+(function registerNotifActions(){
+  if(!LN)return;
+  try{
+    if(LN.registerActionTypes)LN.registerActionTypes({types:[{id:'FOCUS_START',actions:[{id:'start',title:T('rem_action')}]}]});
+    if(LN.addListener)LN.addListener('localNotificationActionPerformed',function(){
+      /* eslatmadan kirilganda birinchi bajarilmagan odatning sessiyasini ochamiz */
+      var h=store.habits.filter(function(x){return !isSkip(x,TODAY)&&dayRatio(x,TODAY)<1&&x.type!=='check';})[0];
+      if(h)openSession(h.id);
+    });
+    scheduleReminders();
+  }catch(e){}
+})();
 $('#pinTog').classList.toggle('on',!!store.settings.pinHash);
 /* har 15s: eslatma + budilnik tekshiruvi */
 setInterval(function(){
@@ -2236,7 +2272,8 @@ setInterval(function(){
   var hm=('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);
   if(store.settings.remTime===hm&&store.lastRemDay!==TODAY){
     store.lastRemDay=TODAY;save();
-    notify('Focus AI','⏱ '+T('tagline'));
+    /* blok D: aqlli — bugun hamma norma bajarilgan bo'lsa bezovta qilmaymiz */
+    if(hasUnfinishedToday())notify('Focus AI',T('rem_body'));
   }
   if(store.settings.alarmTime===hm&&store.lastAlarmDay!==TODAY&&!alarmActive){
     alarmFire();
