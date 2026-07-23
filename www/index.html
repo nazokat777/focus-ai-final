@@ -151,6 +151,7 @@ input{font-family:inherit}
 .cell.l2{background:rgba(57,255,140,.45)}
 .cell.l3{background:rgba(57,255,140,.7)}
 .cell.l4{background:var(--neon-br);box-shadow:0 0 8px rgba(124,255,181,.55)}
+.cell.l-skip{background:repeating-linear-gradient(45deg,var(--elev2),var(--elev2) 2px,rgba(180,140,255,.5) 2px,rgba(180,140,255,.5) 4px)} /* dam kuni */
 .badges{display:flex;gap:10px;margin-top:4px}
 .badge{flex:1;background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:11px 6px;text-align:center}
 .badge .bn{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:18px;color:var(--muted)}
@@ -332,6 +333,10 @@ input{font-family:inherit}
 .u-btn.done{background:var(--neon);border-color:var(--neon);box-shadow:0 0 34px rgba(57,255,140,.55)}
 .u-btn.done svg{stroke:var(--onneon)}
 .u-lbl{font-size:12px;color:var(--muted)}
+.s-skip{margin:12px auto 2px;padding:9px 18px;border-radius:12px;background:var(--elev2);border:1px solid var(--line);
+  color:var(--muted);font-size:12.5px;font-weight:500;transition:.2s var(--ease)}
+.s-skip.on{background:rgba(180,140,255,.14);border-color:rgba(180,140,255,.5);color:#c9aaff}
+.s-skip:active{transform:scale(.96)}
 
 /* natija kartasi */
 .result{position:absolute;inset:0;z-index:118;background:rgba(2,8,4,.9);backdrop-filter:blur(6px);
@@ -655,6 +660,7 @@ input{font-family:inherit}
         </div>
         <div class="grid" id="sCal" style="grid-template-columns:repeat(14,1fr);gap:4px"></div>
       </div>
+      <button class="s-skip" id="sSkip"></button>
       <div class="u-check">
         <button class="u-btn" id="uBtn"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>
         <div class="u-lbl" id="uLbl"></div>
@@ -776,7 +782,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
   ready:"tayyor",focusing:"fokusda",paused:"pauza",done:"tugadi ✓",reset:"Qayta",cal_lbl:"Faol kunlar",
   cal_streak:function(n,m){return "🔥 "+n+" kun · max "+m;},
-  zen_hint:"chiqish uchun ekranga tegin",
+  zen_hint:"chiqish uchun ekranga tegin",skip_day:"Bugun dam",skip_undo:"Damni bekor qilish",
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
@@ -813,7 +819,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
   ready:"готов",focusing:"фокус",paused:"пауза",done:"готово ✓",reset:"Сброс",cal_lbl:"Активные дни",
   cal_streak:function(n,m){return "🔥 "+n+" дн. · макс "+m;},
-  zen_hint:"коснитесь, чтобы выйти",
+  zen_hint:"коснитесь, чтобы выйти",skip_day:"Сегодня отдых",skip_undo:"Отменить отдых",
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
@@ -850,7 +856,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
   ready:"ready",focusing:"focusing",paused:"paused",done:"done ✓",reset:"Reset",cal_lbl:"Active days",
   cal_streak:function(n,m){return "🔥 "+n+" days · max "+m;},
-  zen_hint:"tap to wake",
+  zen_hint:"tap to wake",skip_day:"Rest today",skip_undo:"Cancel rest",
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
@@ -1180,9 +1186,10 @@ $('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:
 /* ============ kunlik o'sish foizi ============ */
 function RNG(seed){var s=seed>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
 function neonRGB(){return $('#device').getAttribute('data-theme')==='light'?'14,159,85':'57,255,140';}
-/* blok A: "O'sish %" = bugungi kunlik norma bajarilishi o'rtachasi (dayRatio) */
+/* blok A: "O'sish %" = bugungi kunlik norma bajarilishi o'rtachasi (dayRatio)
+   blok C: bugun dam olingan odatlar hisobdan chiqadi (foizni pasaytirmaydi) */
 function computeTarget(){
-  var hs=store.habits;
+  var hs=store.habits.filter(function(h){return !isSkip(h,TODAY);});
   if(!hs.length){setPct(0);return;}
   var sum=0;hs.forEach(function(h){sum+=dayRatio(h,TODAY);});
   setPct(sum/hs.length*100);
@@ -1196,7 +1203,17 @@ function hDayOn(h,day){
   if(h.type==='check')return !!(h.days&&h.days.indexOf(day)!==-1);
   return (h.dayMs[day]||0)>=60000;
 }
-function hStreak(h){var d=hDayOn(h,TODAY)?TODAY:TODAY-1,n=0;while(hDayOn(h,d)){n++;d--;}return n;}
+/* blok C: SKIP (rejali dam) — streak'ni uzmaydi, kuchni muzlatadi */
+function isSkip(h,day){return !!(h.skips&&h.skips.indexOf(day)!==-1);}
+function toggleSkip(h,day){
+  day=(day===undefined)?TODAY:day;
+  if(!h.skips)h.skips=[];
+  var i=h.skips.indexOf(day);
+  if(i===-1)h.skips.push(day);else h.skips.splice(i,1);
+  save();
+}
+/* streak: dam kun zanjirni davom ettiradi, lekin +1 qilmaydi */
+function hStreak(h){var d=(hDayOn(h,TODAY)||isSkip(h,TODAY))?TODAY:TODAY-1,n=0;while(hDayOn(h,d)||isSkip(h,d)){if(hDayOn(h,d))n++;d--;}return n;}
 function hMaxRun(h){
   var keys;
   if(h.type==='check')keys=(h.days||[]).slice().sort(function(a,b){return a-b;});
@@ -1414,10 +1431,14 @@ function getH(id){for(var i=0;i<store.habits.length;i++)if(store.habits[i].id===
 function renderSessionCal(h){
   var cal=$('#sCal'),html='';
   for(var i=41;i>=0;i--){
-    var d=TODAY-i,lvl;
-    if(h.type==='check'){lvl=hDayOn(h,d)?3:0;}
-    else{var ms=h.dayMs[d]||0;lvl=ms>=2*3600000?4:ms>=3600000?3:ms>=30*60000?2:ms>=60000?1:0;}
-    html+='<div class="cell'+(lvl?' l'+lvl:'')+'"'+(d===TODAY?' style="outline:1.5px solid var(--neon-br);outline-offset:1px"':'')+'></div>';
+    var d=TODAY-i,lvl,cls;
+    if(isSkip(h,d)){cls=' l-skip';} /* blok C: dam kuni — shtrix */
+    else{
+      if(h.type==='check'){lvl=hDayOn(h,d)?3:0;}
+      else{var ms=h.dayMs[d]||0;lvl=ms>=2*3600000?4:ms>=3600000?3:ms>=30*60000?2:ms>=60000?1:0;}
+      cls=lvl?' l'+lvl:'';
+    }
+    html+='<div class="cell'+cls+'"'+(d===TODAY?' style="outline:1.5px solid var(--neon-br);outline-offset:1px"':'')+'></div>';
   }
   cal.innerHTML=html;
   $('#sStreak').textContent=T('cal_streak')(hStreak(h),hMaxRun(h));
@@ -1435,7 +1456,7 @@ function openSession(id){
   $('#session').classList.toggle('untimed',h.type==='check');
   if(h.type==='check')refreshUBtn(h);
   $('#session').classList.add('open');
-  renderSessionCal(h);
+  renderSessionCal(h);refreshSkipBtn(h);
   renderSession();sTap();
   auroraSize();
   if(!auRAF)auRAF=requestAnimationFrame(auroraLoop);
@@ -1471,6 +1492,17 @@ $('#sFinish').addEventListener('click',function(){
 $('#uBtn').addEventListener('click',function(){
   var h=getH(openHabitId);if(!h||h.type!=='check')return;
   toggleCheck(h);refreshUBtn(h);renderSessionCal(h);
+});
+/* blok C: bugungi kunni "dam" deb belgilash */
+function refreshSkipBtn(h){
+  var on=isSkip(h,TODAY);
+  $('#sSkip').textContent=(on?'🌙 '+T('skip_undo'):'🌙 '+T('skip_day'));
+  $('#sSkip').classList.toggle('on',on);
+}
+$('#sSkip').addEventListener('click',function(){
+  var h=getH(openHabitId);if(!h)return;
+  toggleSkip(h);sTap();buzz(8);
+  refreshSkipBtn(h);renderSessionCal(h);refreshCards();refreshChips();
 });
 
 /* ============ odat detal / statistika ============ */
