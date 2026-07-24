@@ -13,6 +13,7 @@
   if(window.SB_URL && window.SB_KEY){
     var _sbs=document.createElement('script');
     _sbs.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+    _sbs.onload=function(){try{if(window.onSupabaseReady)window.onSupabaseReady();}catch(e){}};
     document.head.appendChild(_sbs);
   }
 </script>
@@ -2941,6 +2942,8 @@ function renderFriends(){
     }).join('');
   });
 }
+/* bulut kutubxonasi kech yuklansa, ochiq do'stlar panelini yangilaymiz (kalitlar qo'yilganda) */
+window.onSupabaseReady=function(){try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}};
 function openFriends(){
   try{var pn=(($('#profName')&&$('#profName').textContent)||'').trim();if(pn)localStorage.setItem('focusai.userName',pn);}catch(e){}
   renderFriends();$('#friends').classList.add('open');sTap();
