@@ -1622,7 +1622,7 @@ $('#saveHabit').addEventListener('click',function(){
     return;
   }
   store.habits.push({id:store.nextId++,name:v,icon:pickIconK,color:pickColor,type:pickType,
-    goalH:goalH,dailyMin:dailyMin,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],skips:[],completed:false,image:photoData});
+    goalH:goalH,dailyMin:dailyMin,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],skips:[],msDone:[],coinDays:[],completed:false,image:photoData});
   save();
   $('#hName').value='';photoData=null;$('#photoLbl').textContent=T('photo_none');
   openSheet(false);sGo();buzz(10);
