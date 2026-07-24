@@ -391,11 +391,18 @@ input{font-family:inherit}
 .m-hrs{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted)}
 .m-bar{height:6px;border-radius:3px;background:var(--elev2);margin-top:10px;overflow:hidden}
 .m-fill{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--neon-dp),var(--neon));transition:width 1s var(--ease)}
-.wisdom{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:4px}
-.w-card{aspect-ratio:1/.86;border-radius:13px;background:var(--elev);border:1px solid var(--line);
-  display:flex;align-items:center;justify-content:center;padding:8px;text-align:center;font-size:10.5px;line-height:1.45;color:var(--text);transition:.3s}
-.w-card.locked{color:transparent;background:repeating-linear-gradient(45deg,var(--elev) 0 6px,var(--elev2) 6px 12px);position:relative}
-.w-card.locked::after{content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:16px;opacity:.5}
+/* mukofot 2: medal grid + tanga/olmos balans */
+.rw-bal{float:right;color:var(--neon);letter-spacing:0;text-transform:none;font-size:12px}
+.medals{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:4px}
+.medal{aspect-ratio:1/1.02;border-radius:14px;background:var(--elev);border:1px solid var(--line);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px;text-align:center;transition:transform .15s var(--ease);position:relative}
+.medal:active{transform:scale(.95)}
+.medal .m-ic{font-size:30px;line-height:1;filter:grayscale(1) opacity(.4)}
+.medal.on .m-ic{filter:none}
+.medal.on{border-color:rgba(57,255,140,.4);box-shadow:0 6px 18px rgba(57,255,140,.14)}
+.medal .m-nm{font-size:11px;font-weight:600;margin-top:6px;color:var(--text)}
+.medal.off .m-nm{color:var(--muted)}
+.medal .m-pr{position:absolute;top:7px;right:8px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
 #trace{width:100%;height:110px;border-radius:14px;background:var(--elev);border:1px solid var(--line)}
 
 /* budilnik */
@@ -576,6 +583,8 @@ input{font-family:inherit}
         <div class="m-top"><div class="m-lvl" id="mLvl"></div><div class="m-hrs mono" id="mHrs"></div></div>
         <div class="m-bar"><div class="m-fill" id="mFill"></div></div>
       </div>
+      <div class="grid-lbl"><span data-i18n="rewards"></span><span class="rw-bal mono" id="rwBal"></span></div>
+      <div class="medals" id="medals"></div>
       <div class="grid-lbl" data-i18n="trace"></div>
       <canvas id="trace"></canvas>
       <div class="coach">
@@ -830,6 +839,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
+  rewards:"Mukofotlar",md1:"Birinchi qadam",md2:"10 soat",md3:"50 soat",md4:"100 soat",md5:"500 soat",md6:"Maqsadli",md7:"3 kun",md8:"Temir iroda",md9:"Afsona",
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
   backup:"Zaxira nusxa",restore:"Tiklash",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
@@ -879,6 +889,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
+  rewards:"Награды",md1:"Первый шаг",md2:"10 часов",md3:"50 часов",md4:"100 часов",md5:"500 часов",md6:"Целеустремлённый",md7:"3 дня",md8:"Железная воля",md9:"Легенда",
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
   backup:"Резервная копия",restore:"Восстановить",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
@@ -928,6 +939,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
+  rewards:"Rewards",md1:"First step",md2:"10 hours",md3:"50 hours",md4:"100 hours",md5:"500 hours",md6:"Goal-driven",md7:"3 days",md8:"Iron will",md9:"Legend",
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
   backup:"Backup",restore:"Restore",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
@@ -1884,6 +1896,30 @@ function awardDayCoins(h){
   }
   save();toast(msg);
 }
+/* mukofot 2: medallar (mvow-ai sovrinlar.html'dan bizning metrikalarga moslangan) */
+function medalDefs(){
+  var th=totalHours(),st=globalStreak(),wins=store.wins||0;
+  return [
+    {ic:'🌱',nm:T('md1'),ok:th>0,cur:th,need:0.1},
+    {ic:'🔥',nm:T('md2'),ok:th>=10,cur:th,need:10},
+    {ic:'⭐',nm:T('md3'),ok:th>=50,cur:th,need:50},
+    {ic:'🏆',nm:T('md4'),ok:th>=100,cur:th,need:100},
+    {ic:'💎',nm:T('md5'),ok:th>=500,cur:th,need:500},
+    {ic:'🎯',nm:T('md6'),ok:wins>=1,cur:wins,need:1},
+    {ic:'📅',nm:T('md7'),ok:st>=3,cur:st,need:3},
+    {ic:'💪',nm:T('md8'),ok:st>=7,cur:st,need:7},
+    {ic:'👑',nm:T('md9'),ok:st>=30,cur:st,need:30}
+  ];
+}
+function renderRewards(){
+  var box=$('#medals');if(!box)return;
+  var bal=$('#rwBal');if(bal)bal.textContent='🪙 '+(store.coins||0)+' · 💎 '+(store.diamonds||0);
+  var defs=medalDefs();
+  box.innerHTML=defs.map(function(m){
+    var pr=m.ok?'':'<span class="m-pr">'+(Math.round((m.cur||0)*10)/10)+'/'+m.need+'</span>';
+    return '<div class="medal '+(m.ok?'on':'off')+'">'+pr+'<div class="m-ic">'+m.ic+'</div><div class="m-nm">'+esc(m.nm)+'</div></div>';
+  }).join('');
+}
 function miniConfetti(color){
   var cv=$('#miniConf');
   if(!cv){cv=document.createElement('canvas');cv.id='miniConf';cv.className='mini-conf';$('#device').appendChild(cv);}
@@ -2002,7 +2038,7 @@ function drawStats(){
     bd.appendChild(el);
   });
   save();
-  renderMastery();drawTrace();
+  renderMastery();renderRewards();drawTrace();
 }
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
