@@ -576,8 +576,6 @@ input{font-family:inherit}
         <div class="m-top"><div class="m-lvl" id="mLvl"></div><div class="m-hrs mono" id="mHrs"></div></div>
         <div class="m-bar"><div class="m-fill" id="mFill"></div></div>
       </div>
-      <div class="grid-lbl" data-i18n="wisdom"></div>
-      <div class="wisdom" id="wisdom"></div>
       <div class="grid-lbl" data-i18n="trace"></div>
       <canvas id="trace"></canvas>
       <div class="coach">
@@ -838,7 +836,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
   pin_set:"Yangi PIN o'rnating",pin_confirm:"PIN'ni tasdiqlang",pin_enter:"PIN kiriting",pin_wrong:"Noto'g'ri PIN",pin_mismatch:"Mos kelmadi, qaytadan",
   lvls:["Boshlovchi","O'quvchi","Izlanuvchi","Usta","Ustoz","Afsona"],
-  quotes:["Tomchi toshni teshar — davomiylik bilan.","Bugungi bir soat — ertangi erkinlik.","Katta yo'l bir qadamdan boshlanadi.","Intizom — o'zingga bo'lgan hurmat.","Sekin yursang ham, to'xtama.","Vaqtingni bergan narsang — hayoting."],
+  quotes:["Har kuni 1% — bir yilda 37 barobar kuchliroq.","Boshlash eng qiyini. Qolgani osonroq.","Fokus — bu «yo'q» deyish san'ati.","Kichik qadamlar — katta natija.","Diqqating — eng qimmatli boyliging.","Chalg'imaslik — zamonaviy superkuch."],
   prof:function(s){return "seriya: "+s+" kun";}},
 ru:{tagline:"Время — самая честная мера.",growth:"Рост",streak:"Серия",today_time:"Сегодня",my_habits:"Мои привычки",
   d_cal:"Календарь",d_score:"Сила привычки",d_streaks:"Лучшие серии",d_weekly:"Активность за неделю",d_empty:"Данных пока нет — отслеживайте несколько дней",
@@ -886,7 +884,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
   pin_set:"Задайте новый PIN",pin_confirm:"Подтвердите PIN",pin_enter:"Введите PIN",pin_wrong:"Неверный PIN",pin_mismatch:"Не совпало, заново",
   lvls:["Новичок","Ученик","Искатель","Мастер","Наставник","Легенда"],
-  quotes:["Капля точит камень постоянством.","Час сегодня — свобода завтра.","Большой путь начинается с первого шага.","Дисциплина — уважение к себе.","Иди медленно, но не останавливайся.","Чему отдаёшь время — то и есть жизнь."],
+  quotes:["Каждый день на 1% — за год в 37 раз сильнее.","Начать — самое трудное. Дальше легче.","Фокус — это искусство говорить «нет».","Маленькие шаги — большой результат.","Твоё внимание — твой главный капитал.","Не отвлекаться — суперсила нашего времени."],
   prof:function(s){return "серия: "+s+" дн.";}},
 en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today_time:"Today",my_habits:"My habits",
   d_cal:"Calendar",d_score:"Habit strength",d_streaks:"Best streaks",d_weekly:"Weekly activity",d_empty:"No data yet — track for a few days",
@@ -934,7 +932,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
   pin_set:"Set a new PIN",pin_confirm:"Confirm PIN",pin_enter:"Enter PIN",pin_wrong:"Wrong PIN",pin_mismatch:"Didn't match, again",
   lvls:["Novice","Learner","Seeker","Adept","Mentor","Legend"],
-  quotes:["Dripping water carves the stone.","One hour today buys tomorrow's freedom.","Long journeys start with a single step.","Discipline is self-respect.","Go slowly, but never stop.","Your time is your life."],
+  quotes:["1% better every day — 37× stronger in a year.","Starting is the hardest part. The rest is easier.","Focus is the art of saying no.","Small steps, big results.","Your attention is your greatest asset.","Not getting distracted is a modern superpower."],
   prof:function(s){return "streak: "+s+"d";}}
 };
 function T(k){var d=I18N[store.settings.lang]||I18N.uz;return d[k]!==undefined?d[k]:(I18N.en[k]||k);}
@@ -2061,15 +2059,6 @@ function renderMastery(){
   var frac=li<LVL_TH.length-1?Math.min(1,(h-LVL_TH[li])/(next-LVL_TH[li])):1;
   $('#mHrs').textContent=h.toFixed(1)+' / '+fmtNum(next)+' h';
   $('#mFill').style.width=(frac*100)+'%';
-  var w=$('#wisdom');w.innerHTML='';
-  var qs=T('quotes');
-  qs.forEach(function(q,i){
-    var c=document.createElement('div');
-    var open=i<=li;
-    c.className='w-card'+(open?'':' locked');
-    c.textContent=q;
-    w.appendChild(c);
-  });
 }
 function drawTrace(){
   var c=$('#trace');if(!c)return;
