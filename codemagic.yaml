@@ -1,0 +1,139 @@
+workflows:
+  # ---------------------------------------------------------------------------
+  # 1) IMZOSIZ (UNSIGNED) iOS SIMULATOR DEBUG BUILD
+  #    Apple Developer akkaunti KERAK EMAS. .app + build loglari artefakt.
+  #    ios/ papka repoda yo'q — mac runnerda "npx cap add ios" bilan yaratiladi.
+  # ---------------------------------------------------------------------------
+  ios-simulator-unsigned:
+    name: Focus AI - iOS Simulator (unsigned debug)
+    max_build_duration: 60
+    instance_type: mac_mini_m2
+    environment:
+      xcode: latest
+      cocoapods: default
+      node: 20
+      vars:
+        XCODE_WORKSPACE: "App.xcworkspace"
+        XCODE_SCHEME: "App"
+    triggering:
+      events:
+        - push
+      branch_patterns:
+        - pattern: main
+          include: true
+          source: true
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          npm ci || npm install
+      - name: Add iOS platform (skip if already present)
+        script: |
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          else
+            echo "ios/ papka mavjud — cap add o'tkazib yuborildi"
+          fi
+      - name: Sync web assets & native deps into iOS project
+        script: |
+          npx cap sync ios
+      - name: CocoaPods install (kafolat uchun)
+        script: |
+          cd "$CM_BUILD_DIR/ios/App"
+          pod install
+      - name: Build unsigned .app for iOS Simulator
+        script: |
+          set -o pipefail
+          cd "$CM_BUILD_DIR/ios/App"
+          xcodebuild build \
+            -workspace "$XCODE_WORKSPACE" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            2>&1 | tee "$CM_BUILD_DIR/xcodebuild_simulator.log"
+    artifacts:
+      - xcodebuild_simulator.log
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+    publishing:
+      email:
+        recipients:
+          - abduazizovanazokat@gmail.com
+        notify:
+          success: true
+          failure: true
+
+  # ---------------------------------------------------------------------------
+  # 2) IMZOLANGAN IPA (App Store / TestFlight)
+  #    Apple Developer Program ($99/yil) + Codemagic'da App Store Connect
+  #    integratsiyasi ("focusai-asc" nomi) sozlangandan keyin ISHLAYDI.
+  #    Sozlanmaguncha bu workflow ishga tushmaydi (yuqoridagi unsigned mustaqil).
+  #    Batafsil: pastdagi signingNotes'ga qarang.
+  # ---------------------------------------------------------------------------
+  ios-appstore-signed:
+    name: Focus AI - iOS IPA (App Store / TestFlight)
+    max_build_duration: 90
+    instance_type: mac_mini_m2
+    integrations:
+      app_store_connect: focusai-asc
+    environment:
+      xcode: latest
+      cocoapods: default
+      node: 20
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: uz.lumnaara.focusai
+      vars:
+        XCODE_WORKSPACE: "App.xcworkspace"
+        XCODE_SCHEME: "App"
+    scripts:
+      - name: Install npm dependencies
+        script: |
+          npm ci || npm install
+      - name: Add iOS platform (skip if already present)
+        script: |
+          if [ ! -d "ios" ]; then
+            npx cap add ios
+          else
+            echo "ios/ papka mavjud — cap add o'tkazib yuborildi"
+          fi
+      - name: Sync web assets & native deps into iOS project
+        script: |
+          npx cap sync ios
+      - name: CocoaPods install (kafolat uchun)
+        script: |
+          cd "$CM_BUILD_DIR/ios/App"
+          pod install
+      - name: Set up code signing settings on Xcode project
+        script: |
+          xcode-project use-profiles
+      - name: Increment build number
+        script: |
+          cd "$CM_BUILD_DIR/ios/App"
+          agvtool new-version -all $(($BUILD_NUMBER))
+          agvtool new-marketing-version 1.0.$(($BUILD_NUMBER))
+      - name: Build signed .ipa for distribution
+        script: |
+          cd "$CM_BUILD_DIR/ios/App"
+          xcode-project build-ipa \
+            --workspace "$XCODE_WORKSPACE" \
+            --scheme "$XCODE_SCHEME"
+    artifacts:
+      - ios/App/build/ios/ipa/*.ipa
+      - /tmp/xcodebuild_logs/*.log
+      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+    publishing:
+      email:
+        recipients:
+          - abduazizovanazokat@gmail.com
+        notify:
+          success: true
+          failure: true
+      app_store_connect:
+        auth: integration
+        submit_to_testflight: true
+        submit_to_app_store: false

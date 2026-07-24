@@ -74,9 +74,23 @@ $$;
 grant execute on function public.send_msg(text, text, text) to anon, authenticated;
 grant execute on function public.get_msgs(text, text)       to anon, authenticated;
 
--- 3) Realtime (jonli reyting) — idempotent -----------------------------------
+-- Data API huquqlari: "jadvallarni avtomatik ochish" toggle holatidan qat'i nazar
+-- anon kalit reyting/do'stlarni o'qiy/yoza olishi uchun aniq grant beramiz.
+-- (messages'ga to'g'ridan-to'g'ri grant YO'Q — faqat RPC; yuqoridagi execute grant yetarli.)
+grant usage on schema public to anon, authenticated;
+grant select, insert, update, delete on public.profiles    to anon, authenticated;
+grant select, insert, update, delete on public.daily_stats to anon, authenticated;
+grant select, insert, update, delete on public.links       to anon, authenticated;
+
+-- 3) Realtime — kelajak uchun zaxira -----------------------------------------
+-- daily_stats publication'ga qo'shiladi (jonli reyting kelajakda). Hozir leaderboard()
+-- bir martalik select — obuna yo'q, shuning uchun bu qator zararsiz zaxira. Idempotent.
 do $$ begin
   alter publication supabase_realtime add table public.daily_stats;
 exception when duplicate_object then null; end $$;
+
+-- Eslatma (chat): social.js chatni RPC (send_msg/get_msgs) orqali bajaradi — polling.
+-- Jonli chat push (subscribeMessages) va messages'ga to'g'ridan-to'g'ri kirish Supabase
+-- anonim Auth + scoped RLS talab qiladi (keyingi bosqich). Chat UI hozircha yo'q.
 
 -- Tayyor. Endi ilovaga Project URL + anon public key ni ulash qoldi.
