@@ -363,6 +363,17 @@ input{font-family:inherit}
 .device[data-theme="light"] .toast{background:rgba(255,255,255,.94)}
 .mini-conf{position:absolute;inset:0;z-index:96;pointer-events:none;opacity:0;transition:opacity .2s}
 .mini-conf.show{opacity:1}
+/* coachmark: birinchi kirishda tanishtiruv (mvow-ai home.html'dan) */
+.coach-ov{position:absolute;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;
+  padding:26px;background:rgba(3,8,6,.92);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px)}
+.coach-card{max-width:340px;width:100%;background:var(--elev);border:1px solid var(--line);border-radius:22px;
+  padding:30px 24px;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.5)}
+.coach-card .cm-ic{font-size:52px;line-height:1}
+.coach-card .cm-step{font-size:11px;letter-spacing:.24em;color:var(--neon);font-weight:700;margin-top:12px}
+.coach-card .cm-t{font-size:22px;font-weight:700;color:var(--text);margin-top:8px;letter-spacing:-.01em}
+.coach-card .cm-d{font-size:15px;color:var(--muted);line-height:1.55;margin-top:10px}
+.coach-card .cm-next{width:100%;padding:14px;margin-top:22px;border-radius:14px;background:var(--neon);color:var(--onneon);font-weight:700;font-size:15px}
+.coach-card .cm-skip{margin-top:12px;font-size:13.5px;color:var(--muted);cursor:pointer}
 
 /* natija kartasi */
 .result{position:absolute;inset:0;z-index:118;background:rgba(2,8,4,.9);backdrop-filter:blur(6px);
@@ -867,6 +878,11 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   ob2t:"Natijang <b>ko'z oldingda</b>",ob2p:"Har bir fokus daqiqasi statistikangga yoziladi. Barqarorlik — eng katta kuch.",
   ob3t:"Maqsadga <b>yet</b>",ob3p:"Panel 100% to'lganda — yutuq. Streak, statistika va bonuslar seni kutadi.",
   skip:"O'tkazib yuborish",next:"Keyingi",start_app:"Boshlash",
+  cm1_t:"Odatlaring",cm1_d:"Vaqtga asoslangan odatlar. Yuqoridagi + tugmasi bilan qo'sh.",
+  cm2_t:"Fokus taymer",cm2_d:"Kartani bosib taymerni yoq — haqiqiy sarflangan vaqting o'lchanadi.",
+  cm3_t:"Natijalar",cm3_d:"Statistika, medallar, tanga/olmos va mukofot do'koni — o'sishing shu yerda.",
+  cm4_t:"Halol va yumshoq",cm4_d:"Dam kuni streak'ni buzmaydi, o'tmish soxtalanmaydi. Sen bilan halol.",
+  cm_next:"Keyingi",cm_got:"Tushundim",cm_skip:"O'tkazib yuborish",
   auth_sub:"Mehmon sifatida kiring — hisob shart emas, hamma narsa qurilmangizda saqlanadi.",auth_go:"Mehmon sifatida kirish",
   auth_ph:"Ismingiz",auth_hint:"Ma'lumotlar faqat shu qurilmada, offline saqlanadi.",
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
@@ -920,6 +936,11 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   ob2t:"Прогресс <b>на виду</b>",ob2p:"Каждая минута фокуса записывается в статистику. Постоянство — главная сила.",
   ob3t:"<b>Достигай</b> цели",ob3p:"Панель заполнилась на 100% — победа. Серии, статистика и бонусы ждут.",
   skip:"Пропустить",next:"Далее",start_app:"Начать",
+  cm1_t:"Твои привычки",cm1_d:"Привычки на основе времени. Добавь через кнопку + сверху.",
+  cm2_t:"Фокус-таймер",cm2_d:"Нажми на карточку и запусти таймер — измеряется реально потраченное время.",
+  cm3_t:"Результаты",cm3_d:"Статистика, медали, монеты/алмазы и магазин наград — твой рост здесь.",
+  cm4_t:"Честно и мягко",cm4_d:"День отдыха не рвёт серию, прошлое не подделать. Честно с тобой.",
+  cm_next:"Далее",cm_got:"Понятно",cm_skip:"Пропустить",
   auth_sub:"Войдите как гость — аккаунт не нужен, всё хранится на устройстве.",auth_go:"Войти как гость",
   auth_ph:"Ваше имя",auth_hint:"Данные хранятся только на этом устройстве, офлайн.",
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
@@ -973,6 +994,11 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   ob2t:"Progress <b>you can see</b>",ob2p:"Every focused minute lands in your stats. Consistency is the superpower.",
   ob3t:"<b>Reach</b> the goal",ob3p:"When the bar hits 100% — you win. Streaks, stats and bonuses await.",
   skip:"Skip",next:"Next",start_app:"Get started",
+  cm1_t:"Your habits",cm1_d:"Time-based habits. Add one with the + button above.",
+  cm2_t:"Focus timer",cm2_d:"Tap a card and start the timer — the time you actually spend is measured.",
+  cm3_t:"Results",cm3_d:"Stats, medals, coins/diamonds and the reward shop — your growth lives here.",
+  cm4_t:"Honest and gentle",cm4_d:"A rest day won't break your streak, the past can't be faked. Honest with you.",
+  cm_next:"Next",cm_got:"Got it",cm_skip:"Skip",
   auth_sub:"Continue as guest — no account needed, everything stays on your device.",auth_go:"Continue as guest",
   auth_ph:"Your name",auth_hint:"Data is stored only on this device, offline.",
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
@@ -1312,6 +1338,7 @@ function refreshBakTxt(){
     $('#splash').classList.add('gone');
     if(!store.user.onboarded)$('#onb').classList.remove('gone');
     else if(!store.user.name)$('#auth').classList.remove('gone');
+    else setTimeout(coachMark,900); /* coachmark: app ochildi (mavjud foydalanuvchi) */
   }
 })();
 /* onboarding */
@@ -1348,6 +1375,7 @@ $('#authGo').addEventListener('click',function(){
   $('#auth').classList.add('gone');
   sGo();buzz(12);
   applyI18N();refreshAll();
+  setTimeout(coachMark,900); /* coachmark: yangi foydalanuvchi kirdi */
 });
 /* logout */
 $('#logoutBtn').addEventListener('click',function(){
@@ -1918,6 +1946,30 @@ function toast(msg){
   if(!t){t=document.createElement('div');t.id='toast';t.className='toast';$('#device').appendChild(t);}
   t.innerHTML=msg;t.classList.add('show');
   clearTimeout(t._tm);t._tm=setTimeout(function(){t.classList.remove('show');},2800);
+}
+/* ============ coachmark: birinchi kirishda 4 bosqichli tanishtiruv (mvow-ai home.html'dan) ============ */
+function coachMark(){
+  if(store.coachSeen)return;
+  var steps=[
+    {ic:'🎯',t:T('cm1_t'),d:T('cm1_d')},
+    {ic:'⏱',t:T('cm2_t'),d:T('cm2_d')},
+    {ic:'🏆',t:T('cm3_t'),d:T('cm3_d')},
+    {ic:'💚',t:T('cm4_t'),d:T('cm4_d')}
+  ];
+  var i=0,ov=document.createElement('div');ov.className='coach-ov';
+  var card=document.createElement('div');card.className='coach-card';
+  ov.appendChild(card);$('#device').appendChild(ov);
+  function close(){store.coachSeen=true;save();ov.remove();}
+  function draw(){
+    var s=steps[i],last=(i===steps.length-1);
+    card.innerHTML='<div class="cm-ic">'+s.ic+'</div><div class="cm-step">'+(i+1)+' / '+steps.length+'</div>'+
+      '<div class="cm-t">'+s.t+'</div><div class="cm-d">'+s.d+'</div>'+
+      '<button class="cm-next" id="cmNext">'+(last?T('cm_got'):T('cm_next'))+'</button>'+
+      (last?'':'<div class="cm-skip" id="cmSkip">'+T('cm_skip')+'</div>');
+    card.querySelector('#cmNext').addEventListener('click',function(){sTap();if(last)close();else{i++;draw();}});
+    var sk=card.querySelector('#cmSkip');if(sk)sk.addEventListener('click',function(){sTap();close();});
+  }
+  draw();
 }
 /* ============ blok G: mahorat marralari (25h/100h/500h...) ============ */
 var MILESTONES=[25,100,500,1000,2500,5000,10000];
