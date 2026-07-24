@@ -429,6 +429,36 @@ input{font-family:inherit}
 .shop-log-item{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);padding:7px 0;border-bottom:1px solid var(--line)}
 .shop-log-item:last-child{border-bottom:none}
 #trace{width:100%;height:110px;border-radius:14px;background:var(--elev);border:1px solid var(--line)}
+/* do'stlar */
+.setting.link{cursor:pointer}
+.setting .arrow{color:var(--muted);font-size:20px;line-height:1}
+.fr-code{background:linear-gradient(135deg,var(--elev),var(--elev2));border:1px solid var(--line);border-radius:16px;padding:17px;text-align:center;cursor:pointer;transition:.15s var(--ease)}
+.fr-code:active{transform:scale(.98)}
+.fr-code-lbl{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.09em}
+.fr-code-val{font-size:34px;font-weight:700;color:var(--neon);letter-spacing:.14em;margin:6px 0 5px}
+.fr-code-copy{font-size:11.5px;color:var(--muted)}
+.fr-add{display:flex;gap:9px;margin-bottom:9px}
+.fr-input{flex:1;min-width:0;background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--text);font-size:16px;letter-spacing:.12em;text-transform:uppercase;outline:none}
+.fr-input:focus{border-color:var(--neon)}
+.fr-input::placeholder{color:var(--muted);letter-spacing:.12em}
+.fr-addbtn{width:46px;flex:none;border-radius:12px;background:var(--neon);display:grid;place-items:center}
+.fr-addbtn svg{width:20px;height:20px;stroke:var(--onneon);stroke-width:2.4;fill:none}
+.fr-addbtn:active{transform:scale(.94)}
+.fr-roleseg{display:flex;gap:6px}
+.fr-roleseg button{flex:1;padding:9px;border-radius:10px;background:var(--elev);border:1px solid var(--line);color:var(--muted);font-size:12.5px;font-weight:600}
+.fr-roleseg button.sel{background:var(--elev2);color:var(--neon);border-color:var(--neon)}
+.fr-board,.fr-mlist{display:flex;flex-direction:column;gap:8px}
+.fr-row{display:flex;align-items:center;gap:11px;background:var(--elev);border:1px solid var(--line);border-radius:13px;padding:11px 13px}
+.fr-row.me{border-color:var(--neon)}
+.fr-rank{width:22px;flex:none;text-align:center;font-size:13.5px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.fr-nm{flex:1;min-width:0;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fr-nm .you{color:var(--neon)}
+.fr-stat{font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex:none;text-align:right}
+.fr-stat b{color:var(--text);font-weight:600}
+.fr-badge{font-size:10.5px;color:var(--muted);background:var(--elev2);border-radius:6px;padding:3px 7px;font-family:'JetBrains Mono',monospace;flex:none}
+.fr-del{color:var(--danger);font-size:16px;opacity:.5;padding:2px 4px;flex:none}
+.fr-empty{padding:14px 2px;font-size:13px;color:var(--muted);text-align:center;line-height:1.5}
+.fr-note{font-size:12px;color:var(--muted);line-height:1.5;background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-top:10px}
 
 /* budilnik */
 .alarm{position:absolute;inset:0;z-index:130;background:#050b07;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;touch-action:none}
@@ -625,6 +655,7 @@ input{font-family:inherit}
         <div class="avatar" id="avatar">?</div><h2 id="profName"></h2><p id="profSub"></p>
       </div>
       <div class="settings">
+        <div class="setting link" id="friendsRow"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-4.7 5.5-4.7s5.5 1.7 5.5 4.7"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 15.5c2.5.2 4.7 1.8 4.7 4.5"/></svg><span data-i18n="friends"></span></div><span class="arrow">›</span></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M3 5h12M9 3v2M10 19l4-9 4 9M11.5 15.5h5"/><path d="M5 9c0 4 3 7 7 8M11 9c0 4-3 7-7 8"/></svg><span data-i18n="lang"></span></div>
           <div class="langseg" id="langSeg"><button data-lang="uz">UZ</button><button data-lang="ru">RU</button><button data-lang="en">EN</button></div>
         </div>
@@ -787,6 +818,46 @@ input{font-family:inherit}
     </div>
   </div>
 
+  <!-- DO'STLAR -->
+  <div class="detail" id="friends">
+    <div class="d-head">
+      <button class="d-close" id="frClose"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="d-title" style="flex:1"><span data-i18n="friends"></span></div>
+      <span class="shop-bal mono" id="frModeBadge"></span>
+    </div>
+    <div class="d-sec">
+      <div class="fr-code" id="frCodeCard">
+        <div class="fr-code-lbl" data-i18n="fr_mycode"></div>
+        <div class="fr-code-val mono" id="frCodeVal">—</div>
+        <div class="fr-code-copy" data-i18n="fr_tap_copy"></div>
+      </div>
+      <div class="shop-hint" data-i18n="fr_share_hint" style="margin-top:12px"></div>
+    </div>
+    <div class="d-sec">
+      <div class="sec-lbl"><span data-i18n="fr_add"></span></div>
+      <div class="fr-add">
+        <input id="frInput" class="fr-input mono" type="text" maxlength="6" placeholder="ABC123" autocapitalize="characters" autocomplete="off" spellcheck="false">
+        <button class="fr-addbtn" id="frAddBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <div class="fr-roleseg" id="frRoleSeg">
+        <button data-role="friend" class="sel" data-i18n="fr_role_friend"></button>
+        <button data-role="mentor" data-i18n="fr_role_mentor"></button>
+      </div>
+      <div class="err" id="frErr"></div>
+    </div>
+    <div class="d-sec">
+      <div class="sec-lbl"><span data-i18n="fr_leaderboard"></span></div>
+      <div class="fr-board" id="frBoard"></div>
+    </div>
+    <div class="d-sec" id="frMentorSec" style="display:none">
+      <div class="sec-lbl"><span data-i18n="fr_mentors"></span></div>
+      <div class="fr-mlist" id="frMentorList"></div>
+    </div>
+    <div class="d-sec">
+      <div class="fr-note" id="frLocalNote" data-i18n="fr_local_note"></div>
+    </div>
+  </div>
+
   <!-- MUKOFOT YARATISH -->
   <div class="scrim" id="rScrim"></div>
   <div class="sheet" id="rSheet">
@@ -883,6 +954,15 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   cm3_t:"Natijalar",cm3_d:"Statistika, medallar, tanga/olmos va mukofot do'koni — o'sishing shu yerda.",
   cm4_t:"Halol va yumshoq",cm4_d:"Dam kuni streak'ni buzmaydi, o'tmish soxtalanmaydi. Sen bilan halol.",
   cm_next:"Keyingi",cm_got:"Tushundim",cm_skip:"O'tkazib yuborish",
+  friends:"Do'stlar",fr_mycode:"Mening kodim",fr_tap_copy:"Nusxalash uchun bosing",
+  fr_share_hint:"Kodingizni do'stingizga yoki ota-ona/ustozingizga bering — ular bugungi fokusingiz va bajarilgan odatlaringizni ko'radi. Halol javobgarlik.",
+  fr_add:"Kod bilan qo'shish",fr_role_friend:"Do'st",fr_role_mentor:"Ota-ona/Ustoz",
+  fr_leaderboard:"Bugungi reyting",fr_you:"Siz",fr_pending:"kutilmoqda",fr_h:"s",
+  fr_empty:"Hali do'st yo'q. Do'stingizning kodini yuqorida qo'shing.",
+  fr_mentors:"Ota-ona / ustoz",fr_copied:"Kod nusxalandi",fr_invalid:"Kod formati: ABC123",
+  fr_added:"Qo'shildi",fr_exists:"Bu kod allaqachon qo'shilgan",fr_self:"Bu sizning kodingiz",
+  fr_local:"Lokal",fr_cloud:"Bulut",
+  fr_local_note:"Lokal rejim: do'stlar va reyting shu qurilmada saqlanadi. Qurilmalararo real reyting hamda ota-ona/ustoz nazorati Supabase ulangach ishlaydi.",
   auth_sub:"Mehmon sifatida kiring — hisob shart emas, hamma narsa qurilmangizda saqlanadi.",auth_go:"Mehmon sifatida kirish",
   auth_ph:"Ismingiz",auth_hint:"Ma'lumotlar faqat shu qurilmada, offline saqlanadi.",
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
@@ -941,6 +1021,15 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   cm3_t:"Результаты",cm3_d:"Статистика, медали, монеты/алмазы и магазин наград — твой рост здесь.",
   cm4_t:"Честно и мягко",cm4_d:"День отдыха не рвёт серию, прошлое не подделать. Честно с тобой.",
   cm_next:"Далее",cm_got:"Понятно",cm_skip:"Пропустить",
+  friends:"Друзья",fr_mycode:"Мой код",fr_tap_copy:"Нажмите, чтобы скопировать",
+  fr_share_hint:"Дайте свой код другу или родителю/наставнику — они увидят ваш сегодняшний фокус и выполненные привычки. Честная ответственность.",
+  fr_add:"Добавить по коду",fr_role_friend:"Друг",fr_role_mentor:"Родитель/Ментор",
+  fr_leaderboard:"Рейтинг сегодня",fr_you:"Вы",fr_pending:"ожидание",fr_h:"ч",
+  fr_empty:"Пока нет друзей. Добавьте код друга выше.",
+  fr_mentors:"Родитель / ментор",fr_copied:"Код скопирован",fr_invalid:"Формат кода: ABC123",
+  fr_added:"Добавлено",fr_exists:"Этот код уже добавлен",fr_self:"Это ваш код",
+  fr_local:"Локально",fr_cloud:"Облако",
+  fr_local_note:"Локальный режим: друзья и рейтинг хранятся на этом устройстве. Рейтинг между устройствами и контроль родителя/наставника заработают после подключения Supabase.",
   auth_sub:"Войдите как гость — аккаунт не нужен, всё хранится на устройстве.",auth_go:"Войти как гость",
   auth_ph:"Ваше имя",auth_hint:"Данные хранятся только на этом устройстве, офлайн.",
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
@@ -999,6 +1088,15 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   cm3_t:"Results",cm3_d:"Stats, medals, coins/diamonds and the reward shop — your growth lives here.",
   cm4_t:"Honest and gentle",cm4_d:"A rest day won't break your streak, the past can't be faked. Honest with you.",
   cm_next:"Next",cm_got:"Got it",cm_skip:"Skip",
+  friends:"Friends",fr_mycode:"My code",fr_tap_copy:"Tap to copy",
+  fr_share_hint:"Share your code with a friend or parent/mentor — they'll see today's focus and completed habits. Honest accountability.",
+  fr_add:"Add by code",fr_role_friend:"Friend",fr_role_mentor:"Parent/Mentor",
+  fr_leaderboard:"Today's ranking",fr_you:"You",fr_pending:"pending",fr_h:"h",
+  fr_empty:"No friends yet. Add a friend's code above.",
+  fr_mentors:"Parent / mentor",fr_copied:"Code copied",fr_invalid:"Code format: ABC123",
+  fr_added:"Added",fr_exists:"This code is already added",fr_self:"That's your own code",
+  fr_local:"Local",fr_cloud:"Cloud",
+  fr_local_note:"Local mode: friends and ranking live on this device. Cross-device ranking and parent/mentor monitoring activate once Supabase is connected.",
   auth_sub:"Continue as guest — no account needed, everything stays on your device.",auth_go:"Continue as guest",
   auth_ph:"Your name",auth_hint:"Data is stored only on this device, offline.",
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
@@ -2739,6 +2837,7 @@ $('#langSeg').addEventListener('click',function(e){
   store.settings.lang=b.getAttribute('data-lang');save();sTap();
   applyI18N();renderHabits();
   if($('#v-stats').classList.contains('active'))drawStats();
+  if($('#friends').classList.contains('open'))renderFriends();
 });
 $('#themeTog').addEventListener('click',function(){
   var dark=$('#device').getAttribute('data-theme')!=='light';
@@ -2793,6 +2892,69 @@ $('#importInput').addEventListener('change',function(){var f=this.files&&this.fi
     store.settings.dayOffsetH=parseInt(sel.value,10)||0;save();sTap();
     var nd=dayKey();if(nd!==TODAY){TODAY=nd;}refreshAll();
   });
+})();
+
+/* ============ do'stlar: interfeys ============ */
+var frRole='friend';
+function frFocusTxt(h){return (Math.round((h||0)*10)/10)+T('fr_h');}
+function renderFriends(){
+  if(typeof Social==='undefined')return;
+  $('#frCodeVal').textContent=Social.myCode();
+  var badge=$('#frModeBadge');if(badge)badge.textContent=Social.cloud()?T('fr_cloud'):T('fr_local');
+  var note=$('#frLocalNote');if(note)note.style.display=Social.cloud()?'none':'';
+  /* ota-ona/ustoz ro'yxati (men qo'shganlar) */
+  var mentors=Social.friends().filter(function(x){return x.role==='mentor';});
+  var msec=$('#frMentorSec');if(msec)msec.style.display=mentors.length?'':'none';
+  if(mentors.length)$('#frMentorList').innerHTML=mentors.map(function(m){
+    return '<div class="fr-row"><span class="fr-rank">🎓</span>'+
+      '<span class="fr-nm">'+esc(m.name||m.code)+'</span>'+
+      '<span class="fr-badge">'+esc(m.code)+'</span>'+
+      '<button class="fr-del" data-frdel="'+esc(m.code)+'" data-frkind="mentor">×</button></div>';
+  }).join('');
+  /* do'stlar reytingi */
+  Social.leaderboard('friend').then(function(board){
+    var el=$('#frBoard');if(!el)return;
+    var others=board.filter(function(x){return !x.me;}).length;
+    if(!others){el.innerHTML='<div class="fr-empty">'+T('fr_empty')+'</div>';return;}
+    el.innerHTML=board.map(function(x,i){
+      var nm=x.me?('<span class="you">'+T('fr_you')+'</span>'):esc(x.name);
+      var stat=(x.pending||x.focusMins==null||x.focusMins<0)
+        ? '<span class="fr-badge">'+T('fr_pending')+'</span>'
+        : '<span class="fr-stat"><b>'+frFocusTxt(x.focusH)+'</b> · '+(x.habits||0)+'✓</span>';
+      return '<div class="fr-row'+(x.me?' me':'')+'">'+
+        '<span class="fr-rank">'+(x.me?'●':(i+1))+'</span>'+
+        '<span class="fr-nm">'+nm+'</span>'+stat+
+        (x.me?'':'<button class="fr-del" data-frdel="'+esc(x.code)+'" data-frkind="friend">×</button>')+
+        '</div>';
+    }).join('');
+  });
+}
+function openFriends(){
+  try{var pn=(($('#profName')&&$('#profName').textContent)||'').trim();if(pn)localStorage.setItem('focusai.userName',pn);}catch(e){}
+  renderFriends();$('#friends').classList.add('open');sTap();
+}
+(function(){
+  var row=$('#friendsRow');if(row)row.addEventListener('click',openFriends);
+  var cl=$('#frClose');if(cl)cl.addEventListener('click',function(){$('#friends').classList.remove('open');sTap();});
+  var seg=$('#frRoleSeg');if(seg)seg.addEventListener('click',function(e){
+    var b=e.target.closest('button');if(!b)return;frRole=b.getAttribute('data-role');sTap();
+    $$('#frRoleSeg button').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');});
+  function doAdd(){
+    var v=(($('#frInput').value)||'').trim().toUpperCase(),err=$('#frErr');err.textContent='';
+    if(!/^[A-Z]{3}[0-9]{3}$/.test(v)){err.textContent=T('fr_invalid');buzz(20);return;}
+    if(v===Social.myCode()){err.textContent=T('fr_self');buzz(20);return;}
+    Social.addFriend(v,frRole).then(function(ok){
+      if(!ok){err.textContent=T('fr_exists');buzz(20);return;}
+      $('#frInput').value='';sGo();buzz(10);toast(T('fr_added'));renderFriends();});
+  }
+  var ab=$('#frAddBtn');if(ab)ab.addEventListener('click',doAdd);
+  var inp=$('#frInput');if(inp)inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();doAdd();}});
+  var card=$('#frCodeCard');if(card)card.addEventListener('click',function(){
+    var code=Social.myCode();try{if(navigator.clipboard)navigator.clipboard.writeText(code);}catch(e){}
+    toast(T('fr_copied'));sTap();});
+  var pan=$('#friends');if(pan)pan.addEventListener('click',function(e){
+    var d=e.target.closest('[data-frdel]');if(!d)return;
+    Social.removeFriend(d.getAttribute('data-frdel'),d.getAttribute('data-frkind'));sTap();renderFriends();});
 })();
 
 /* ============ do'stlar: ma'lumot adapteri (social.js uchun) ============ */
