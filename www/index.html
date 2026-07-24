@@ -826,6 +826,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   micro_5:"⚡ Faqat 5 daqiqa boshla",micro_hint:"Boshlash — eng qiyin qadam. Qolganini o'zing his qilasan 💪",
   micro_left:function(t){return "5 daqiqa rejim · "+t;},micro_done:"🎉 5 daqiqa to'ldi! Zo'r ketyapsan — davom et",
   milestone:function(n,h){return "🏆 <b>"+n+"</b> — "+h+" soatga yetding! Mahorat sari yana bir marra.";},
+  all_done_today:"Bugun hammasi bajarildi!",
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
@@ -874,6 +875,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   micro_5:"⚡ Начни всего с 5 минут",micro_hint:"Начать — самое трудное. Дальше пойдёт само 💪",
   micro_left:function(t){return "Режим 5 минут · "+t;},micro_done:"🎉 5 минут позади! Отлично идёшь — продолжай",
   milestone:function(n,h){return "🏆 <b>"+n+"</b> — "+h+" часов пройдено! Ещё одна веха мастерства.";},
+  all_done_today:"Всё выполнено сегодня!",
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
@@ -922,6 +924,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   micro_5:"⚡ Just start 5 minutes",micro_hint:"Starting is the hardest part. The rest follows 💪",
   micro_left:function(t){return "5-min mode · "+t;},micro_done:"🎉 5 minutes done! Great momentum — keep going",
   milestone:function(n,h){return "🏆 <b>"+n+"</b> — "+h+" hours reached! Another milestone toward mastery.";},
+  all_done_today:"All done today!",
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
@@ -968,8 +971,12 @@ if(!store.user)store.user=defaultStore().user;
     h.msDone=[];var _hrs=(h.accMs||0)/3600000;
     [25,100,500,1000,2500,5000,10000].forEach(function(m){if(_hrs>=m)h.msDone.push(m);});
   }
+  if(!h.coinDays)h.coinDays=[];                    /* mukofot 1b: tanga olingan kunlar */
 });
 if(store.settings.dayOffsetH===undefined)store.settings.dayOffsetH=0; /* blok B: kun almashish ofseti */
+if(store.coins===undefined)store.coins=0;          /* mukofot 1b: tanga 🪙 */
+if(store.diamonds===undefined)store.diamonds=0;    /* mukofot 1b: olmos 💎 */
+if(store.diamondsLifetime===undefined)store.diamondsLifetime=store.diamonds; /* prestij (sarflansa ham kamaymaydi) */
 TODAY=dayKey(); /* store yuklandi — ofsetni hisobga olib qayta hisoblaymiz */
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
 function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish */
@@ -1150,6 +1157,7 @@ setInterval(function(){
     checkMilestone(h); /* blok G */
     if(elapsedOf(h,now)>=goalMs(h)&&!h.completed){completeH(h);changed=true;}
   });
+  store.habits.forEach(awardDayCoins); /* mukofot 1b: norma bajarilsa tanga/olmos (running/pauza farqisiz) */
   if(sessionOpen)renderSession();
   updatePill();
   refreshCards();
@@ -1423,7 +1431,7 @@ function renderHabits(){
 function toggleCheck(h){
   if(!h.days)h.days=[];
   var i=h.days.indexOf(TODAY);
-  if(i===-1){h.days.push(TODAY);sGo();buzz([10,30,14]);}
+  if(i===-1){h.days.push(TODAY);sGo();buzz([10,30,14]);awardDayCoins(h);}
   else{h.days.splice(i,1);sTap();}
   save();renderHabits();computeTarget();refreshChips();
 }
@@ -1846,6 +1854,35 @@ function checkMilestone(h){
       else buzz(30);
     }
   }
+}
+/* ============ mukofot 1b: tanga 🪙 + olmos 💎 (mvow-ai celebrate.js dan moslangan) ============ */
+/* Har odat kunlik normani bajarganda +1 tanga (kuniga bir marta). Bugun BARCHA odat bajarilsa +1 olmos. */
+function coinGiven(h,day){return !!(h.coinDays&&h.coinDays.indexOf(day)!==-1);}
+function habitDoneToday(h){
+  if(isSkip(h,TODAY))return true; /* dam kun — "bajarilgan" hisoblanadi */
+  if(h.type==='check')return hDayOn(h,TODAY);
+  return (h.dayMs[TODAY]||0)>=(h.dailyMin||30)*60000;
+}
+function allHabitsDoneToday(){
+  var hs=store.habits;
+  if(!hs.length)return false;
+  return hs.every(habitDoneToday);
+}
+function awardDayCoins(h){
+  if(isSkip(h,TODAY)||coinGiven(h,TODAY))return;
+  if(!habitDoneToday(h))return;
+  if(!h.coinDays)h.coinDays=[];
+  h.coinDays.push(TODAY);
+  store.coins=(store.coins||0)+1;
+  var msg='+1 🪙';
+  if(allHabitsDoneToday()&&store.diamondDay!==TODAY){
+    store.diamonds=(store.diamonds||0)+1;
+    store.diamondsLifetime=(store.diamondsLifetime||0)+1;
+    store.diamondDay=TODAY;
+    msg='+1 🪙 · +1 💎 — '+T('all_done_today');
+    if(!reduce){buzz([15,50,15]);}
+  }
+  save();toast(msg);
 }
 function miniConfetti(color){
   var cv=$('#miniConf');
