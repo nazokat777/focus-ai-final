@@ -403,6 +403,20 @@ input{font-family:inherit}
 .medal .m-nm{font-size:11px;font-weight:600;margin-top:6px;color:var(--text)}
 .medal.off .m-nm{color:var(--muted)}
 .medal .m-pr{position:absolute;top:7px;right:8px;font-size:10px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+/* mukofot 4: do'kon */
+.shop-bal{color:var(--neon);font-size:14px}
+.shop-hint{font-size:13px;color:var(--muted);line-height:1.5}
+.shop-list{display:flex;flex-direction:column;gap:9px}
+.shop-empty{padding:14px 2px;font-size:13px;color:var(--muted);text-align:center}
+.shop-item{display:flex;align-items:center;gap:10px;background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:12px 14px}
+.si-name{flex:1;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si-price{font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex:none}
+.si-buy{padding:8px 15px;border-radius:10px;background:var(--neon);color:var(--onneon);font-size:12.5px;font-weight:700;flex:none;transition:.15s var(--ease)}
+.si-buy:disabled{background:var(--elev2);color:var(--muted)}
+.si-buy:active:enabled{transform:scale(.95)}
+.si-del{color:var(--danger);font-size:17px;opacity:.55;padding:2px 4px;flex:none}
+.shop-log-item{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);padding:7px 0;border-bottom:1px solid var(--line)}
+.shop-log-item:last-child{border-bottom:none}
 #trace{width:100%;height:110px;border-radius:14px;background:var(--elev);border:1px solid var(--line)}
 
 /* budilnik */
@@ -583,7 +597,7 @@ input{font-family:inherit}
         <div class="m-top"><div class="m-lvl" id="mLvl"></div><div class="m-hrs mono" id="mHrs"></div></div>
         <div class="m-bar"><div class="m-fill" id="mFill"></div></div>
       </div>
-      <div class="grid-lbl"><span data-i18n="rewards"></span><span class="rw-bal mono" id="rwBal"></span></div>
+      <div class="grid-lbl" id="rewardsLbl" style="cursor:pointer"><span data-i18n="rewards"></span><span class="rw-bal mono" id="rwBal">🛍</span></div>
       <div class="medals" id="medals"></div>
       <div class="grid-lbl" data-i18n="trace"></div>
       <canvas id="trace"></canvas>
@@ -742,6 +756,48 @@ input{font-family:inherit}
     </div>
   </div>
 
+  <!-- MUKOFOT DO'KONI -->
+  <div class="detail" id="shop">
+    <div class="d-head">
+      <button class="d-close" id="shopClose"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="d-title" style="flex:1"><span data-i18n="rewards"></span></div>
+      <span class="shop-bal mono" id="shopBal"></span>
+    </div>
+    <div class="d-sec">
+      <div class="shop-hint" data-i18n="shop_hint"></div>
+      <div class="sec-lbl" style="margin-top:6px"><span data-i18n="my_rewards"></span>
+        <button class="add" id="shopAdd"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+      </div>
+      <div class="shop-list" id="shopList"></div>
+    </div>
+    <div class="d-sec" id="shopLogSec" style="display:none">
+      <div class="grid-lbl" data-i18n="reward_history"></div>
+      <div class="shop-log" id="shopLog"></div>
+    </div>
+  </div>
+
+  <!-- MUKOFOT YARATISH -->
+  <div class="scrim" id="rScrim"></div>
+  <div class="sheet" id="rSheet">
+    <div class="grip"></div>
+    <h3 data-i18n="new_reward"></h3>
+    <div class="f-lbl" data-i18n="rw_name"></div>
+    <input id="rwName" type="text" maxlength="40">
+    <div class="f-lbl" data-i18n="rw_cur"></div>
+    <div class="typeseg" id="rwCurSeg">
+      <button data-cur="coin" class="sel">🪙 <span data-i18n="mk_coin"></span></button>
+      <button data-cur="diamond">💎 <span data-i18n="mk_diamond"></span></button>
+    </div>
+    <div class="f-lbl" data-i18n="rw_price"></div>
+    <div class="goalrow">
+      <button id="rpMinus">−</button>
+      <div class="gval mono"><span id="rpVal">5</span></div>
+      <button id="rpPlus">+</button>
+    </div>
+    <div class="err" id="rwErr"></div>
+    <button class="save" id="rwSave" data-i18n="add"></button>
+  </div>
+
   <!-- ACHIEVEMENT -->
   <div class="ach" id="ach">
     <canvas id="confetti"></canvas>
@@ -840,6 +896,9 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
   rewards:"Mukofotlar",md1:"Birinchi qadam",md2:"10 soat",md3:"50 soat",md4:"100 soat",md5:"500 soat",md6:"Maqsadli",md7:"3 kun",md8:"Temir iroda",md9:"Afsona",
+  shop_hint:"Fokus qilib to'plagan tanga va olmoslaringni o'zing belgilagan mukofotlarga sarfla.",my_rewards:"Mening mukofotlarim",reward_history:"Olingan mukofotlar",
+  new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
+  shop_empty:"Hali mukofot yo'q. + tugmasi bilan o'zingga mukofot belgila.",rw_bought:function(n){return "🎁 «"+n+"» olindi — o'zingga ruxsat!";},
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
   backup:"Zaxira nusxa",restore:"Tiklash",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
@@ -890,6 +949,9 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
   rewards:"Награды",md1:"Первый шаг",md2:"10 часов",md3:"50 часов",md4:"100 часов",md5:"500 часов",md6:"Целеустремлённый",md7:"3 дня",md8:"Железная воля",md9:"Легенда",
+  shop_hint:"Трать монеты и алмазы, накопленные фокусом, на свои собственные награды.",my_rewards:"Мои награды",reward_history:"Полученные награды",
+  new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
+  shop_empty:"Пока нет наград. Нажми + и задай себе награду.",rw_bought:function(n){return "🎁 «"+n+"» получено — ты заслужил!";},
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
   backup:"Резервная копия",restore:"Восстановить",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
@@ -940,6 +1002,9 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
   rewards:"Rewards",md1:"First step",md2:"10 hours",md3:"50 hours",md4:"100 hours",md5:"500 hours",md6:"Goal-driven",md7:"3 days",md8:"Iron will",md9:"Legend",
+  shop_hint:"Spend the coins and diamonds you earned by focusing on your own rewards.",my_rewards:"My rewards",reward_history:"Redeemed rewards",
+  new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
+  shop_empty:"No rewards yet. Tap + to set your own reward.",rw_bought:function(n){return "🎁 “"+n+"” redeemed — you earned it!";},
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
   backup:"Backup",restore:"Restore",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
@@ -989,6 +1054,9 @@ if(store.settings.dayOffsetH===undefined)store.settings.dayOffsetH=0; /* blok B:
 if(store.coins===undefined)store.coins=0;          /* mukofot 1b: tanga 🪙 */
 if(store.diamonds===undefined)store.diamonds=0;    /* mukofot 1b: olmos 💎 */
 if(store.diamondsLifetime===undefined)store.diamondsLifetime=store.diamonds; /* prestij (sarflansa ham kamaymaydi) */
+if(!store.rewards)store.rewards=[];                /* mukofot 4: o'z mukofotlari */
+if(!store.rewardLog)store.rewardLog=[];            /* mukofot 4: olingan mukofotlar tarixi */
+if(!store.rewardNextId)store.rewardNextId=1;
 TODAY=dayKey(); /* store yuklandi — ofsetni hisobga olib qayta hisoblaymiz */
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
 function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish */
@@ -1920,6 +1988,66 @@ function renderRewards(){
     return '<div class="medal '+(m.ok?'on':'off')+'">'+pr+'<div class="m-ic">'+m.ic+'</div><div class="m-nm">'+esc(m.nm)+'</div></div>';
   }).join('');
 }
+/* ============ mukofot 4: do'kon (mvow-ai mukofotlar.html'dan) ============ */
+function renderShop(){
+  var bal=$('#shopBal');if(bal)bal.textContent='🪙 '+(store.coins||0)+' · 💎 '+(store.diamonds||0);
+  var list=$('#shopList'),rw=store.rewards||[];
+  if(!rw.length)list.innerHTML='<div class="shop-empty">'+T('shop_empty')+'</div>';
+  else list.innerHTML=rw.map(function(r){
+    var b=r.cur==='diamond'?(store.diamonds||0):(store.coins||0),ic=r.cur==='diamond'?'💎':'🪙',afford=b>=r.price;
+    return '<div class="shop-item"><span class="si-name">'+esc(r.name)+'</span>'+
+      '<span class="si-price">'+r.price+' '+ic+'</span>'+
+      '<button class="si-buy" data-buy="'+r.id+'"'+(afford?'':' disabled')+'>'+T('rw_get')+'</button>'+
+      '<button class="si-del" data-del="'+r.id+'">×</button></div>';
+  }).join('');
+  var log=store.rewardLog||[];
+  $('#shopLogSec').style.display=log.length?'':'none';
+  if(log.length)$('#shopLog').innerHTML=log.slice(-10).reverse().map(function(l){
+    var ic=l.cur==='diamond'?'💎':'🪙';
+    return '<div class="shop-log-item"><span>'+esc(l.name)+'</span><span>'+l.price+' '+ic+' · '+fmtDate(l.day)+'</span></div>';
+  }).join('');
+}
+function openShop(){renderShop();$('#shop').classList.add('open');sTap();}
+$('#shopClose').addEventListener('click',function(){$('#shop').classList.remove('open');sTap();});
+var _rl=$('#rewardsLbl');if(_rl)_rl.addEventListener('click',openShop);
+function buyReward(id){
+  var r=(store.rewards||[]).filter(function(x){return x.id===id;})[0];if(!r)return;
+  var b=r.cur==='diamond'?(store.diamonds||0):(store.coins||0);
+  if(b<r.price)return;
+  if(r.cur==='diamond')store.diamonds-=r.price;else store.coins-=r.price; /* diamondsLifetime kamaymaydi */
+  if(!store.rewardLog)store.rewardLog=[];
+  store.rewardLog.push({name:r.name,cur:r.cur,price:r.price,day:TODAY});
+  save();if(!reduce){sWin();buzz([15,50,15]);miniConfetti(null,true);}
+  toast(T('rw_bought')(esc(r.name)));renderShop();renderRewards();
+}
+function delReward(id){store.rewards=(store.rewards||[]).filter(function(x){return x.id!==id;});save();renderShop();sTap();}
+$('#shopList').addEventListener('click',function(e){
+  var buy=e.target.closest('[data-buy]'),del=e.target.closest('[data-del]');
+  if(buy)buyReward(parseInt(buy.getAttribute('data-buy'),10));
+  else if(del)delReward(parseInt(del.getAttribute('data-del'),10));
+});
+/* mukofot yaratish sheet */
+var rwCur='coin',rwPrice=5;
+function openRSheet(o){
+  $('#rScrim').classList.toggle('open',o);$('#rSheet').classList.toggle('open',o);
+  if(o){rwCur='coin';rwPrice=5;$('#rwName').value='';$('#rpVal').textContent='5';$('#rwErr').textContent='';
+    $$('#rwCurSeg button').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-cur')==='coin');});
+    setTimeout(function(){$('#rwName').focus();},200);}
+}
+$('#shopAdd').addEventListener('click',function(){sTap();openRSheet(true);});
+$('#rScrim').addEventListener('click',function(){openRSheet(false);});
+$('#rwCurSeg').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
+  rwCur=b.getAttribute('data-cur');sTap();
+  $$('#rwCurSeg button').forEach(function(x){x.classList.remove('sel');});b.classList.add('sel');});
+$('#rpMinus').addEventListener('click',function(){rwPrice=Math.max(1,rwPrice-1);$('#rpVal').textContent=rwPrice;sTap();});
+$('#rpPlus').addEventListener('click',function(){rwPrice=Math.min(999,rwPrice+1);$('#rpVal').textContent=rwPrice;sTap();});
+$('#rwSave').addEventListener('click',function(){
+  var v=esc($('#rwName').value.trim());
+  if(!v){$('#rwErr').textContent=T('err_name');buzz(20);return;}
+  if(!store.rewards)store.rewards=[];
+  store.rewards.push({id:store.rewardNextId++,name:v,cur:rwCur,price:rwPrice});
+  save();openRSheet(false);sGo();buzz(10);renderShop();
+});
 /* bosqich 3: boy konfetti — salyut + shockwave + oltin uchqun (mvow-ai celebrate.js dan) */
 function miniConfetti(color,big){
   var cv=$('#miniConf');
