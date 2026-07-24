@@ -4,6 +4,18 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Focus AI</title>
+<!-- Do'stlar buluti (ixtiyoriy). Kalitlar BO'SH bo'lsa -> ilova LOKAL, offline, o'zi-yetarli:
+     hech qanday tashqi so'rov yuborilmaydi. IKKALASI to'ldirilsagina supabase-js yuklanadi.
+     Yoqish: pastdagi ikki qatorni Project URL + anon public key bilan to'ldiring. -->
+<script>
+  window.SB_URL='';   /* masalan: https://xxxxxxxx.supabase.co */
+  window.SB_KEY='';   /* anon public key: eyJ...  (maxfiy emas — RLS himoya qiladi) */
+  if(window.SB_URL && window.SB_KEY){
+    var _sbs=document.createElement('script');
+    _sbs.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+    document.head.appendChild(_sbs);
+  }
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -2977,9 +2989,7 @@ window.MVOW_DATA={
     return out;
   }
 };
-/* Supabase (keyin): SB_URL/SB_KEY to'ldirilib supabase-js yuklansa -> real qurilmalararo
-   reyting. Hozir bo'sh -> lokal rejim; ilova hech qachon buzilmaydi. */
-window.SB_URL='';window.SB_KEY='';
+/* Supabase konfig <head>da (window.SB_URL / window.SB_KEY). Bo'sh -> lokal rejim. */
 
 /* ============ init ============ */
 /* overflow:hidden bo'lsa ham brauzer fokusda #device'ni scroll qilib qo'yishi mumkin
@@ -3081,13 +3091,10 @@ window.addEventListener('beforeunload',function(){
   // ── Supabase klient (bo'lmasa null) ──
   var sb;
   function client() {
-    if (sb !== undefined) return sb;
-    sb = null;
-    try {
-      if (window.supabase && window.SB_URL && window.SB_KEY) {
-        sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
-      }
-    } catch (e) { sb = null; }
+    if (sb) return sb;                                 // klient allaqachon yaratilgan
+    if (!window.SB_URL || !window.SB_KEY) return null; // kalit yo'q -> lokal rejim
+    if (!window.supabase) return null;                 // kutubxona hali yuklanmagan -> keshsiz, keyin qayta urinamiz
+    try { sb = window.supabase.createClient(window.SB_URL, window.SB_KEY); } catch (e) { sb = null; }
     return sb;
   }
   function cloud() { return !!client(); }
