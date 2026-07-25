@@ -1936,11 +1936,16 @@ function habitFirstDay(h){
   else{for(k in h.dayMs){var d=Number(k);if(h.dayMs[k]>0&&(min===null||d<min))min=d;}}
   return min;
 }
-/* odat kuchi: eksponensial silliqlash (EMA). alpha ~0.052 — mukammal kunlik: 30k=80%, 60k=96%, 90k=99% */
+/* odat kuchi grafigi: kartadagi ⚡% (habitStrength) BILAN BIR XIL formula —
+   dayRatio (kunlik norma) + EMA_M; skip kunlar o'zgartirmaydi. Shu bois seriyaning
+   oxirgi nuqtasi aynan habitStrength(h) ga teng: karta va detal bir xil son (audit #5). */
 function habitScoreSeries(h){
-  var first=habitFirstDay(h);if(first===null)return [];
-  var ALPHA=1-Math.pow(0.2,1/30),s=0,out=[];
-  for(var d=first;d<=TODAY;d++){s+=ALPHA*(habitDayValue(h,d)-s);out.push({d:d,v:s});}
+  var first=firstActiveDay(h);if(first===null)return [];
+  var skips=h.skips||[],s=0,out=[];
+  for(var d=first;d<=TODAY;d++){
+    if(skips.indexOf(d)!==-1){out.push({d:d,v:s});continue;}
+    s=s*EMA_M+dayRatio(h,d)*(1-EMA_M);out.push({d:d,v:s});
+  }
   return out;
 }
 function calLevel(h,d){
