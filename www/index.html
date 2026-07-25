@@ -137,6 +137,20 @@ input{font-family:inherit}
 .cbloom{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid rgba(var(--neon-rgb),.85);pointer-events:none;transform:scale(.4);opacity:.85;animation:cbloom .7s var(--ease-out) forwards;z-index:2}
 @keyframes cbloom{to{transform:scale(2.9);opacity:0}}
 .reduce .cbloom{display:none}
+/* ==== BAYRAM DIRIJYORI — kun barcha odat bajarilganda (faqat transform/opacity) ==== */
+.fest-beam{position:absolute;left:50%;top:50%;width:72%;height:72%;margin:-36% 0 0 -36%;pointer-events:none;z-index:94;opacity:0;transform:scale(.3);border-radius:50%;background:radial-gradient(circle,rgba(var(--neon-br-rgb),.5) 0%,rgba(var(--neon-rgb),.16) 42%,rgba(0,0,0,0) 68%)}
+.fest-beam.go{animation:festBeam 1.1s var(--ease-out) forwards}
+@keyframes festBeam{0%{opacity:0;transform:scale(.3)}22%{opacity:1}100%{opacity:0;transform:scale(1.9)}}
+.fest-band{position:absolute;left:50%;top:34%;z-index:97;pointer-events:none;display:flex;align-items:center;gap:9px;padding:11px 20px;border-radius:999px;white-space:nowrap;background:linear-gradient(135deg,rgba(var(--neon-br-rgb),.16),rgba(var(--neon-rgb),.10));border:1px solid rgba(var(--neon-rgb),.5);box-shadow:0 8px 30px rgba(var(--neon-rgb),.28);transform:translate(-50%,-50%) scale(.7);opacity:0}
+.fest-band .fb-medal{font-size:20px;line-height:1}
+.fest-band .fb-txt{font-size:13.5px;font-weight:700;color:var(--neon);letter-spacing:.2px}
+.fest-band.go{animation:festBand 2.4s var(--spring) forwards}
+@keyframes festBand{0%{opacity:0;transform:translate(-50%,-50%) scale(.7)}14%{opacity:1;transform:translate(-50%,-50%) scale(1.04)}22%{transform:translate(-50%,-50%) scale(1)}78%{opacity:1;transform:translate(-50%,-50%) scale(1)}100%{opacity:0;transform:translate(-50%,-50%) scale(.92)}}
+.hcard.fest-pulse{animation:festPulse .56s var(--spring)}
+@keyframes festPulse{0%{transform:translateY(0) scale(1)}34%{transform:translateY(-4px) scale(1.035)}100%{transform:translateY(0) scale(1)}}
+#device.reduce .fest-beam{display:none}
+#device.reduce .fest-band{animation:none;opacity:1}
+#device.reduce .hcard.fest-pulse{animation:none}
 .hc-play svg{width:17px;height:17px;fill:var(--neon);stroke:none}
 .hcard.running .hc-play{background:var(--neon);box-shadow:0 0 16px rgba(var(--neon-rgb),.5)}
 .hcard.running .hc-play svg{fill:var(--onneon)}
@@ -2658,8 +2672,9 @@ function awardDayCoins(h){
     store.diamonds=(store.diamonds||0)+1;
     store.diamondsLifetime=(store.diamondsLifetime||0)+1;
     store.diamondDay=TODAY;
-    msg='+1 🪙 · +1 💎 — '+T('all_done_today');
     if(!reduce){buzz([15,50,15]);sWin();miniConfetti(null,true);} /* katta yutuq — boy konfetti */
+    if(sessionOpen){msg='+1 🪙 · +1 💎 — '+T('all_done_today');} /* sessiya ochiq: lenta yo'q, matn toastда */
+    else{msg='+1 🪙 · +1 💎';conductCelebration();}             /* lenta all_done_today ni ko'rsatadi (takror emas) */
   }
   save();toast(msg);
 }
@@ -2793,6 +2808,35 @@ function miniConfetti(color,big){
       if(sp.y<-10){sp.y=H+10;sp.x=Math.random()*W;}}
     if(el<ms)requestAnimationFrame(frame);else{ctx.clearRect(0,0,W,H);cv.classList.remove('show');}
   })(0);
+}
+/* ==== BAYRAM DIRIJYORI: kun barcha odat bajarilganda orkestrlangan lahza.
+   awardDayCoins olmos bloki ichidan (kuniga bir marta guard). Faqat transform/opacity. ==== */
+function conductCelebration(){
+  if(sessionOpen)return;                 /* sessiya ochiq bo'lsa ustiga chiqmaydi */
+  var dev=$('#device');if(!dev)return;
+  if(!reduce){                            /* markaziy neon nur */
+    var beam=document.createElement('div');beam.className='fest-beam';dev.appendChild(beam);
+    void beam.offsetWidth;beam.classList.add('go'); /* reflow -> animatsiya 0% dan (rAF'siz, ishonchli) */
+    setTimeout(function(){if(beam.parentNode)beam.parentNode.removeChild(beam);},1400);
+  }
+  var band=document.createElement('div');band.className='fest-band';   /* "hammasi bajarildi" lenta */
+  band.innerHTML='<span class="fb-medal">💎</span><span class="fb-txt"></span>';
+  band.querySelector('.fb-txt').textContent=T('all_done_today');
+  dev.appendChild(band);
+  void band.offsetWidth;band.classList.add('go');
+  setTimeout(function(){if(band.parentNode)band.parentNode.removeChild(band);},reduce?1700:2600);
+  if(!reduce)buzz([12,40,12,40,12,60,120]);   /* dirijyor haptik patterni */
+  if(reduce)return;
+  var d=0;                                /* kartalar to'lqini — ketma-ket, cardRefs jonli o'qiladi */
+  store.habits.forEach(function(h){
+    (function(hid,delay){setTimeout(function(){
+      var node=cardRefs[hid];if(!node)return;
+      node.classList.remove('fest-pulse');void node.offsetWidth;
+      node.classList.add('fest-pulse');
+      setTimeout(function(){var n2=cardRefs[hid];if(n2)n2.classList.remove('fest-pulse');},560);
+    },delay);})(h.id,d);
+    d+=90;
+  });
 }
 function showAch(h){
   $('#achSub').textContent=T('ach_sub')(h.name);
