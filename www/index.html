@@ -977,7 +977,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   fr_leaderboard:"Bugungi reyting",fr_you:"Siz",fr_pending:"kutilmoqda",fr_h:"s",
   fr_empty:"Hali do'st yo'q. Do'stingizning kodini yuqorida qo'shing.",
   fr_mentors:"Ota-ona / ustoz",fr_copied:"Kod nusxalandi",fr_invalid:"Kod formati: ABC123",
-  fr_added:"Qo'shildi",fr_exists:"Bu kod allaqachon qo'shilgan",fr_self:"Bu sizning kodingiz",
+  fr_added:"Qo'shildi",fr_exists:"Bu kod allaqachon qo'shilgan",fr_self:"Bu sizning kodingiz",fr_cloud_err:"Serverga ulanmadi. Qayta urinib ko'ring.",
   fr_local:"Lokal",fr_cloud:"Bulut",
   fr_local_note:"Lokal rejim: do'stlar va reyting shu qurilmada saqlanadi. Qurilmalararo real reyting hamda ota-ona/ustoz nazorati Supabase ulangach ishlaydi.",
   auth_sub:"Mehmon sifatida kiring — hisob shart emas, hamma narsa qurilmangizda saqlanadi.",auth_go:"Mehmon sifatida kirish",
@@ -1046,7 +1046,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   fr_leaderboard:"Рейтинг сегодня",fr_you:"Вы",fr_pending:"ожидание",fr_h:"ч",
   fr_empty:"Пока нет друзей. Добавьте код друга выше.",
   fr_mentors:"Родитель / ментор",fr_copied:"Код скопирован",fr_invalid:"Формат кода: ABC123",
-  fr_added:"Добавлено",fr_exists:"Этот код уже добавлен",fr_self:"Это ваш код",
+  fr_added:"Добавлено",fr_exists:"Этот код уже добавлен",fr_self:"Это ваш код",fr_cloud_err:"Не удалось подключиться к серверу. Попробуйте снова.",
   fr_local:"Локально",fr_cloud:"Облако",
   fr_local_note:"Локальный режим: друзья и рейтинг хранятся на этом устройстве. Рейтинг между устройствами и контроль родителя/наставника заработают после подключения Supabase.",
   auth_sub:"Войдите как гость — аккаунт не нужен, всё хранится на устройстве.",auth_go:"Войти как гость",
@@ -1115,7 +1115,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   fr_leaderboard:"Today's ranking",fr_you:"You",fr_pending:"pending",fr_h:"h",
   fr_empty:"No friends yet. Add a friend's code above.",
   fr_mentors:"Parent / mentor",fr_copied:"Code copied",fr_invalid:"Code format: ABC123",
-  fr_added:"Added",fr_exists:"This code is already added",fr_self:"That's your own code",
+  fr_added:"Added",fr_exists:"This code is already added",fr_self:"That's your own code",fr_cloud_err:"Couldn't reach the server. Try again.",
   fr_local:"Local",fr_cloud:"Cloud",
   fr_local_note:"Local mode: friends and ranking live on this device. Cross-device ranking and parent/mentor monitoring activate once Supabase is connected.",
   auth_sub:"Continue as guest — no account needed, everything stays on your device.",auth_go:"Continue as guest",
@@ -2992,8 +2992,12 @@ function openFriends(){
     var v=(($('#frInput').value)||'').trim().toUpperCase(),err=$('#frErr');err.textContent='';
     if(!/^[A-Z]{3}[0-9]{3}$/.test(v)){err.textContent=T('fr_invalid');buzz(20);return;}
     if(v===Social.myCode()){err.textContent=T('fr_self');buzz(20);return;}
-    Social.addFriend(v,frRole).then(function(ok){
-      if(!ok){err.textContent=T('fr_exists');buzz(20);return;}
+    var btn=$('#frAddBtn');if(btn){btn.disabled=true;btn.style.opacity='.5';}
+    Social.addFriend(v,frRole).then(function(st){
+      if(btn){btn.disabled=false;btn.style.opacity='';}
+      if(st==='dup'){err.textContent=T('fr_exists');buzz(20);return;}
+      if(st==='bad'){err.textContent=T('fr_invalid');buzz(20);return;}
+      if(st==='err'){err.textContent=T('fr_cloud_err');buzz(20);return;} /* bulut yozuv xatosi — soxta muvaffaqiyat yo'q */
       $('#frInput').value='';sGo();buzz(10);toast(T('fr_added'));renderFriends();});
   }
   var ab=$('#frAddBtn');if(ab)ab.addEventListener('click',doAdd);
@@ -3181,14 +3185,17 @@ window.addEventListener('beforeunload',function(){
 
   function addFriend(code, kind, name) {
     code = (code || '').trim().toUpperCase(); kind = kind || 'friend';
-    if (!code || code === myCode() || !/^[A-Z]{3}[0-9]{3}$/.test(code)) return Promise.resolve(false);
+    if (!code || code === myCode() || !/^[A-Z]{3}[0-9]{3}$/.test(code)) return Promise.resolve('bad');
     var f = friends();
-    if (f.some(function (x) { return x.code === code && x.role === kind; })) return Promise.resolve(false);
+    if (f.some(function (x) { return x.code === code && x.role === kind; })) return Promise.resolve('dup');
     f.push({ code: code, role: kind, name: (name || '').trim().slice(0, 24) }); saveFriends(f);
     var c = client();
+    /* bulut xatosidа lokal yozuvni orqaga qaytaramiz — soxta "qo'shildi" bo'lmasin, qayta urinish ishlasin */
+    function rollback(){ saveFriends(friends().filter(function (x) { return !(x.code === code && x.role === kind); })); }
     if (c) return c.from('links').upsert({ follower: myCode(), target_code: code, kind: kind }, { onConflict: 'follower,target_code,kind' })
-      .then(function () { return true; }, function () { return true; });
-    return Promise.resolve(true);
+      .then(function (r) { if (r && r.error) { rollback(); return 'err'; } return 'ok'; },
+            function () { rollback(); return 'err'; });
+    return Promise.resolve('ok');
   }
   function removeFriend(code, kind) {
     kind = kind || 'friend';
