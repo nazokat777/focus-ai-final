@@ -1203,6 +1203,12 @@ if(store.diamondsLifetime===undefined)store.diamondsLifetime=store.diamonds; /* 
 if(!store.rewards)store.rewards=[];                /* mukofot 4: o'z mukofotlari */
 if(!store.rewardLog)store.rewardLog=[];            /* mukofot 4: olingan mukofotlar tarixi */
 if(!store.rewardNextId)store.rewardNextId=1;
+/* soat qatlami: hh[hafta_kuni*24+soat]=ms, hhN=alohida faol kunlar, hhLast=oxirgi kun,
+   dayHour[kun][soat]=ms. Retroaktiv to'ldirish YO'Q — faqat shu paytdan yig'iladi (halol). */
+if(!store.hh)store.hh={};
+if(!store.hhN)store.hhN={};
+if(!store.hhLast)store.hhLast={};
+if(!store.dayHour)store.dayHour={};
 TODAY=dayKey(); /* store yuklandi — ofsetni hisobga olib qayta hisoblaymiz */
 var _saveWarned=false;
 function save(){
@@ -1351,11 +1357,34 @@ function elapsedOf(h,now){
   var e=h.accMs+(h.runningSince?Math.max(0,now-h.runningSince):0);
   return Math.min(Math.max(0,e),goalMs(h));
 }
+/* soat qatlami: [from,to) oralig'ini SOAT CHEGARALARI bo'yicha bo'lib yozadi.
+   Fon rejimidan qaytgan uzoq delta ham to'g'ri taqsimlanadi (bitta soatga tiqilmaydi).
+   Taymer formulasiga (elapsedOf) TEGMAYDI — bu faqat qo'shimcha o'lchov qatlami. */
+function bucketHours(from,to){
+  if(!from||!to||to<=from)return;
+  if(to-from>26*3600000)from=to-26*3600000; /* xavfsizlik: juda uzun uzilishni cheklaymiz */
+  var t=from,guard=0;
+  while(t<to&&guard++<48){
+    var d=new Date(t),nx=new Date(t);nx.setMinutes(0,0,0);
+    var bound=nx.getTime()+3600000,end=Math.min(bound,to),ms=end-t;
+    var day=dayKey(d),hr=d.getHours();
+    var dw=new Date(day*86400000+new Date().getTimezoneOffset()*60000+dayOffsetMs()).getDay();
+    var k=dw*24+hr;
+    store.hh[k]=(store.hh[k]||0)+ms;
+    if(store.hhLast[k]!==day){store.hhLast[k]=day;store.hhN[k]=(store.hhN[k]||0)+1;}
+    var a=store.dayHour[day]||(store.dayHour[day]={});
+    a[hr]=(a[hr]||0)+ms;
+    t=end;
+  }
+  /* dayHour faqat oxirgi 60 kun (localStorage kvotasi) */
+  for(var kd in store.dayHour){if(TODAY-(+kd)>60)delete store.dayHour[kd];}
+}
 function flushDay(h,now){
   now=now||Date.now();
   if(h.runningSince&&h.lastFlush){
     var delta=Math.max(0,now-h.lastFlush);
     h.dayMs[TODAY]=(h.dayMs[TODAY]||0)+delta;
+    bucketHours(h.lastFlush,now);
     h.lastFlush=now;
   }
 }
@@ -1389,8 +1418,8 @@ function completeH(h){
 /* qayta ochilganda: ishlab turgan taymerlar davom etadi (offline vaqt bugunga yoziladi) */
 store.habits.forEach(function(h){
   if(h.runningSince){var now=Date.now();
-    if(h.lastFlush){var delta=Math.max(0,now-h.lastFlush);h.dayMs[TODAY]=(h.dayMs[TODAY]||0)+delta;}
-    h.lastFlush=now;
+    flushDay(h,now);   /* dayMs + soat qatlami (offline vaqt to'g'ri taqsimlanadi) */
+    h.lastFlush=now;   /* lastFlush bo'sh bo'lgan holat uchun */
   }
 });
 save();
