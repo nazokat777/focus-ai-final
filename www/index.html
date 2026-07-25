@@ -418,6 +418,18 @@ input{font-family:inherit}
 .r-stat .n{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:16px;color:var(--neon)}
 .r-stat .l{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-top:2px}
 .r-quote{font-size:12.5px;color:var(--muted);line-height:1.6;font-style:italic;margin-top:6px}
+/* idrok ko'zgusi: taxmin vs haqiqat */
+.r-card .rtime.hid{color:var(--muted);text-shadow:none;opacity:.5}
+.rdelta{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--muted);min-height:17px;margin-bottom:2px}
+.rdelta b{color:var(--neon);font-weight:600}
+.guess{margin:12px 0 2px;text-align:left}
+.g-q{font-size:13px;color:var(--muted);line-height:1.45;margin-bottom:11px;text-align:center}
+.guess .goalrow{margin-bottom:12px}
+.guess .gval{font-size:24px}
+.g-u{font-size:14px;color:var(--muted);margin-left:3px}
+.g-go{width:100%;padding:12px;border-radius:12px;background:var(--neon);color:var(--onneon);font-weight:700;font-size:14px;transition:.15s var(--ease)}
+.g-go:active{transform:scale(.97)}
+.g-skip{margin-top:10px;font-size:11.5px;color:var(--muted);text-decoration:underline;text-align:center;cursor:pointer}
 .r-actions{display:flex;gap:10px;margin-top:16px}
 .r-actions .s-btn{flex:1}
 .r-share{background:var(--neon);color:var(--onneon);box-shadow:0 6px 24px rgba(57,255,140,.35)}
@@ -692,6 +704,7 @@ input{font-family:inherit}
         </div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg><span data-i18n="theme"></span></div><button class="tog" id="themeTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg><span data-i18n="sound"></span></div><button class="tog on" id="soundTog"></button></div>
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.5a3 3 0 0 1 5.6 1.2c0 2-2.8 2.5-2.8 4"/><path d="M12 17.5v.01"/></svg><span data-i18n="guess_ask"></span></div><button class="tog on" id="guessTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span data-i18n="reminder"></span></div>
           <input type="time" id="remTime" style="background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M5 3 3 5M19 3l2 2"/></svg><span data-i18n="alarm"></span></div>
@@ -925,7 +938,18 @@ input{font-family:inherit}
     <div class="r-card">
       <div class="rt" data-i18n="r_title"></div>
       <div class="rtime mono" id="rTime">0m</div>
+      <div class="rdelta mono" id="rDelta"></div>
       <div class="rname" id="rName"></div>
+      <div class="guess" id="guessBox">
+        <div class="g-q" data-i18n="g_q"></div>
+        <div class="goalrow">
+          <button id="gMinus">−</button>
+          <div class="gval mono"><span id="gVal">30</span><span class="g-u" id="gUnit"></span></div>
+          <button id="gPlus">+</button>
+        </div>
+        <button class="g-go" id="gGo" data-i18n="g_show"></button>
+        <div class="g-skip" id="gSkip" data-i18n="g_skip"></div>
+      </div>
       <div class="r-row">
         <div class="r-stat"><div class="n mono" id="rStreak">0</div><div class="l" data-i18n="streak"></div></div>
         <div class="r-stat"><div class="n mono" id="rTotal">0</div><div class="l" data-i18n="total_hrs"></div></div>
@@ -1012,6 +1036,12 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   deep_hint:"💡 Telefonni yuztuban qo'ysang — chalg'imaysan va +10% bonus vaqt olasan",cal_tap_hint:"Batafsil ko'rish uchun kunni bosing",
   help_streak:"🔥 Seriya — ketma-ket faol kunlar. Bugun biror odatga vaqt ajratsang, uzilmaydi.",help_today:"Bugun barcha odatlarga jami sarflangan vaqt.",
   help_growth:"O'sish — bugungi kunlik me'yorlaring o'rtacha bajarilishi.",help_strength:"⚡ Kuch — izchillik indeksi. Har kun me'yorni bajarsang o'sadi, o'tkazsang ozgina tushadi. Bitta o'tkazilgan kun hammasini nolga tushirmaydi.",
+  g_q:"Sizningcha bugun bu odatga qancha vaqt sarfladingiz?",
+  g_show:"Haqiqatni ko'rsatish",g_skip:"O'tkazib yuborish",
+  g_err:function(p){return "xato "+p+"%";},
+  g_over:"ko'p baholadingiz",g_under:"kam baholadingiz",
+  g_exact:"<b>Juda aniq</b> — idrokingiz o'lchovga mos",
+  guess_ask:"Sessiyadan keyin taxminni so'rash",
   golden:"Oltin soat",
   gh_best:function(w,x){return "Eng kuchli oynangiz: <b>"+w+"</b> — o'rtachadan "+x+"x yuqori";},
   gh_days:function(n){return n+" alohida kunda o'lchangan";},
@@ -1090,6 +1120,12 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   deep_hint:"💡 Положи телефон экраном вниз — не будешь отвлекаться и получишь +10% бонуса",cal_tap_hint:"Нажми на день для подробностей",
   help_streak:"🔥 Серия — дни подряд с активностью. Уделишь сегодня время любой привычке — не прервётся.",help_today:"Всего времени, потраченного сегодня на все привычки.",
   help_growth:"Рост — среднее выполнение твоих дневных норм за сегодня.",help_strength:"⚡ Сила — индекс постоянства. Выполняешь норму каждый день — растёт, пропустишь — чуть падает. Один пропуск не обнуляет всё.",
+  g_q:"Как думаете, сколько времени вы сегодня потратили на эту привычку?",
+  g_show:"Показать правду",g_skip:"Пропустить",
+  g_err:function(p){return "ошибка "+p+"%";},
+  g_over:"переоценили",g_under:"недооценили",
+  g_exact:"<b>Очень точно</b> — ваше восприятие совпало с измерением",
+  guess_ask:"Спрашивать оценку после сессии",
   golden:"Золотой час",
   gh_best:function(w,x){return "Ваше сильнейшее окно: <b>"+w+"</b> — в "+x+"x выше среднего";},
   gh_days:function(n){return "измерено в "+n+" отдельных днях";},
@@ -1168,6 +1204,12 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   deep_hint:"💡 Place your phone face down — no distractions and +10% bonus time",cal_tap_hint:"Tap a day for details",
   help_streak:"🔥 Streak — consecutive active days. Give any habit some time today and it won't break.",help_today:"Total time spent on all habits today.",
   help_growth:"Growth — your average daily-goal completion for today.",help_strength:"⚡ Strength — a consistency index. Meet your goal daily and it grows; skip and it dips slightly. One missed day doesn't reset everything.",
+  g_q:"How much time do you think you spent on this habit today?",
+  g_show:"Reveal the truth",g_skip:"Skip",
+  g_err:function(p){return p+"% off";},
+  g_over:"you overestimated",g_under:"you underestimated",
+  g_exact:"<b>Spot on</b> — your perception matched the measurement",
+  guess_ask:"Ask for an estimate after a session",
   golden:"Golden hours",
   gh_best:function(w,x){return "Your strongest window: <b>"+w+"</b> — "+x+"x above average";},
   gh_days:function(n){return "measured across "+n+" separate days";},
@@ -2670,10 +2712,59 @@ function drawTrace(){
 
 /* ============ natija kartasi + share ============ */
 var lastResultMs=0;
+/* ============ Idrok ko'zgusi: taxmin vs haqiqat ============
+   Ilova AVVAL so'raydi, KEYIN o'lchangan haqiqatni ochadi. Butun falsafa bir ekranda.
+   Haqiqiy vaqt taxmindan OLDIN qulflanadi (lastResultMs) — hech qachon moslashtirilmaydi. */
+var guessMin=30,guessHid=null;
+function guessSet(v){
+  guessMin=Math.max(1,Math.min(600,v));
+  $('#gVal').textContent=guessMin;
+  $('#gUnit').textContent=T('u_m');
+}
+function guessReveal(est){
+  var act=lastResultMs; /* allaqachon qulflangan */
+  if(est!=null){
+    if(!store.guessLog)store.guessLog=[];
+    store.guessLog.push({d:TODAY,hid:guessHid,est:est,act:Math.round(act/60000)});
+    if(store.guessLog.length>200)store.guessLog=store.guessLog.slice(-200);
+    save();
+  }
+  $('#guessBox').style.display='none';
+  $('#rTime').classList.remove('hid');
+  if(est==null){$('#rTime').textContent=fmtHM(act);return;}
+  var done=false;
+  function fin(){ /* yakuniy holat — DOIM haqiqiy qiymat */
+    if(done)return;done=true;
+    $('#rTime').textContent=fmtHM(act);
+    var dm=Math.round(act/60000)-est,err=act>0?Math.round(Math.abs(dm)/(act/60000)*100):0;
+    $('#rDelta').innerHTML=Math.abs(dm)<=2
+      ? T('g_exact')
+      : '<b>'+(dm>0?'+':'−')+Math.abs(dm)+T('u_m')+'</b> · '+T('g_err')(err)+' · '+(dm<0?T('g_over'):T('g_under'));
+    if(Math.abs(dm)<=2){sWin();buzz([12,40,12]);}else buzz(10);
+  }
+  if(reduce){fin();return;} /* harakatsiz rejim — darhol */
+  /* taxmindan haqiqatga sanab boradi */
+  var from=est*60000,t0=null,dur=850;
+  requestAnimationFrame(function step(ts){
+    if(done)return;
+    if(!t0)t0=ts;
+    var p=Math.min(1,(ts-t0)/dur),e=1-Math.pow(1-p,3);
+    $('#rTime').textContent=fmtHM(Math.max(0,from+(act-from)*e));
+    if(p<1)requestAnimationFrame(step);else fin();
+  });
+  setTimeout(fin,1500); /* kafolat: rAF to'xtatilsa (fon tab) ham natija ko'rinadi */
+}
 function showResult(h){
   var todayMs=h.type==='check'?0:(h.dayMs[TODAY]||0);
-  lastResultMs=todayMs;
-  $('#rTime').textContent=fmtHM(todayMs);
+  lastResultMs=todayMs; /* QULFLANDI — taxmin bundan keyin hech narsani o'zgartira olmaydi */
+  guessHid=h.id;
+  $('#rDelta').innerHTML='';
+  /* so'rash sharti: taymerli odat, kamida 1 daqiqa, sozlamada o'chirilmagan */
+  var ask=!store.settings.guessOff&&h.type!=='check'&&todayMs>=60000;
+  $('#guessBox').style.display=ask?'':'none';
+  $('#rTime').classList.toggle('hid',ask);
+  if(ask){guessSet(h.dailyMin||30);$('#rTime').textContent='?';}
+  else $('#rTime').textContent=fmtHM(todayMs);
   $('#rName').textContent=h.name;
   $('#rStreak').textContent=globalStreak();
   $('#rTotal').textContent=totalHours().toFixed(1);
@@ -2682,6 +2773,10 @@ function showResult(h){
   $('#rQuote').textContent='“'+qs[Math.floor(Math.random()*qs.length)]+'”';
   $('#result').classList.add('open');
 }
+$('#gMinus').addEventListener('click',function(){guessSet(guessMin-5);sTap();});
+$('#gPlus').addEventListener('click',function(){guessSet(guessMin+5);sTap();});
+$('#gGo').addEventListener('click',function(){sGo();guessReveal(guessMin);});
+$('#gSkip').addEventListener('click',function(){sTap();guessReveal(null);});
 $('#rClose').addEventListener('click',function(){$('#result').classList.remove('open');sTap();});
 $('#rShare').addEventListener('click',function(){
   try{
@@ -3083,6 +3178,11 @@ $('#soundTog').addEventListener('click',function(){
   if(soundOn)sTap();buzz(8);
 });
 $('#soundTog').classList.toggle('on',soundOn);
+$('#guessTog').addEventListener('click',function(){
+  store.settings.guessOff=!store.settings.guessOff;save();
+  this.classList.toggle('on',!store.settings.guessOff);sTap();
+});
+$('#guessTog').classList.toggle('on',!store.settings.guessOff);
 /* ============ blok E: zaxira (export) va tiklash (import) ============ */
 function exportData(){
   try{
