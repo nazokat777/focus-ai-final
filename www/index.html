@@ -2842,13 +2842,22 @@ function updatePill(){
   var run=null;
   for(var i=0;i<store.habits.length;i++)if(store.habits[i].runningSince){run=store.habits[i];break;}
   var pill=$('#pill');
-  if(!run||sessionOpen){pill.classList.remove('show');return;}
-  $('#pillName').textContent=run.name;
-  $('#pillTime').textContent=fmtHMS(elapsedOf(run));
-  pill._id=run.id;
-  pill.classList.add('show');
+  if(run&&!sessionOpen){
+    $('#pillName').textContent=run.name;
+    $('#pillTime').textContent=fmtHMS(elapsedOf(run));
+    pill._id=run.id;pill._focus=false;pill.classList.add('show');return;
+  }
+  /* audit #6: odat taymeri yo'q — fokus sessiyasi ishlab tursa, uni fokus tabidan tashqarida pill'da ko'rsatamiz */
+  var onFocus=$('#v-focus')&&$('#v-focus').classList.contains('active');
+  if(fRunning&&!sessionOpen&&!onFocus){
+    $('#pillName').textContent=T('tab_focus');
+    $('#pillTime').textContent=fFmt(fRemain());
+    pill._id=null;pill._focus=true;pill.classList.add('show');return;
+  }
+  pill.classList.remove('show');
 }
 $('#pill').addEventListener('click',function(){
+  if(this._focus){var t=document.querySelector('.tab[data-view="focus"]');if(t)t.click();return;}
   if(this._id)openSession(this._id);
 });
 
