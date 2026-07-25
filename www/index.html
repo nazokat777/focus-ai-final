@@ -29,6 +29,11 @@
   --neon-rgb:57,255,140; --neon-br-rgb:124,255,181;
   --text:#EAFBF0; --muted:#7a9784; --danger:#ff7a7a;
   --r:20px; --nav-h:74px; --ease:cubic-bezier(.22,1,.36,1);
+  /* harakat grammatikasi: kirish sekin va yumshoq, chiqish tez va qat'iy,
+     bosish darhol, mukofot yengil sakraydi. --ease o'z joyida qoladi. */
+  --ease-out:cubic-bezier(.32,.72,0,1); --ease-in:cubic-bezier(.55,0,1,.45);
+  --spring:cubic-bezier(.34,1.42,.58,1);
+  --t1:140ms; --t2:220ms; --t3:380ms; --t4:460ms;
 }
 .device[data-theme="light"]{
   --bg:#f3faf5; --elev:#ffffff; --elev2:#e7f3ea; --line:rgba(14,120,70,.14);
@@ -246,7 +251,11 @@ input{font-family:inherit}
 .tab span{font-size:10px}
 .tab.on{color:var(--neon)}
 .tab.on svg{transform:translateY(-2px)}
-.tab.on::before{content:"";position:absolute;top:9px;width:14px;height:3px;border-radius:2px;background:var(--neon);box-shadow:0 0 10px var(--neon)}
+/* indikator endi har tabda alohida emas — BITTA element suzib boradi.
+   Faol tab rangi/ikonkasi ham saqlanadi (WCAG 1.4.1: rang yagona signal emas). */
+.navind{position:absolute;top:9px;left:0;width:14px;height:3px;border-radius:2px;background:var(--neon);
+  box-shadow:0 0 10px var(--neon);transform:translateX(var(--x,0));
+  transition:transform .44s cubic-bezier(.34,1.38,.56,1);pointer-events:none}
 
 /* sheets & overlays */
 .scrim{position:absolute;inset:0;background:rgba(0,0,0,.62);opacity:0;pointer-events:none;transition:opacity .35s var(--ease);z-index:70;backdrop-filter:blur(2px)}
@@ -303,10 +312,13 @@ input{font-family:inherit}
 /* komet boshi: uzluksiz aylanadi — taymer TIRIK ekani bir qarashda ko'rinadi.
    Faqat transform, bitta element, bitta filtr (60 emas). */
 .s-ring .head{stroke:var(--neon-br);stroke-width:4;stroke-linecap:round;opacity:0;
-  transform-origin:100px 100px;transition:transform .55s linear,opacity .3s var(--ease);
-  filter:drop-shadow(0 0 6px rgba(var(--neon-br-rgb),.95))}
+  transform-origin:100px 100px;transition:transform .55s linear,opacity .3s var(--ease)}
+/* soxta glow: filtr O'RNIGA ostidagi qalinroq shaffof chiziq (offscreen bufer yo'q) */
+.s-ring .halo{stroke:var(--neon-br);stroke-width:10;stroke-linecap:round;opacity:0;
+  transform-origin:100px 100px;transition:transform .55s linear,opacity .3s var(--ease)}
 .s-ring.run .head{opacity:1}
-.reduce .s-ring .head{transition:opacity .3s}
+.s-ring.run .halo{opacity:.22}
+.reduce .s-ring .head,.reduce .s-ring .halo{transition:opacity .3s}
 .s-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 .s-pct{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:46px}
 .s-elapsed{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--neon)}
@@ -586,8 +598,13 @@ input{font-family:inherit}
 .coach button:disabled{opacity:.5}
 
 /* ---------- WOW qatlami ---------- */
-.view{transform:translateY(14px) scale(.985)}
-.view.active{transform:none}
+/* Yo'naltirilgan o'tish: 4 ekran bitta gorizontal fazoga bog'lanadi.
+   O'ngga bosilsa kontent chapdan keladi va aksincha — "qayerdaman" hissi. */
+.view{transform:translate3d(calc(var(--dir,1) * 26px),0,0);
+  transition:opacity var(--t1) var(--ease-in),transform var(--t1) var(--ease-in)}
+.view.active{transform:none;
+  transition:opacity var(--t3) var(--ease-out) 70ms,transform var(--t3) var(--ease-out) 70ms}
+.view.leaving{opacity:0;transform:translate3d(calc(var(--dir,1) * -26px),0,0)}
 
 #aurora{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s var(--ease)}
 .session.open #aurora{opacity:1}
@@ -608,6 +625,16 @@ input{font-family:inherit}
 .zen-hint{position:absolute;bottom:calc(env(safe-area-inset-bottom) + 22px);left:0;right:0;text-align:center;
   font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted);opacity:0;transition:opacity .9s var(--ease);pointer-events:none}
 .session.zen .zen-hint{opacity:.55}
+/* ============ IMZO LAHZA: DAQIQA NURI ============
+   Zen rejimda har o'tgan DAQIQA ekranni kesib o'tuvchi bitta nur bilan
+   belgilanadi. Raqamga qaramaysan — vaqt oqayotganini KO'RASAN.
+   Halol (haqiqiy daqiqa, bezak emas), arzon (1 element, transform+opacity),
+   periferik (fokusni buzmaydi). Faqat zen rejimda ishlaydi. */
+.msweep{position:absolute;left:0;right:0;top:0;height:1px;opacity:0;pointer-events:none;z-index:2;
+  background:linear-gradient(90deg,transparent,rgba(var(--neon-rgb),.5) 22%,rgba(var(--neon-br-rgb),.7) 50%,rgba(var(--neon-rgb),.5) 78%,transparent)}
+.session.zen .msweep.go{animation:msw 2.8s var(--ease-out) 1}
+@keyframes msw{0%{opacity:0;transform:translateY(8%)}10%{opacity:1}100%{opacity:0;transform:translateY(92%)}}
+.reduce .msweep{display:none}
 
 /* jonli pill — ishlayotgan taymer indikatori */
 .pill{position:absolute;left:50%;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px);transform:translate(-50%,80px);
@@ -816,6 +843,7 @@ input{font-family:inherit}
   </button>
 
   <nav class="nav" id="nav">
+    <i class="navind" id="navind"></i>
     <button class="tab on" data-view="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5"/></svg><span data-i18n="tab_home"></span></button>
     <button class="tab" data-view="focus"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-i18n="tab_focus"></span></button>
     <button class="tab" data-view="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span data-i18n="tab_stats"></span></button>
@@ -862,6 +890,7 @@ input{font-family:inherit}
   <!-- SESSION -->
   <div class="session" id="session">
     <canvas id="aurora"></canvas>
+    <i class="msweep" id="msweep"></i>
     <div class="zen-hint" data-i18n="zen_hint"></div>
     <div class="s-head">
       <button class="s-close" id="sClose"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -2046,15 +2075,34 @@ $('#saveHabit').addEventListener('click',function(){
 var sessionOpen=false,openHabitId=null;
 /* komet boshi — halqaning yetakchi nuqtasi. Ikkala halqa (sessiya va fokus) uchun bir xil. */
 function mkHead(ns,svg,cx,cy,ri,ro){
-  var h=document.createElementNS(ns,'line');
-  h.setAttribute('x1',cx);h.setAttribute('y1',cy-ri);
-  h.setAttribute('x2',cx);h.setAttribute('y2',cy-ro);
-  h.setAttribute('class','head');svg.appendChild(h);return h;
+  function ln(cls,pad){
+    var l=document.createElementNS(ns,'line');
+    l.setAttribute('x1',cx);l.setAttribute('y1',cy-ri+pad);
+    l.setAttribute('x2',cx);l.setAttribute('y2',cy-ro-pad);
+    l.setAttribute('class',cls);svg.appendChild(l);return l;
+  }
+  var halo=ln('halo',1),head=ln('head',0); /* halo avval — head ustida qoladi */
+  return {head:head,halo:halo};
+}
+/* IMZO: daqiqa nuri — zen rejimda har o'tgan daqiqani bitta nur belgilaydi.
+   Faqat zen faol va taymer ishlayotganda; harakatsiz rejimda umuman ishlamaydi. */
+var lastSweepMin=-1;
+function minuteSweep(h,ms){
+  var s=$('#session');
+  if(reduce||!s||!s.classList.contains('zen')||!h||!h.runningSince){lastSweepMin=-1;return;}
+  var mm=Math.floor(ms/60000);
+  if(mm===lastSweepMin)return;
+  if(lastSweepMin===-1){lastSweepMin=mm;return;} /* zenga kirgan lahzada chaqnamasin */
+  lastSweepMin=mm;
+  var el=$('#msweep');if(!el)return;
+  el.classList.remove('go');void el.offsetWidth; /* animatsiyani qayta ishga tushirish */
+  el.classList.add('go');
 }
 /* halqa holatini yangilaydi: nur kuchi (--f) va komet burchagi */
-function ringSet(el,head,f){
-  if(el)el.style.setProperty('--f',Math.max(0,Math.min(1,f)));
-  if(head)head.style.transform='rotate('+(f*360)+'deg)';
+function ringSet(el,hd,f){
+  f=Math.max(0,Math.min(1,f)); /* clamp — f>1 bo'lsa komet aylanib ketmasin */
+  if(el)el.style.setProperty('--f',f);
+  if(hd&&hd.head){var t='rotate('+(f*360)+'deg)';hd.head.style.transform=t;hd.halo.style.transform=t;}
 }
 var sSegs=[],sHead=null;
 (function(){
@@ -2135,6 +2183,7 @@ function renderSession(){
   sSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
   ringSet($('#sRing'),sHead,f);
   $('#sRing').classList.toggle('run',!!h.runningSince);
+  minuteSweep(h,today); /* ekrandagi raqam bilan AYNAN bir xil vaqtdan hisoblanadi */
   $('#sMain').textContent=h.completed?'✓':(h.runningSince?T('pause'):(h.accMs>0?T('resume'):T('start')));
   /* blok F: mikro-start tugmasi faqat taymer to'xtaganda ko'rinadi */
   var showMicro=!h.runningSince&&!h.completed;
@@ -3342,21 +3391,42 @@ function setPct(n){
 }
 
 /* ============ nav ============ */
+/* indikatorni faol tab markaziga suradi (til/o'lcham o'zgarsa qayta hisoblanadi) */
+function navInd(){
+  var b=$('.tab.on'),ind=$('#navind');
+  if(!b||!ind||!b.offsetWidth)return;
+  ind.style.setProperty('--x',(b.offsetLeft+b.offsetWidth/2-7)+'px');
+}
+var VIEWS=['home','focus','stats','you'],navIdx=0,leaveTm=null;
 $('#nav').addEventListener('click',function(e){
   var b=e.target.closest('.tab');if(!b)return;
+  var v=b.getAttribute('data-view'),ni=VIEWS.indexOf(v);
+  if(ni===navIdx)return; /* o'sha tab — qayta chizmaymiz */
   sTap();
+  /* yo'nalish: o'ngdagi tabga o'tsak kontent chapdan keladi */
+  var dir=ni>navIdx?1:-1;
+  $('.views').style.setProperty('--dir',dir);
   $$('.tab').forEach(function(t){t.classList.remove('on');});b.classList.add('on');
-  var v=b.getAttribute('data-view');
-  $$('.view').forEach(function(s){s.classList.remove('active');});
+  var old=$('.view.active');
+  if(old){
+    old.classList.remove('active');old.classList.add('leaving');
+    clearTimeout(leaveTm); /* tez ketma-ket bosishda klass osilib qolmasin */
+    leaveTm=setTimeout(function(){$$('.view.leaving').forEach(function(s){s.classList.remove('leaving');});},260);
+  }
   $('#v-'+v).classList.add('active');
+  navIdx=ni;navInd();
   if(v==='stats')drawStats();
 });
+navInd();
+window.addEventListener('resize',navInd);
+window.addEventListener('orientationchange',function(){setTimeout(navInd,120);});
 
 /* ============ settings ============ */
 $('#langSeg').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
   store.settings.lang=b.getAttribute('data-lang');save();sTap();
   refreshAll(); /* applyI18N + renderHabits + refreshChips (bugun chipi) + computeTarget — birliklar ham yangilanadi */
+  navInd(); /* yorliq uzunligi o'zgardi — indikator markazini qayta hisoblaymiz */
   if($('#v-stats').classList.contains('active'))drawStats();
   if($('#friends').classList.contains('open'))renderFriends();
 });
