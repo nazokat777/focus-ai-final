@@ -625,6 +625,9 @@ input{font-family:inherit}
 /* yangi yongan segment bir lahza yorqinroq chaqnaydi */
 @keyframes segLit{0%{stroke:var(--neon-br);stroke-width:5}100%{stroke:var(--neon);stroke-width:3}}
 .s-ring .seg.just{animation:segLit .42s var(--ease-out)}
+/* sessiya ochilganda halqa o'zini yig'adi — faqat opacity (arzon), bir martalik */
+@keyframes segIn{from{opacity:0}to{opacity:1}}
+.s-ring.intro .seg{animation:segIn .3s var(--ease-out) both}
 .reduce .hcard.enter,.reduce .s-ring .seg.just{animation:none}
 
 #aurora{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s var(--ease)}
@@ -2123,6 +2126,20 @@ function minuteSweep(h,ms){
   el.classList.remove('go');void el.offsetWidth; /* animatsiyani qayta ishga tushirish */
   el.classList.add('go');
 }
+/* halqa o'zini yig'adi: sessiya ochilganda 60 segment ketma-ket paydo bo'ladi
+   (DrawSVG ruhida, lekin ARZON — faqat opacity, transform yo'q, bir martalik).
+   Kechikishlar bir marta o'rnatiladi va 700ms dan keyin tozalanadi. */
+function ringIntro(){
+  if(reduce)return;
+  var ring=$('#sRing');if(!ring)return;
+  for(var i=0;i<sSegs.length;i++)sSegs[i].style.animationDelay=(i*7)+'ms';
+  ring.classList.remove('intro');void ring.getBoundingClientRect();
+  ring.classList.add('intro');
+  setTimeout(function(){
+    ring.classList.remove('intro');
+    for(var j=0;j<sSegs.length;j++)sSegs[j].style.animationDelay='';
+  },760);
+}
 /* yangi yongan segmentni bir lahza chaqnatadi (ilgari 30 soniyada bir jimgina yonardi) */
 function segFlash(segs,on,prev){
   if(reduce||on<=prev||on<1||on>segs.length)return;
@@ -2177,6 +2194,7 @@ function openSession(id){
   $('#session').classList.toggle('untimed',h.type==='check');
   if(h.type==='check')refreshUBtn(h);
   $('#session').classList.add('open');
+  ringIntro();
   renderSessionCal(h);refreshSkipBtn(h);
   renderSession();sTap();
   auroraSize();
