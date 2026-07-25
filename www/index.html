@@ -611,6 +611,19 @@ input{font-family:inherit}
   width:100%;height:44px;border-radius:inherit}
 /* yakka turgan tugmalar — ikkala o'q bo'yicha (qo'shni bilan to'qnashmaydi) */
 .sec-lbl .add::after,.d-close::after,.fp-eye::after,.fr-del::after,.si-del::after{min-width:44px}
+
+/* ============ hunar: bosish javobi (press feedback) ============
+   Global *{-webkit-tap-highlight-color:transparent} brauzerning tabiiy javobini
+   o'chiradi — demak har interaktiv element O'Z javobini berishi shart, aks holda
+   bosish "javobsiz" his qilinadi. Bitta til: kichik masshtab + mavjud --ease.
+   Faqat transform/opacity — layout va paint xarajati yo'q (60fps). */
+.goalrow button,.d-close,.fp-eye,.fr-del,.si-del,.ach button,.fr-roleseg button,
+.cm-next,.cm-skip,.g-skip,.onb-skip,.fr-code-copy{transition:transform .12s var(--ease),opacity .12s var(--ease)}
+.langseg button:active,.goalrow button:active,.typeseg button:active,.fr-roleseg button:active,
+.d-close:active,.tog:active,.swatch:active,.fp-eye:active,.fr-del:active,.si-del:active,
+.ach button:active,.cm-next:active,.rwCurSeg button:active,.fr-addbtn:active{transform:scale(.93)}
+.tab:active{opacity:.55}
+.cm-skip:active,.g-skip:active,.onb-skip:active,.fr-code-copy:active{opacity:.5}
 </style>
 </head>
 <body>
