@@ -19,7 +19,7 @@
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#030806; --elev:#081209; --elev2:#0c1a0f; --line:rgba(90,255,160,.09);
@@ -43,11 +43,15 @@
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 html,body{height:100%}
-body{background:#000;color:var(--text);font-family:'Space Grotesk',system-ui,sans-serif;
+body{background:#000;color:var(--text);font-family:'Inter',system-ui,sans-serif;
   display:flex;align-items:center;justify-content:center;overflow:hidden}
 button{font-family:inherit;color:inherit;border:none;background:none;cursor:pointer}
 input{font-family:inherit}
 .mono{font-family:'JetBrains Mono',monospace;font-feature-settings:"tnum"}
+/* Inter optik sozlash: katta o'lchamda harflar orasi zichroq bo'lishi kerak —
+   aks holda sarlavha "tarqoq" ko'rinadi. Zamonaviy grotesk ohangining kaliti shu.
+   Mono (raqam/vaqt) elementlariga TEGILMAYDI — ular monoshirinlikni saqlaydi. */
+.greet h1,.profile h2,.auth h2,.onb-slide h2,.ach h2,.coach-card .cm-t,.sp-logo{letter-spacing:-.022em}
 
 .device{position:relative;width:440px;height:min(940px,100dvh);
   background:radial-gradient(85% 55% at 50% 100%,rgba(20,80,45,.24) 0%,rgba(0,0,0,0) 60%),var(--bg);
