@@ -598,6 +598,19 @@ input{font-family:inherit}
 .pill .pname{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pill .ptime{font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--neon);flex:none}
 .reduce .pill .pdot{animation:none}
+
+/* ============ hunar: teginish nishonlari (WCAG 2.5.5 / HIG 44pt) ============
+   Ko'rinish O'ZGARMAYDI — faqat ko'rinmas bosish maydoni 44px gacha kengayadi.
+   Pseudo-element ota-elementning bosish maydonini kengaytiradi, layoutga tegmaydi.
+   .tog da ::after knob uchun band — shuning uchun ::before ishlatiladi. */
+.tog,.sec-lbl .add,.d-close,.fp-eye,.fr-del,.si-del,.si-buy,.langseg button,.swatch{position:relative}
+.tog::before,
+.sec-lbl .add::after,.d-close::after,.fp-eye::after,.fr-del::after,
+.si-del::after,.si-buy::after,.langseg button::after,.swatch::after{
+  content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+  width:100%;height:44px;border-radius:inherit}
+/* yakka turgan tugmalar — ikkala o'q bo'yicha (qo'shni bilan to'qnashmaydi) */
+.sec-lbl .add::after,.d-close::after,.fp-eye::after,.fr-del::after,.si-del::after{min-width:44px}
 </style>
 </head>
 <body>
