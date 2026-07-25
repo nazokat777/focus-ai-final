@@ -2577,6 +2577,8 @@ function awardDayCoins(h){
   if(!habitDoneToday(h))return;
   if(!h.coinDays)h.coinDays=[];
   h.coinDays.push(TODAY);
+  /* taymer odati kunlik normaga yetganда marra to'lqini (check toggleCheck'da alohida) */
+  if(h.type!=='check'&&cardRefs[h.id])celebrate(cardRefs[h.id]);
   store.coins=(store.coins||0)+1;
   var msg='+1 🪙';
   if(allHabitsDoneToday()&&store.diamondDay!==TODAY){
