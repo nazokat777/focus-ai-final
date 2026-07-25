@@ -624,6 +624,15 @@ input{font-family:inherit}
 .ach button:active,.cm-next:active,.rwCurSeg button:active,.fr-addbtn:active{transform:scale(.93)}
 .tab:active{opacity:.55}
 .cm-skip:active,.g-skip:active,.onb-skip:active,.fr-code-copy:active{opacity:.5}
+
+/* ============ hunar: klaviatura fokusi (WCAG 2.4.7) ============
+   :focus-visible FAQAT klaviatura navigatsiyasida chiqadi — teginish va
+   sichqonchada ko'rinmaydi, ya'ni mobil ko'rinish AYNAN oldingidek qoladi.
+   Web/desktop versiyada esa "men qayerdaman?" hissi paydo bo'ladi.
+   Alohida qoida: eski WebView pseudo-klassni tushunmasa butun qoidani
+   e'tiborsiz qoldiradi (xavfsiz degradatsiya). */
+.device :focus-visible{outline:2px solid var(--neon-br);outline-offset:3px}
+.device input:focus-visible,.device .fr-input:focus-visible{outline-offset:0}
 </style>
 </head>
 <body>
