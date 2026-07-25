@@ -48,6 +48,8 @@ input{font-family:inherit}
 .scanlines{position:absolute;inset:0;pointer-events:none;z-index:58;opacity:.05;
   background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(120,255,180,.5) 2px 3px)}
 .device[data-theme="light"] .scanlines{opacity:.02}
+/* audit #8: yorug' rejimda kichik neon matn kontrasti (WCAG AA) — quyuqroq --neon-dp (#0a7a41 ~5.4:1) */
+.device[data-theme="light"] .hc-pct,.device[data-theme="light"] .compare b,.device[data-theme="light"] .rw-bal,.device[data-theme="light"] .shop-bal,.device[data-theme="light"] .pill .ptime{color:var(--neon-dp)}
 @media (max-width:480px){.device{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}}
 
 .head{padding:calc(env(safe-area-inset-top) + 18px) 24px 6px;flex:none;display:flex;align-items:center;justify-content:space-between;z-index:5}
@@ -1007,7 +1009,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
   wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
   rewards:"Mukofotlar",md1:"Birinchi qadam",md2:"10 soat",md3:"50 soat",md4:"100 soat",md5:"500 soat",md6:"Maqsadli",md7:"3 kun",md8:"Temir iroda",md9:"Afsona",
-  shop_hint:"Fokus qilib to'plagan tanga va olmoslaringni o'zing belgilagan mukofotlarga sarfla.",my_rewards:"Mening mukofotlarim",reward_history:"Olingan mukofotlar",
+  shop_hint:"Fokus qilib to'plagan tanga va olmoslaringni o'zing belgilagan mukofotlarga sarfla. 🪙 — har bajarilgan kunlik norma uchun; 💎 — kunning barcha odatlari bajarilganda.",my_rewards:"Mening mukofotlarim",reward_history:"Olingan mukofotlar",
   new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
   shop_empty:"Hali mukofot yo'q. + tugmasi bilan o'zingga mukofot belgila.",rw_bought:function(n){return "🎁 «"+n+"» olindi — o'zingga ruxsat!";},
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
@@ -1076,7 +1078,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
   wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
   rewards:"Награды",md1:"Первый шаг",md2:"10 часов",md3:"50 часов",md4:"100 часов",md5:"500 часов",md6:"Целеустремлённый",md7:"3 дня",md8:"Железная воля",md9:"Легенда",
-  shop_hint:"Трать монеты и алмазы, накопленные фокусом, на свои собственные награды.",my_rewards:"Мои награды",reward_history:"Полученные награды",
+  shop_hint:"Трать монеты и алмазы, накопленные фокусом, на свои собственные награды. 🪙 — за каждую выполненную дневную норму; 💎 — когда выполнены все привычки дня.",my_rewards:"Мои награды",reward_history:"Полученные награды",
   new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
   shop_empty:"Пока нет наград. Нажми + и задай себе награду.",rw_bought:function(n){return "🎁 «"+n+"» получено — ты заслужил!";},
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
@@ -1145,7 +1147,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
   wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
   rewards:"Rewards",md1:"First step",md2:"10 hours",md3:"50 hours",md4:"100 hours",md5:"500 hours",md6:"Goal-driven",md7:"3 days",md8:"Iron will",md9:"Legend",
-  shop_hint:"Spend the coins and diamonds you earned by focusing on your own rewards.",my_rewards:"My rewards",reward_history:"Redeemed rewards",
+  shop_hint:"Spend the coins and diamonds you earned by focusing on your own rewards. 🪙 — for each daily goal met; 💎 — when all of today's habits are done.",my_rewards:"My rewards",reward_history:"Redeemed rewards",
   new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
   shop_empty:"No rewards yet. Tap + to set your own reward.",rw_bought:function(n){return "🎁 “"+n+"” redeemed — you earned it!";},
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
