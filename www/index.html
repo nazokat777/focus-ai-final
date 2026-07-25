@@ -505,6 +505,23 @@ input{font-family:inherit}
 .fr-stat b{color:var(--text);font-weight:600}
 .fr-badge{font-size:10.5px;color:var(--muted);background:var(--elev2);border-radius:6px;padding:3px 7px;font-family:'JetBrains Mono',monospace;flex:none}
 .fr-del{color:var(--danger);font-size:16px;opacity:.5;padding:2px 4px;flex:none}
+.fr-row.tap{cursor:pointer}
+.fr-caret{flex:none;color:var(--muted);font-size:11px;transition:transform .2s var(--ease)}
+.fr-row.open .fr-caret{transform:rotate(180deg)}
+.fr-tasks{display:flex;flex-direction:column;gap:1px;margin:-3px 0 3px;padding:4px 10px 8px 33px}
+.fr-task{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;padding:5px 0;border-bottom:1px solid var(--line)}
+.fr-task:last-child{border-bottom:none}
+.ft-n{color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ft-m{color:var(--muted);flex:none}
+.fr-hint{font-size:11px;color:var(--muted);text-align:center;margin-top:2px;opacity:.7}
+.fr-priv-hint{font-size:12px;color:var(--muted);line-height:1.5;margin-bottom:10px}
+.fr-priv{display:flex;flex-direction:column;gap:7px}
+.fp-row{display:flex;align-items:center;gap:10px;background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:10px 13px}
+.fp-row.hid{opacity:.5}
+.fp-n{flex:1;min-width:0;font-size:13.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fp-eye{flex:none;width:34px;height:26px;border-radius:8px;background:var(--elev2);border:1px solid var(--line);display:grid;place-items:center;font-size:14px;cursor:pointer}
+.fp-eye.off{border-color:var(--danger)}
+.fr-priv-empty{font-size:12.5px;color:var(--muted);text-align:center;padding:8px}
 .fr-empty{padding:14px 2px;font-size:13px;color:var(--muted);text-align:center;line-height:1.5}
 .fr-note{font-size:12px;color:var(--muted);line-height:1.5;background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-top:10px}
 
@@ -905,6 +922,11 @@ input{font-family:inherit}
       <div class="sec-lbl"><span data-i18n="fr_mentors"></span></div>
       <div class="fr-mlist" id="frMentorList"></div>
     </div>
+    <div class="d-sec" id="frPrivSec">
+      <div class="sec-lbl"><span data-i18n="fr_priv"></span></div>
+      <div class="fr-priv-hint" data-i18n="fr_priv_hint"></div>
+      <div class="fr-priv" id="frPrivList"></div>
+    </div>
     <div class="d-sec">
       <div class="fr-note" id="frLocalNote" data-i18n="fr_local_note"></div>
     </div>
@@ -1052,6 +1074,10 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   eta_further:function(n){return "sana "+n+" kunga uzoqlashdi";},
   eta_done:"Eng yuqori daraja — yangi ufq yo'q 👑",
   undo:"Qaytarish",undo_ok:"Qaytarildi",
+  fr_priv:"Do'stlarga nima ko'rinadi",
+  fr_priv_hint:"Do'stlaring seni bosib, bugun qaysi odatlarga qancha vaqt sarflaganingni ko'radi. Ko'rsatishni istamaganingni bu yerdan yashir.",
+  fr_priv_none:"Hali odat yo'q.",
+  fr_hide1:"Yashirish",fr_show1:"Ko'rsatish",
   g_q:"Sizningcha bugun bu odatga qancha vaqt sarfladingiz?",
   g_show:"Haqiqatni ko'rsatish",g_skip:"O'tkazib yuborish",
   g_err:function(p){return "xato "+p+"%";},
@@ -1144,6 +1170,10 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   eta_further:function(n){return "дата отдалилась на "+n+" дн.";},
   eta_done:"Высший уровень — нового горизонта нет 👑",
   undo:"Вернуть",undo_ok:"Восстановлено",
+  fr_priv:"Что видят друзья",
+  fr_priv_hint:"Друзья могут нажать на тебя и увидеть, каким привычкам и сколько времени ты сегодня уделил. Скрой то, что не хочешь показывать.",
+  fr_priv_none:"Пока нет привычек.",
+  fr_hide1:"Скрыть",fr_show1:"Показать",
   g_q:"Как думаете, сколько времени вы сегодня потратили на эту привычку?",
   g_show:"Показать правду",g_skip:"Пропустить",
   g_err:function(p){return "ошибка "+p+"%";},
@@ -1236,6 +1266,10 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   eta_further:function(n){return "date moved "+n+" days further";},
   eta_done:"Top level — no horizon left 👑",
   undo:"Undo",undo_ok:"Restored",
+  fr_priv:"What friends see",
+  fr_priv_hint:"Friends can tap you and see which habits you spent time on today and how much. Hide anything you don't want to show.",
+  fr_priv_none:"No habits yet.",
+  fr_hide1:"Hide",fr_show1:"Show",
   g_q:"How much time do you think you spent on this habit today?",
   g_show:"Reveal the truth",g_skip:"Skip",
   g_err:function(p){return p+"% off";},
@@ -3326,6 +3360,18 @@ function renderFriends(){
       '<span class="fr-badge">'+esc(m.code)+'</span>'+
       '<button class="fr-del" data-frdel="'+esc(m.code)+'" data-frkind="mentor">×</button></div>';
   }).join('');
+  /* Do'stlarga nima ko'rinadi — har odatni yashirish mumkin (setHidden lokal, serverga bormaydi) */
+  var pv=$('#frPrivList');
+  if(pv){
+    var seen={},order=[];
+    store.habits.forEach(function(h){if(!seen[h.name]){seen[h.name]=1;order.push(h.name);}});
+    if(!order.length)pv.innerHTML='<div class="fr-priv-empty">'+T('fr_priv_none')+'</div>';
+    else pv.innerHTML=order.map(function(n){
+      var hid=Social.isHidden(n);
+      return '<div class="fp-row'+(hid?' hid':'')+'"><span class="fp-n">'+esc(n)+'</span>'+
+        '<button class="fp-eye'+(hid?' off':'')+'" data-fphide="'+esc(n)+'" title="'+(hid?T('fr_show1'):T('fr_hide1'))+'">'+(hid?'🚫':'👁')+'</button></div>';
+    }).join('');
+  }
   /* do'stlar reytingi */
   Social.leaderboard('friend').then(function(board){
     var el=$('#frBoard');if(!el)return;
@@ -3337,14 +3383,32 @@ function renderFriends(){
       var stat=(x.pending||x.focusMins==null||x.focusMins<0)
         ? '<span class="fr-badge">'+T('fr_pending')+'</span>'
         : '<span class="fr-stat"><b>'+frFocusTxt(x.focusH)+'</b> · '+(x.habits||0)+'✓</span>';
-      return '<div class="fr-row'+(x.me?' me':'')+'">'+
+      var canTap=!x.me&&x.report&&x.report.length; /* do'st + ko'rinadigan vazifasi bor */
+      var row='<div class="fr-row'+(x.me?' me':'')+(canTap?' tap':'')+'"'+(canTap?' data-frtap="'+i+'"':'')+'>'+
         '<span class="fr-rank">'+(x.me?'●':(i+1))+'</span>'+
         '<span class="fr-nm">'+nm+'</span>'+stat+
+        (canTap?'<span class="fr-caret">▾</span>':'')+
         (x.me?'':'<button class="fr-del" data-frdel="'+esc(x.code)+'" data-frkind="friend">×</button>')+
         '</div>';
+      var tasks='';
+      if(canTap)tasks='<div class="fr-tasks" id="frT'+i+'" style="display:none">'+
+        x.report.map(function(t){
+          var mark=t.t===1?'⏱ ':(t.t===0?'○ ':'');
+          return '<div class="fr-task"><span class="ft-n">'+mark+esc(t.n)+'</span><span class="ft-m mono">'+fmtHM((t.m||0)*60000)+'</span></div>';
+        }).join('')+'</div>';
+      return row+tasks;
     }).join(''):'<div class="fr-empty">'+T('fr_empty')+'</div>';
     el.innerHTML=banner+body;
     var rt=el.querySelector('.fr-retry');if(rt)rt.addEventListener('click',function(){sTap();renderFriends();});
+    /* do'st qatori bosilsa — vazifalari ochiladi/yopiladi */
+    el.querySelectorAll('[data-frtap]').forEach(function(rw){
+      rw.addEventListener('click',function(e){
+        if(e.target.closest('[data-frdel]'))return; /* o'chirish tugmasi — kengaytirmaydi */
+        var t=$('#frT'+rw.getAttribute('data-frtap'));if(!t)return;
+        var op=t.style.display==='none';
+        t.style.display=op?'':'none';rw.classList.toggle('open',op);sTap();
+      });
+    });
   });
 }
 /* bulut kutubxonasi kech yuklansa, ochiq do'stlar panelini yangilaymiz (kalitlar qo'yilganda) */
@@ -3379,6 +3443,11 @@ function openFriends(){
   var card=$('#frCodeCard');if(card)card.addEventListener('click',function(){
     var code=Social.myCode();try{if(navigator.clipboard)navigator.clipboard.writeText(code);}catch(e){}
     toast(T('fr_copied'));sTap();});
+  var pv=$('#frPrivList');if(pv)pv.addEventListener('click',function(e){
+    var b=e.target.closest('[data-fphide]');if(!b)return;
+    var n=b.getAttribute('data-fphide');
+    Social.setHidden(n,!Social.isHidden(n));sTap();buzz(6);renderFriends();
+  });
   var pan=$('#friends');if(pan)pan.addEventListener('click',function(e){
     var d=e.target.closest('[data-frdel]');if(!d)return;
     Social.removeFriend(d.getAttribute('data-frdel'),d.getAttribute('data-frkind'));sTap();renderFriends();});
@@ -3608,7 +3677,7 @@ window.addEventListener('beforeunload',function(){
     var codes = [myCode()].concat(friends().filter(function (x) { return x.role === kind; }).map(function (x) { return x.code; }));
     return Promise.all([ensureProfile(), syncStats()]).then(function () {
       return Promise.all([
-        c.from('daily_stats').select('code,focus_mins,habits').eq('d', todayIso()).in('code', codes),
+        c.from('daily_stats').select('code,focus_mins,habits,report').eq('d', todayIso()).in('code', codes),
         fetchNames(codes)
       ]);
     }).then(function (rr) {
@@ -3619,9 +3688,11 @@ window.addEventListener('beforeunload',function(){
         var r = by[cd] || {}; var isMe = cd === myCode();
         var fm = isMe ? meS.focusMins : (r.focus_mins == null ? null : r.focus_mins);
         var hb = isMe ? meS.habits    : (r.habits == null ? null : r.habits);
+        /* do'st bugun AYNAN nima qilgani (yashirilmagan vazifalar). Menikida — myTasksToday. */
+        var rep = isMe ? myTasksToday() : (Array.isArray(r.report) ? r.report : null);
         return {
           code: cd, name: isMe ? '__ME__' : (manualName(cd, kind) || pn[cd] || cd), me: isMe,
-          focusMins: fm, focusH: (fm == null ? null : Math.round(fm / 60 * 10) / 10), habits: hb
+          focusMins: fm, focusH: (fm == null ? null : Math.round(fm / 60 * 10) / 10), habits: hb, report: rep
         };
       });
       list.sort(function (a, b) { return ((b.focusMins || 0) - (a.focusMins || 0)) || ((b.habits || 0) - (a.habits || 0)); });
