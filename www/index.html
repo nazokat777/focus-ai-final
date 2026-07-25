@@ -957,6 +957,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   del_confirm:function(n){return "«"+n+"» o'chirilsinmi?\n\nButun tarixi va yig'ilgan vaqti ham o'chadi — buni qaytarib bo'lmaydi.";},
   strength:"Kuch",strength_sub:"Izchillik indeksi",
   photo_none:"Rasm tanlash…",photo_ok:"Rasm tanlandi ✓",
+  save_full:"Saqlab bo'lmadi: xotira to'ldi. Rasmlarni kamaytiring yoki eski odatlarni o'chiring.",
   err_name:"Odat nomini kiriting",err_name_auth:"Iltimos, ismingizni kiriting",
   ob1t:"Vaqtingni <b>o'lcha</b>",ob1p:"Boshqa ilovalar «qildingmi?» deb so'raydi. Focus AI haqiqiy sarflangan vaqtni hisoblaydi.",
   ob2t:"Natijang <b>ko'z oldingda</b>",ob2p:"Har bir fokus daqiqasi statistikangga yoziladi. Barqarorlik — eng katta kuch.",
@@ -1024,6 +1025,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   del_confirm:function(n){return "Удалить «"+n+"»?\n\nВся история и накопленное время тоже удалятся — это необратимо.";},
   strength:"Сила",strength_sub:"Индекс постоянства",
   photo_none:"Выбрать фото…",photo_ok:"Фото выбрано ✓",
+  save_full:"Не удалось сохранить: память заполнена. Уменьшите фото или удалите старые привычки.",
   err_name:"Введите название привычки",err_name_auth:"Пожалуйста, введите имя",
   ob1t:"<b>Измеряй</b> время",ob1p:"Другие приложения спрашивают «сделал?». Focus AI считает реально потраченное время.",
   ob2t:"Прогресс <b>на виду</b>",ob2p:"Каждая минута фокуса записывается в статистику. Постоянство — главная сила.",
@@ -1091,6 +1093,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   del_confirm:function(n){return "Delete “"+n+"”?\n\nAll its history and accumulated time will be lost — this cannot be undone.";},
   strength:"Strength",strength_sub:"Consistency index",
   photo_none:"Choose photo…",photo_ok:"Photo selected ✓",
+  save_full:"Couldn't save: storage full. Reduce photos or delete old habits.",
   err_name:"Please enter a habit name",err_name_auth:"Please enter your name",
   ob1t:"<b>Measure</b> your time",ob1p:"Other apps ask “did you do it?”. Focus AI counts the time you actually spend.",
   ob2t:"Progress <b>you can see</b>",ob2p:"Every focused minute lands in your stats. Consistency is the superpower.",
@@ -1195,7 +1198,31 @@ if(!store.rewards)store.rewards=[];                /* mukofot 4: o'z mukofotlari
 if(!store.rewardLog)store.rewardLog=[];            /* mukofot 4: olingan mukofotlar tarixi */
 if(!store.rewardNextId)store.rewardNextId=1;
 TODAY=dayKey(); /* store yuklandi — ofsetni hisobga olib qayta hisoblaymiz */
-function save(){try{localStorage.setItem(KEY,JSON.stringify(store));}catch(e){}}
+var _saveWarned=false;
+function save(){
+  try{localStorage.setItem(KEY,JSON.stringify(store));_saveWarned=false;}
+  catch(e){if(!_saveWarned){_saveWarned=true;try{toast(T('save_full'));}catch(_){}}} /* kvota to'ldi — jim yutma, bir marta ogohlantir */
+}
+/* rasmni ~maxDim px ga siqib qayta kodlash (localStorage kvotasini oshirmaslik uchun) */
+function downscaleImage(file,maxDim,cb){
+  var rd=new FileReader();
+  rd.onerror=function(){cb(null);};
+  rd.onload=function(){
+    var img=new Image();
+    img.onerror=function(){cb(rd.result);}; /* siqib bo'lmasa — asl (save() kvotani ushlaydi) */
+    img.onload=function(){
+      var w=img.width,h=img.height,s=Math.min(1,maxDim/Math.max(w,h));
+      var cw=Math.max(1,Math.round(w*s)),ch=Math.max(1,Math.round(h*s));
+      try{
+        var cv=document.createElement('canvas');cv.width=cw;cv.height=ch;
+        cv.getContext('2d').drawImage(img,0,0,cw,ch);
+        cb(cv.toDataURL('image/jpeg',0.82));
+      }catch(e){cb(rd.result);}
+    };
+    img.src=rd.result;
+  };
+  rd.readAsDataURL(file);
+}
 function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish */
 /* blok E: avto-backup — har 24 soatda oldingi holat nusxasi (buzilishdan himoya) */
 (function(){try{
@@ -1709,10 +1736,11 @@ $('#dMinus').addEventListener('click',function(){dailyMin=dailyStep(dailyMin,-1)
 $('#dPlus').addEventListener('click',function(){dailyMin=dailyStep(dailyMin,1);$('#dVal').textContent=dailyMin;sTap();});
 $('#photoBtn').addEventListener('click',function(){$('#photoInput').click();});
 $('#photoInput').addEventListener('change',function(){
-  var f=this.files&&this.files[0];if(!f)return;
-  var rd=new FileReader();
-  rd.onload=function(){photoData=rd.result;$('#photoLbl').textContent=T('photo_ok');};
-  rd.readAsDataURL(f);
+  var f=this.files&&this.files[0];this.value='';if(!f)return;
+  downscaleImage(f,512,function(data){
+    if(!data)return;
+    photoData=data;$('#photoLbl').textContent=T('photo_ok');
+  });
 });
 function openSheet(o){$('#scrim').classList.toggle('open',o);$('#sheet').classList.toggle('open',o);
   if(o){$('#addErr').textContent='';setTimeout(function(){$('#hName').focus();},200);}}
@@ -2696,10 +2724,11 @@ function renderAvatar(){
 }
 $('#avatar').addEventListener('click',function(){$('#avatarInput').click();});
 $('#avatarInput').addEventListener('change',function(){
-  var f=this.files&&this.files[0];if(!f)return;
-  var rd=new FileReader();
-  rd.onload=function(){store.user.avatar=rd.result;save();renderAvatar();sGo();};
-  rd.readAsDataURL(f);
+  var f=this.files&&this.files[0];this.value='';if(!f)return;
+  downscaleImage(f,512,function(data){
+    if(!data)return;
+    store.user.avatar=data;save();renderAvatar();sGo();
+  });
 });
 $('#onbReplay').addEventListener('click',function(){
   sTap();onbGo(0);$('#onb').classList.remove('gone');
