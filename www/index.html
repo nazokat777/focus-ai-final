@@ -605,6 +605,19 @@ input{font-family:inherit}
 .view.active{transform:none;
   transition:opacity var(--t3) var(--ease-out) 70ms,transform var(--t3) var(--ease-out) 70ms}
 .view.leaving{opacity:0;transform:translate3d(calc(var(--dir,1) * -26px),0,0)}
+/* varaq chuqurligi: varaq ochilganda ostki qatlam bir oz chekinadi —
+   ilova tekis oynadan uch o'lchovli tizimga aylanadi. Faqat .sheet uchun
+   (.detail va .session to'liq ekran — ularga qo'llanmaydi). */
+.views{transform-origin:50% 0;transition:transform var(--t2) var(--ease-in)}
+.device.modal .views{transform:scale(.955) translateY(-6px);transition:transform var(--t4) var(--ease-out)}
+.device.modal .nav{transform:translateY(8px);opacity:.45;pointer-events:none;transition:transform var(--t4) var(--ease-out),opacity var(--t4) var(--ease-out)}
+/* kartalar kirishi — faqat ilova ochilganda (har holat o'zgarishida emas) */
+@keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
+.hcard.enter{animation:cardIn .5s var(--ease-out) both}
+/* yangi yongan segment bir lahza yorqinroq chaqnaydi */
+@keyframes segLit{0%{stroke:var(--neon-br);stroke-width:5}100%{stroke:var(--neon);stroke-width:3}}
+.s-ring .seg.just{animation:segLit .42s var(--ease-out)}
+.reduce .hcard.enter,.reduce .s-ring .seg.just{animation:none}
 
 #aurora{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s var(--ease)}
 .session.open #aurora{opacity:1}
@@ -1912,14 +1925,16 @@ function refreshChips(){
   $('#profSub').textContent=T('prof')(globalStreak());
 }
 var cardRefs={};
+var firstCardRender=true;
 function renderHabits(){
   var list=$('#habitList');list.innerHTML='';cardRefs={};
+  var stagger=firstCardRender&&!reduce;firstCardRender=false;
   if(!store.habits.length){
     var em=document.createElement('div');em.className='empty';
     em.innerHTML='<div class="big">⏱</div><p><b>'+T('empty1')+'</b></p><p>'+T('empty2')+'</p>';
     list.appendChild(em);return;
   }
-  store.habits.forEach(function(h){
+  store.habits.forEach(function(h,ci){
     var isCheck=h.type==='check';
     var doneToday=isCheck&&h.days&&h.days.indexOf(TODAY)!==-1;
     var el=document.createElement('div');
@@ -1945,6 +1960,7 @@ function renderHabits(){
     });
     el.querySelector('.hc-stat').addEventListener('click',function(e){e.stopPropagation();openDetail(h.id);});
     el.addEventListener('click',function(){openSession(h.id);});
+    if(stagger){el.classList.add('enter');el.style.animationDelay=(ci*45)+'ms';}
     list.appendChild(el);
   });
   refreshCards();
@@ -2018,6 +2034,7 @@ $('#photoInput').addEventListener('change',function(){
   });
 });
 function openSheet(o){$('#scrim').classList.toggle('open',o);$('#sheet').classList.toggle('open',o);
+  $('#device').classList.toggle('modal',o); /* ostki qatlam chekinadi — chuqurlik hissi */
   if(o){$('#addErr').textContent='';setTimeout(function(){$('#hName').focus();},200);}}
 $('#addBtn').addEventListener('click',function(){sTap();resetSheet();openSheet(true);});
 /* topilma #5/#7: tushunchalar yordami — chip yoki ko'rsatkich bosilganda tushuntirish */
@@ -2098,13 +2115,20 @@ function minuteSweep(h,ms){
   el.classList.remove('go');void el.offsetWidth; /* animatsiyani qayta ishga tushirish */
   el.classList.add('go');
 }
+/* yangi yongan segmentni bir lahza chaqnatadi (ilgari 30 soniyada bir jimgina yonardi) */
+function segFlash(segs,on,prev){
+  if(reduce||on<=prev||on<1||on>segs.length)return;
+  var s=segs[on-1];if(!s)return;
+  s.classList.remove('just');void s.getBoundingClientRect();s.classList.add('just');
+  setTimeout(function(){s.classList.remove('just');},440);
+}
 /* halqa holatini yangilaydi: nur kuchi (--f) va komet burchagi */
 function ringSet(el,hd,f){
   f=Math.max(0,Math.min(1,f)); /* clamp — f>1 bo'lsa komet aylanib ketmasin */
   if(el)el.style.setProperty('--f',f);
   if(hd&&hd.head){var t='rotate('+(f*360)+'deg)';hd.head.style.transform=t;hd.halo.style.transform=t;}
 }
-var sSegs=[],sHead=null;
+var sSegs=[],sHead=null,sPrevOn=0;
 (function(){
   var ns='http://www.w3.org/2000/svg',svg=$('#sRingSvg'),RN=60,cx=100,cy=100,ri=80,ro=95;
   for(var i=0;i<RN;i++){
@@ -2180,6 +2204,7 @@ function renderSession(){
   }
   if(!micro)$('#sRemain').textContent=(today>=norm)?T('day_done'):T('remain')(fmtHMS(norm-today));
   var on=Math.round(f*sSegs.length);
+  segFlash(sSegs,on,sPrevOn);sPrevOn=on;
   sSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
   ringSet($('#sRing'),sHead,f);
   $('#sRing').classList.toggle('run',!!h.runningSince);
@@ -2796,7 +2821,7 @@ function drawStats(){
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
 if(!store.focusDayMs)store.focusDayMs={};
-var fSegs=[],fHead=null;
+var fSegs=[],fHead=null,fPrevOn=0;
 (function(){
   var ns='http://www.w3.org/2000/svg',svg=$('#fRingSvg'),RN=60,cx=100,cy=100,ri=80,ro=95;
   for(var i=0;i<RN;i++){
@@ -2816,6 +2841,7 @@ function fDraw(){
   $('#fTime').textContent=fFmt(rm);
   var ff=1-rm/fDur;
   var on=Math.round(ff*fSegs.length);
+  segFlash(fSegs,on,fPrevOn);fPrevOn=on;
   fSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
   ringSet($('#fRing'),fHead,ff);
   $('#fRing').classList.toggle('run',fRunning);
