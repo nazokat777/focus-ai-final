@@ -292,7 +292,21 @@ input{font-family:inherit}
 @keyframes breathe{0%,100%{transform:scale(.85);opacity:.5}50%{transform:scale(1.1);opacity:1}}
 .s-ring svg{position:absolute;inset:0}
 .s-ring .seg{stroke:var(--elev2);stroke-width:3;transition:stroke .3s var(--ease)}
-.s-ring .seg.on{stroke:var(--neon);filter:drop-shadow(0 0 5px rgba(var(--neon-rgb),.9))}
+/* 60 ta alohida drop-shadow (= 60 offscreen bufer) OLIB TASHLANDI — o'rniga
+   bitta umumiy nur qatlami. Eski WebView'da kadr byudjeti sezilarli bo'shaydi. */
+.s-ring .seg.on{stroke:var(--neon)}
+.s-ring::after{content:"";position:absolute;inset:44px;border-radius:50%;pointer-events:none;
+  box-shadow:0 0 32px 7px rgba(var(--neon-rgb),.15);opacity:0;
+  transition:opacity .6s var(--ease)}
+/* nur faqat taymer ishlaganda; bazaviy yorug'lik + progressga qarab kuchayadi */
+.s-ring.run::after{opacity:calc(.3 + var(--f,0) * .7)}
+/* komet boshi: uzluksiz aylanadi — taymer TIRIK ekani bir qarashda ko'rinadi.
+   Faqat transform, bitta element, bitta filtr (60 emas). */
+.s-ring .head{stroke:var(--neon-br);stroke-width:4;stroke-linecap:round;opacity:0;
+  transform-origin:100px 100px;transition:transform .55s linear,opacity .3s var(--ease);
+  filter:drop-shadow(0 0 6px rgba(var(--neon-br-rgb),.95))}
+.s-ring.run .head{opacity:1}
+.reduce .s-ring .head{transition:opacity .3s}
 .s-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
 .s-pct{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:46px}
 .s-elapsed{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--neon)}
@@ -2030,7 +2044,19 @@ $('#saveHabit').addEventListener('click',function(){
 
 /* ============ session screen ============ */
 var sessionOpen=false,openHabitId=null;
-var sSegs=[];
+/* komet boshi — halqaning yetakchi nuqtasi. Ikkala halqa (sessiya va fokus) uchun bir xil. */
+function mkHead(ns,svg,cx,cy,ri,ro){
+  var h=document.createElementNS(ns,'line');
+  h.setAttribute('x1',cx);h.setAttribute('y1',cy-ri);
+  h.setAttribute('x2',cx);h.setAttribute('y2',cy-ro);
+  h.setAttribute('class','head');svg.appendChild(h);return h;
+}
+/* halqa holatini yangilaydi: nur kuchi (--f) va komet burchagi */
+function ringSet(el,head,f){
+  if(el)el.style.setProperty('--f',Math.max(0,Math.min(1,f)));
+  if(head)head.style.transform='rotate('+(f*360)+'deg)';
+}
+var sSegs=[],sHead=null;
 (function(){
   var ns='http://www.w3.org/2000/svg',svg=$('#sRingSvg'),RN=60,cx=100,cy=100,ri=80,ro=95;
   for(var i=0;i<RN;i++){
@@ -2040,6 +2066,7 @@ var sSegs=[];
     l.setAttribute('x2',cx+Math.cos(a)*ro);l.setAttribute('y2',cy+Math.sin(a)*ro);
     l.setAttribute('class','seg');svg.appendChild(l);sSegs.push(l);
   }
+  sHead=mkHead(ns,svg,cx,cy,ri,ro);
 })();
 function getH(id){for(var i=0;i<store.habits.length;i++)if(store.habits[i].id===id)return store.habits[i];return null;}
 function renderSessionCal(h){
@@ -2106,6 +2133,7 @@ function renderSession(){
   if(!micro)$('#sRemain').textContent=(today>=norm)?T('day_done'):T('remain')(fmtHMS(norm-today));
   var on=Math.round(f*sSegs.length);
   sSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
+  ringSet($('#sRing'),sHead,f);
   $('#sRing').classList.toggle('run',!!h.runningSince);
   $('#sMain').textContent=h.completed?'✓':(h.runningSince?T('pause'):(h.accMs>0?T('resume'):T('start')));
   /* blok F: mikro-start tugmasi faqat taymer to'xtaganda ko'rinadi */
@@ -2719,7 +2747,7 @@ function drawStats(){
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
 if(!store.focusDayMs)store.focusDayMs={};
-var fSegs=[];
+var fSegs=[],fHead=null;
 (function(){
   var ns='http://www.w3.org/2000/svg',svg=$('#fRingSvg'),RN=60,cx=100,cy=100,ri=80,ro=95;
   for(var i=0;i<RN;i++){
@@ -2729,6 +2757,7 @@ var fSegs=[];
     l.setAttribute('x2',cx+Math.cos(a)*ro);l.setAttribute('y2',cy+Math.sin(a)*ro);
     l.setAttribute('class','seg');svg.appendChild(l);fSegs.push(l);
   }
+  fHead=mkHead(ns,svg,cx,cy,ri,ro);
 })();
 var fDur=25*60000,fEndAt=null,fPausedRemain=fDur,fRunning=false,fLastMin=-1,fStateK='ready',fStartRemain=fDur;
 function fRemain(){return fRunning?Math.max(0,fEndAt-Date.now()):fPausedRemain;}
@@ -2736,8 +2765,10 @@ function fFmt(ms){var s=Math.ceil(ms/1000),m=Math.floor(s/60),ss=s%60;return (m<
 function fDraw(){
   var rm=fRemain();
   $('#fTime').textContent=fFmt(rm);
-  var on=Math.round((1-rm/fDur)*fSegs.length);
+  var ff=1-rm/fDur;
+  var on=Math.round(ff*fSegs.length);
   fSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
+  ringSet($('#fRing'),fHead,ff);
   $('#fRing').classList.toggle('run',fRunning);
   $('#fState').textContent=T(fStateK);
   $('#fStart').textContent=fRunning?T('pause'):(fPausedRemain<fDur&&fStateK==='paused'?T('resume'):T('start'));
