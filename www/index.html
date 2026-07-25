@@ -977,7 +977,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   fr_leaderboard:"Bugungi reyting",fr_you:"Siz",fr_pending:"kutilmoqda",fr_h:"s",
   fr_empty:"Hali do'st yo'q. Do'stingizning kodini yuqorida qo'shing.",
   fr_mentors:"Ota-ona / ustoz",fr_copied:"Kod nusxalandi",fr_invalid:"Kod formati: ABC123",
-  fr_added:"Qo'shildi",fr_exists:"Bu kod allaqachon qo'shilgan",fr_self:"Bu sizning kodingiz",fr_cloud_err:"Serverga ulanmadi. Qayta urinib ko'ring.",
+  fr_added:"Qo'shildi",fr_exists:"Bu kod allaqachon qo'shilgan",fr_self:"Bu sizning kodingiz",fr_cloud_err:"Serverga ulanmadi. Qayta urinib ko'ring.",fr_cloud_off:"Bulut (oflayn)",fr_offline:"Serverga ulanib bo'lmadi — oflayn ko'rinish.",fr_retry:"Qayta urinish",
   fr_local:"Lokal",fr_cloud:"Bulut",
   fr_local_note:"Lokal rejim: do'stlar va reyting shu qurilmada saqlanadi. Qurilmalararo real reyting hamda ota-ona/ustoz nazorati Supabase ulangach ishlaydi.",
   auth_sub:"Mehmon sifatida kiring — hisob shart emas, hamma narsa qurilmangizda saqlanadi.",auth_go:"Mehmon sifatida kirish",
@@ -1046,7 +1046,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   fr_leaderboard:"Рейтинг сегодня",fr_you:"Вы",fr_pending:"ожидание",fr_h:"ч",
   fr_empty:"Пока нет друзей. Добавьте код друга выше.",
   fr_mentors:"Родитель / ментор",fr_copied:"Код скопирован",fr_invalid:"Формат кода: ABC123",
-  fr_added:"Добавлено",fr_exists:"Этот код уже добавлен",fr_self:"Это ваш код",fr_cloud_err:"Не удалось подключиться к серверу. Попробуйте снова.",
+  fr_added:"Добавлено",fr_exists:"Этот код уже добавлен",fr_self:"Это ваш код",fr_cloud_err:"Не удалось подключиться к серверу. Попробуйте снова.",fr_cloud_off:"Облако (офлайн)",fr_offline:"Не удалось подключиться — офлайн-режим.",fr_retry:"Повторить",
   fr_local:"Локально",fr_cloud:"Облако",
   fr_local_note:"Локальный режим: друзья и рейтинг хранятся на этом устройстве. Рейтинг между устройствами и контроль родителя/наставника заработают после подключения Supabase.",
   auth_sub:"Войдите как гость — аккаунт не нужен, всё хранится на устройстве.",auth_go:"Войти как гость",
@@ -1115,7 +1115,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   fr_leaderboard:"Today's ranking",fr_you:"You",fr_pending:"pending",fr_h:"h",
   fr_empty:"No friends yet. Add a friend's code above.",
   fr_mentors:"Parent / mentor",fr_copied:"Code copied",fr_invalid:"Code format: ABC123",
-  fr_added:"Added",fr_exists:"This code is already added",fr_self:"That's your own code",fr_cloud_err:"Couldn't reach the server. Try again.",
+  fr_added:"Added",fr_exists:"This code is already added",fr_self:"That's your own code",fr_cloud_err:"Couldn't reach the server. Try again.",fr_cloud_off:"Cloud (offline)",fr_offline:"Couldn't connect — offline view.",fr_retry:"Retry",
   fr_local:"Local",fr_cloud:"Cloud",
   fr_local_note:"Local mode: friends and ranking live on this device. Cross-device ranking and parent/mentor monitoring activate once Supabase is connected.",
   auth_sub:"Continue as guest — no account needed, everything stays on your device.",auth_go:"Continue as guest",
@@ -2947,7 +2947,7 @@ function frFocusTxt(h){return (Math.round((h||0)*10)/10)+T('fr_h');}
 function renderFriends(){
   if(typeof Social==='undefined')return;
   $('#frCodeVal').textContent=Social.myCode();
-  var badge=$('#frModeBadge');if(badge)badge.textContent=Social.cloud()?T('fr_cloud'):T('fr_local');
+  var badge=$('#frModeBadge');if(badge)badge.textContent=Social.cloud()?(navigator.onLine===false?T('fr_cloud_off'):T('fr_cloud')):T('fr_local');
   var note=$('#frLocalNote');if(note)note.style.display=Social.cloud()?'none':'';
   /* ota-ona/ustoz ro'yxati (men qo'shganlar) */
   var mentors=Social.friends().filter(function(x){return x.role==='mentor';});
@@ -2961,9 +2961,10 @@ function renderFriends(){
   /* do'stlar reytingi */
   Social.leaderboard('friend').then(function(board){
     var el=$('#frBoard');if(!el)return;
+    /* offline: "serverga ulanmadi" bannerи — per-do'st "kutilmoqda"dan farqli */
+    var banner=board.offline?'<div class="fr-note" style="border-color:var(--danger);display:flex;justify-content:space-between;align-items:center;gap:10px"><span>'+T('fr_offline')+'</span><b class="fr-retry" style="color:var(--neon);cursor:pointer;white-space:nowrap">'+T('fr_retry')+'</b></div>':'';
     var others=board.filter(function(x){return !x.me;}).length;
-    if(!others){el.innerHTML='<div class="fr-empty">'+T('fr_empty')+'</div>';return;}
-    el.innerHTML=board.map(function(x,i){
+    var body=others?board.map(function(x,i){
       var nm=x.me?('<span class="you">'+T('fr_you')+'</span>'):esc(x.name);
       var stat=(x.pending||x.focusMins==null||x.focusMins<0)
         ? '<span class="fr-badge">'+T('fr_pending')+'</span>'
@@ -2973,11 +2974,16 @@ function renderFriends(){
         '<span class="fr-nm">'+nm+'</span>'+stat+
         (x.me?'':'<button class="fr-del" data-frdel="'+esc(x.code)+'" data-frkind="friend">×</button>')+
         '</div>';
-    }).join('');
+    }).join(''):'<div class="fr-empty">'+T('fr_empty')+'</div>';
+    el.innerHTML=banner+body;
+    var rt=el.querySelector('.fr-retry');if(rt)rt.addEventListener('click',function(){sTap();renderFriends();});
   });
 }
 /* bulut kutubxonasi kech yuklansa, ochiq do'stlar panelini yangilaymiz (kalitlar qo'yilganda) */
 window.onSupabaseReady=function(){try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}};
+/* audit #3: internet holati o'zgarsa — ochiq do'stlar panelini qayta chizamiz (badge + banner) */
+function _frNetSync(){try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}}
+window.addEventListener('online',_frNetSync);window.addEventListener('offline',_frNetSync);
 function openFriends(){
   try{var pn=(($('#profName')&&$('#profName').textContent)||'').trim();if(pn)localStorage.setItem('focusai.userName',pn);}catch(e){}
   renderFriends();$('#friends').classList.add('open');sTap();
@@ -3229,6 +3235,7 @@ window.addEventListener('beforeunload',function(){
     kind = kind || 'friend';
     var c = client();
     if (!c) return Promise.resolve(localBoard(kind));
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) { var lb0 = localBoard(kind); lb0.offline = true; return Promise.resolve(lb0); } /* internet yo'q — kutmasdan lokal + offline bayroq */
     var codes = [myCode()].concat(friends().filter(function (x) { return x.role === kind; }).map(function (x) { return x.code; }));
     return Promise.all([ensureProfile(), syncStats()]).then(function () {
       return Promise.all([
@@ -3250,7 +3257,7 @@ window.addEventListener('beforeunload',function(){
       });
       list.sort(function (a, b) { return ((b.focusMins || 0) - (a.focusMins || 0)) || ((b.habits || 0) - (a.habits || 0)); });
       return list;
-    }).catch(function () { return localBoard(kind); });
+    }).catch(function () { var lb = localBoard(kind); lb.offline = true; return lb; }); /* bulut xatosi — offline bayroq bilan lokal */
   }
 
   // ── Chat (bulut rejimida) ──
