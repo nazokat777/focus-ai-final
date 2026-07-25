@@ -901,7 +901,7 @@ input{font-family:inherit}
     <div class="medal">🏆</div>
     <h2 data-i18n="ach_t"></h2>
     <p id="achSub"></p>
-    <button id="achOk">OK</button>
+    <button id="achOk" data-i18n="ach_ok"></button>
   </div>
 
   <!-- NATIJA KARTASI -->
@@ -996,7 +996,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   deep_hint:"💡 Telefonni yuztuban qo'ysang — chalg'imaysan va +10% bonus vaqt olasan",cal_tap_hint:"Batafsil ko'rish uchun kunni bosing",
   help_streak:"🔥 Seriya — ketma-ket faol kunlar. Bugun biror odatga vaqt ajratsang, uzilmaydi.",help_today:"Bugun barcha odatlarga jami sarflangan vaqt.",
   help_growth:"O'sish — bugungi kunlik me'yorlaring o'rtacha bajarilishi.",help_strength:"⚡ Kuch — izchillik indeksi. Har kun me'yorni bajarsang o'sadi, o'tkazsang ozgina tushadi. Bitta o'tkazilgan kun hammasini nolga tushirmaydi.",
-  rain:"Yomg'ir",ach_t:"Maqsad bajarildi!",ach_sub:function(n){return "«"+n+"» — 100%";},
+  rain:"Yomg'ir",ach_t:"Maqsad bajarildi!",ach_ok:"OK",task_default:"Vazifa",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Hali odat yo'q",empty2:"Yuqoridagi + tugmasini bosib birinchi odatni qo'sh — vaqt hisobi boshlanadi.",
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
   ready:"tayyor",focusing:"fokusda",paused:"pauza",done:"tugadi ✓",reset:"Qayta",cal_lbl:"Faol kunlar",
@@ -1065,7 +1065,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   deep_hint:"💡 Положи телефон экраном вниз — не будешь отвлекаться и получишь +10% бонуса",cal_tap_hint:"Нажми на день для подробностей",
   help_streak:"🔥 Серия — дни подряд с активностью. Уделишь сегодня время любой привычке — не прервётся.",help_today:"Всего времени, потраченного сегодня на все привычки.",
   help_growth:"Рост — среднее выполнение твоих дневных норм за сегодня.",help_strength:"⚡ Сила — индекс постоянства. Выполняешь норму каждый день — растёт, пропустишь — чуть падает. Один пропуск не обнуляет всё.",
-  rain:"Дождь",ach_t:"Цель достигнута!",ach_sub:function(n){return "«"+n+"» — 100%";},
+  rain:"Дождь",ach_t:"Цель достигнута!",ach_ok:"ОК",task_default:"Задача",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Пока нет привычек",empty2:"Нажми + вверху и добавь первую привычку — начнётся честный счёт времени.",
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
   ready:"готов",focusing:"фокус",paused:"пауза",done:"готово ✓",reset:"Сброс",cal_lbl:"Активные дни",
@@ -1134,7 +1134,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   deep_hint:"💡 Place your phone face down — no distractions and +10% bonus time",cal_tap_hint:"Tap a day for details",
   help_streak:"🔥 Streak — consecutive active days. Give any habit some time today and it won't break.",help_today:"Total time spent on all habits today.",
   help_growth:"Growth — your average daily-goal completion for today.",help_strength:"⚡ Strength — a consistency index. Meet your goal daily and it grows; skip and it dips slightly. One missed day doesn't reset everything.",
-  rain:"Rain",ach_t:"Goal achieved!",ach_sub:function(n){return "“"+n+"” — 100%";},
+  rain:"Rain",ach_t:"Goal achieved!",ach_ok:"OK",task_default:"Task",ach_sub:function(n){return "“"+n+"” — 100%";},
   empty1:"No habits yet",empty2:"Tap + above to add your first habit — honest time tracking begins.",
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
   ready:"ready",focusing:"focusing",paused:"paused",done:"done ✓",reset:"Reset",cal_lbl:"Active days",
@@ -1974,7 +1974,7 @@ function renderDetailCal(h){
     var info;
     if(isSkip(h,d))info='<b>'+fmtDate(d)+'</b> · '+T('skip_day')+' 🌙';
     else if(h.type==='check')info='<b>'+fmtDate(d)+'</b> · '+(hDayOn(h,d)?T('u_done'):'—');
-    else{var ms=h.dayMs[d]||0;info='<b>'+fmtDate(d)+'</b> · '+(ms>0?fmtHM(ms)+' '+T('tab_focus').toLowerCase():'0m');}
+    else{var ms=h.dayMs[d]||0;info='<b>'+fmtDate(d)+'</b> · '+(ms>0?fmtHM(ms)+' '+T('tab_focus').toLowerCase():fmtHM(0));}
     toast(info);sTap();
   };
 }
@@ -2556,7 +2556,7 @@ $('#rShare').addEventListener('click',function(){
     x.fillText($('#rTime').textContent,W2/2,H2/2+30);
     x.shadowBlur=0;
     x.fillStyle='#5f7a68';x.font='500 46px monospace';
-    x.fillText('🔥 '+$('#rStreak').textContent+'   ·   Σ '+$('#rTotal').textContent+'h   ·   '+$('#rLvl').textContent,W2/2,H2/2+180);
+    x.fillText('🔥 '+$('#rStreak').textContent+'   ·   Σ '+$('#rTotal').textContent+T('u_h')+'   ·   '+$('#rLvl').textContent,W2/2,H2/2+180);
     x.fillStyle='#8fae9b';x.font='italic 40px sans-serif';
     x.fillText($('#rQuote').textContent,W2/2,H2-220);
     x.fillStyle='#39FF8C';x.font='600 36px monospace';
@@ -3061,6 +3061,7 @@ function openFriends(){
 function isoFromKey(k){return new Date(k*86400000+dayOffsetMs()).toISOString().slice(0,10);}
 window.MVOW_DATA={
   get today(){return {iso:isoFromKey(TODAY)};},
+  get defaultTaskName(){return T('task_default');}, /* social.js T() skopiga ko'ra olmaydi — shu yerdan lokalizatsiya */
   getHistory:function(){
     var out=[];
     store.habits.forEach(function(h){
@@ -3162,7 +3163,7 @@ window.addEventListener('beforeunload',function(){
     try {
       if (window.MVOW_DATA && MVOW_DATA.getHistory) {
         MVOW_DATA.getHistory().filter(function (x) { return x.dateIso === todayIso(); }).forEach(function (x) {
-          var nm = x.name || 'Vazifa';
+          var nm = x.name || (window.MVOW_DATA && MVOW_DATA.defaultTaskName) || 'Task';
           if (hidden.indexOf(nm) >= 0) return;
           var task = { n: nm, m: x.actualMins || 0 };
           if (vis.notimer) task.t = ((x.withTimer === true) || x.mode === 'timer' || x.mode === 'pomodoro') ? 1 : 0;
