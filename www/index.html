@@ -127,7 +127,11 @@ input{font-family:inherit}
 .hc-sub{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:5px;font-family:'JetBrains Mono',monospace}
 /* ASOSIY harakat — fokusni boshlash. Ekrandagi eng kuchli chaqiruv shu bo'lishi kerak.
    44px = HIG minimal teginish nishoni (ilgari 40px edi). */
-.hc-play{width:44px;height:44px;flex:none;border-radius:12px;background:rgba(var(--neon-rgb),.12);border:1px solid rgba(var(--neon-rgb),.35);display:grid;place-items:center;transition:.25s var(--ease)}
+.hc-play{width:44px;height:44px;flex:none;border-radius:12px;background:rgba(var(--neon-rgb),.12);border:1px solid rgba(var(--neon-rgb),.35);display:grid;place-items:center;transition:.25s var(--ease);position:relative}
+/* marra to'lqini — odat tugallanganda tugmadan tarqaladigan neon halqa (faqat transform+opacity) */
+.cbloom{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;border:2px solid rgba(var(--neon-rgb),.85);pointer-events:none;transform:scale(.4);opacity:.85;animation:cbloom .7s var(--ease-out) forwards;z-index:2}
+@keyframes cbloom{to{transform:scale(2.9);opacity:0}}
+.reduce .cbloom{display:none}
 .hc-play svg{width:17px;height:17px;fill:var(--neon);stroke:none}
 .hcard.running .hc-play{background:var(--neon);box-shadow:0 0 16px rgba(var(--neon-rgb),.5)}
 .hcard.running .hc-play svg{fill:var(--onneon)}
@@ -1967,6 +1971,19 @@ function updateCardState(h){
   if(!reduce){btn.classList.remove('swap');void btn.getBoundingClientRect();btn.classList.add('swap');}
   return true;
 }
+/* marra to'lqini: odat tugallanganda tugmadan ikki neon halqa tarqaladi.
+   Halol — faqat haqiqiy tugallanishda; arzon — transform+opacity, so'ng o'chiriladi. */
+function celebrate(el){
+  if(reduce||!el)return;
+  var host=el.querySelector('.hc-play')||el;
+  var made=[];
+  for(var k=0;k<2;k++){
+    var r=document.createElement('span');
+    r.className='cbloom';r.style.animationDelay=(k*110)+'ms';
+    host.appendChild(r);made.push(r);
+  }
+  setTimeout(function(){for(var j=0;j<made.length;j++){if(made[j].parentNode)made[j].parentNode.removeChild(made[j]);}},1000);
+}
 var firstCardRender=true;
 function renderHabits(){
   var list=$('#habitList');list.innerHTML='';cardRefs={};
@@ -2012,9 +2029,11 @@ function renderHabits(){
 function toggleCheck(h){
   if(!h.days)h.days=[];
   var i=h.days.indexOf(TODAY);
-  if(i===-1){h.days.push(TODAY);sGo();buzz([10,30,14]);awardDayCoins(h);}
+  var justDone=(i===-1);
+  if(justDone){h.days.push(TODAY);sGo();buzz([10,30,14]);awardDayCoins(h);}
   else{h.days.splice(i,1);sTap();}
   save();if(!updateCardState(h))renderHabits();computeTarget();refreshChips();refreshCards();
+  if(justDone)celebrate(cardRefs[h.id]);
 }
 function refreshCards(){
   store.habits.forEach(function(h){
