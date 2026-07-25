@@ -300,6 +300,13 @@ input{font-family:inherit}
 .session{position:absolute;inset:0;background:var(--bg);z-index:90;display:flex;flex-direction:column;
   transform:translateY(100%);transition:transform .45s var(--ease)}
 .session.open{transform:none}
+/* sessiya kirish koreografiyasi — panel kelgach ichki bloklar bosqichma-bosqich ochiladi (transform+opacity) */
+@keyframes sRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes sRingIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
+.session.open .s-head{animation:sRise .5s var(--ease-out) both}
+.session.open .s-ring{animation:sRingIn .55s var(--ease-out) .09s both}
+.session.open .s-controls{animation:sRise .5s var(--ease-out) .2s both}
+.reduce .session.open .s-head,.reduce .session.open .s-ring,.reduce .session.open .s-controls{animation:none}
 .s-head{padding:calc(env(safe-area-inset-top) + 16px) 20px 4px;display:flex;align-items:center;justify-content:space-between}
 .s-close{width:38px;height:38px;border-radius:12px;background:var(--elev);border:1px solid var(--line);display:grid;place-items:center}
 .s-close svg{width:17px;height:17px;stroke:var(--text);stroke-width:2;fill:none}
