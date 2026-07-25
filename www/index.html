@@ -141,6 +141,20 @@ input{font-family:inherit}
 .hm .hcell[data-day]{cursor:pointer}
 .hm .hcell[data-day]:active{transform:scale(.85)}
 .cal-tap{margin-top:9px;font-size:11.5px;color:var(--muted);text-align:center;opacity:.75}
+/* oltin soat xaritasi (7x24) — mavjud heatmap tilida, yangi rang/shrift yo'q */
+.gh{grid-template-rows:repeat(7,11px);grid-auto-columns:11px;gap:2px}
+.gh .hcell{border-radius:2px}
+.gh .hcell.win{outline:1px solid var(--neon-br);outline-offset:0}
+.gh-days{grid-template-rows:repeat(7,11px);gap:2px;font-size:7.5px}
+.gh-hours{display:flex;justify-content:space-between;font-size:8px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:6px;padding-left:22px}
+.gh-ins{background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:13px 15px;margin-bottom:11px}
+.gh-ins .t{font-size:13.5px;font-weight:600;line-height:1.45}
+.gh-ins .t b{color:var(--neon)}
+.gh-ins .s{font-size:11.5px;color:var(--muted);margin-top:5px;line-height:1.45}
+.gh-act{margin-top:11px;padding:9px 15px;border-radius:10px;background:var(--elev2);border:1px solid var(--neon);color:var(--neon);font-size:12.5px;font-weight:600}
+.gh-act:active{transform:scale(.96)}
+.gh-prog{height:5px;background:var(--elev2);border-radius:999px;overflow:hidden;margin-top:9px}
+.gh-prog i{display:block;height:100%;background:linear-gradient(90deg,var(--neon-dp),var(--neon));border-radius:999px;transition:width .6s var(--ease)}
 /* score chart */
 .d-score-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
 .d-score-now{font-size:24px;color:var(--neon)}
@@ -646,6 +660,8 @@ input{font-family:inherit}
       <div class="bars" id="bars"></div>
       <div class="grid-lbl" data-i18n="weeks8"></div>
       <div class="grid" id="grid"></div>
+      <div class="grid-lbl" data-i18n="golden"></div>
+      <div id="golden"></div>
       <div class="grid-lbl" data-i18n="achievements"></div>
       <div class="badges" id="badges"></div>
       <div class="grid-lbl" data-i18n="mastery"></div>
@@ -996,6 +1012,15 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   deep_hint:"💡 Telefonni yuztuban qo'ysang — chalg'imaysan va +10% bonus vaqt olasan",cal_tap_hint:"Batafsil ko'rish uchun kunni bosing",
   help_streak:"🔥 Seriya — ketma-ket faol kunlar. Bugun biror odatga vaqt ajratsang, uzilmaydi.",help_today:"Bugun barcha odatlarga jami sarflangan vaqt.",
   help_growth:"O'sish — bugungi kunlik me'yorlaring o'rtacha bajarilishi.",help_strength:"⚡ Kuch — izchillik indeksi. Har kun me'yorni bajarsang o'sadi, o'tkazsang ozgina tushadi. Bitta o'tkazilgan kun hammasini nolga tushirmaydi.",
+  golden:"Oltin soat",
+  gh_best:function(w,x){return "Eng kuchli oynangiz: <b>"+w+"</b> — o'rtachadan "+x+"x yuqori";},
+  gh_days:function(n){return n+" alohida kunda o'lchangan";},
+  gh_move:function(t){return "Eslatmani "+t+" ga ko'chirish";},
+  gh_moved:function(t){return "Eslatma "+t+" ga o'rnatildi";},
+  gh_wait:"Naqsh uchun ma'lumot to'planmoqda",
+  gh_wait_sub:function(a,b){return a+" / "+b+" soat o'lchandi — xulosa shundan keyin chiqadi";},
+  gh_none:"Hali o'lchangan vaqt yo'q. Taymerni ishga tushiring — xarita o'zi to'ladi.",
+  gh_ndays:function(n){return n+" kun";},
   rain:"Yomg'ir",ach_t:"Maqsad bajarildi!",ach_ok:"OK",task_default:"Vazifa",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Hali odat yo'q",empty2:"Yuqoridagi + tugmasini bosib birinchi odatni qo'sh — vaqt hisobi boshlanadi.",
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
@@ -1065,6 +1090,15 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   deep_hint:"💡 Положи телефон экраном вниз — не будешь отвлекаться и получишь +10% бонуса",cal_tap_hint:"Нажми на день для подробностей",
   help_streak:"🔥 Серия — дни подряд с активностью. Уделишь сегодня время любой привычке — не прервётся.",help_today:"Всего времени, потраченного сегодня на все привычки.",
   help_growth:"Рост — среднее выполнение твоих дневных норм за сегодня.",help_strength:"⚡ Сила — индекс постоянства. Выполняешь норму каждый день — растёт, пропустишь — чуть падает. Один пропуск не обнуляет всё.",
+  golden:"Золотой час",
+  gh_best:function(w,x){return "Ваше сильнейшее окно: <b>"+w+"</b> — в "+x+"x выше среднего";},
+  gh_days:function(n){return "измерено в "+n+" отдельных днях";},
+  gh_move:function(t){return "Перенести напоминание на "+t;},
+  gh_moved:function(t){return "Напоминание установлено на "+t;},
+  gh_wait:"Собираем данные для вывода",
+  gh_wait_sub:function(a,b){return a+" / "+b+" часов измерено — вывод появится после";},
+  gh_none:"Пока нет измеренного времени. Запустите таймер — карта заполнится сама.",
+  gh_ndays:function(n){return n+" дн.";},
   rain:"Дождь",ach_t:"Цель достигнута!",ach_ok:"ОК",task_default:"Задача",ach_sub:function(n){return "«"+n+"» — 100%";},
   empty1:"Пока нет привычек",empty2:"Нажми + вверху и добавь первую привычку — начнётся честный счёт времени.",
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
@@ -1134,6 +1168,15 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   deep_hint:"💡 Place your phone face down — no distractions and +10% bonus time",cal_tap_hint:"Tap a day for details",
   help_streak:"🔥 Streak — consecutive active days. Give any habit some time today and it won't break.",help_today:"Total time spent on all habits today.",
   help_growth:"Growth — your average daily-goal completion for today.",help_strength:"⚡ Strength — a consistency index. Meet your goal daily and it grows; skip and it dips slightly. One missed day doesn't reset everything.",
+  golden:"Golden hours",
+  gh_best:function(w,x){return "Your strongest window: <b>"+w+"</b> — "+x+"x above average";},
+  gh_days:function(n){return "measured across "+n+" separate days";},
+  gh_move:function(t){return "Move reminder to "+t;},
+  gh_moved:function(t){return "Reminder set to "+t;},
+  gh_wait:"Collecting data for a conclusion",
+  gh_wait_sub:function(a,b){return a+" / "+b+" hours measured — the insight appears after that";},
+  gh_none:"No measured time yet. Start the timer — the map fills itself.",
+  gh_ndays:function(n){return n+" days";},
   rain:"Rain",ach_t:"Goal achieved!",ach_ok:"OK",task_default:"Task",ach_sub:function(n){return "“"+n+"” — 100%";},
   empty1:"No habits yet",empty2:"Tap + above to add your first habit — honest time tracking begins.",
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
@@ -2373,6 +2416,80 @@ function renderFocusNeeded(){
       '<span class="fn-pct mono">⚡'+Math.round(o.s*100)+'%</span></div>';
   }).join('');
 }
+/* ============ Oltin soat xaritasi ============
+   XARITA = xom o'lchov (har doim ko'rsatiladi — bu shunchaki fakt).
+   XULOSA = faqat halollik darvozasidan o'tsa: >=10 soat, >=7 alohida kun, z>=1.2.
+   Ma'lumot yetmasa hech qanday naqsh DA'VO QILINMAYDI. */
+function goldenStats(){
+  var hh=store.hh||{},hhN=store.hhN||{},i,dw,k;
+  var hourTot=[],tot=0,mx=0;
+  for(i=0;i<24;i++){var s=0;for(dw=0;dw<7;dw++)s+=hh[dw*24+i]||0;hourTot[i]=s;tot+=s;}
+  for(k in hh)if(hh[k]>mx)mx=hh[k];
+  var bi=0,bv=-1;
+  for(i=0;i<24;i++){var v=hourTot[i]+hourTot[(i+1)%24];if(v>bv){bv=v;bi=i;}}
+  var d1=0,d2=0;
+  for(dw=0;dw<7;dw++){d1+=hhN[dw*24+bi]||0;d2+=hhN[dw*24+((bi+1)%24)]||0;}
+  var wDays=Math.max(d1,d2); /* konservativ: ikki soatning kattarog'i */
+  var mu=tot/24,sd=0;
+  for(i=0;i<24;i++)sd+=(hourTot[i]-mu)*(hourTot[i]-mu);
+  sd=Math.sqrt(sd/24);
+  var z=sd>0?((bv/2)-mu)/sd:0;
+  var lift=tot>0?(bv/(tot*2/24)):0; /* bir tekis taqsimotga nisbatan ko'tarilish */
+  return {hourTot:hourTot,tot:tot,mx:mx,bi:bi,wDays:wDays,z:z,lift:lift,
+          pass:(tot>=10*3600000&&wDays>=7&&z>=1.2)};
+}
+function renderGolden(){
+  var box=$('#golden');if(!box)return;
+  var g=goldenStats(),hh=store.hh||{},hhN=store.hhN||{},i,dw;
+  var dn={uz:['Ya','Du','Se','Ch','Pa','Ju','Sh'],ru:['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],en:['Su','Mo','Tu','We','Th','Fr','Sa']};
+  var nm=dn[store.settings.lang]||dn.en,html='';
+  function hhmm(x){return (x<10?'0':'')+x+':00';}
+  if(g.tot<=0){
+    html='<div class="gh-ins"><div class="s">'+T('gh_none')+'</div></div>';
+    box.innerHTML=html;return;
+  }
+  if(g.pass){
+    var w1=hhmm(g.bi),w2=hhmm((g.bi+2)%24);
+    var remH=(g.bi*60-15+1440)%1440,rt=(Math.floor(remH/60)<10?'0':'')+Math.floor(remH/60)+':'+((remH%60)<10?'0':'')+(remH%60);
+    html+='<div class="gh-ins"><div class="t">'+T('gh_best')(w1+'–'+w2,Math.round(g.lift*10)/10)+'</div>'+
+      '<div class="s">'+T('gh_days')(g.wDays)+'</div>'+
+      (store.settings.remTime===rt?'':'<button class="gh-act" id="ghAct" data-t="'+rt+'">'+T('gh_move')(rt)+'</button>')+
+      '</div>';
+  }else{
+    var pct=Math.min(100,Math.round(g.tot/(10*3600000)*100));
+    html+='<div class="gh-ins"><div class="t">'+T('gh_wait')+'</div>'+
+      '<div class="s">'+T('gh_wait_sub')(Math.round(g.tot/360000)/10,10)+'</div>'+
+      '<div class="gh-prog"><i style="width:'+pct+'%"></i></div></div>';
+  }
+  /* 7x24 xarita — mavjud .hm/.hcell tilida */
+  html+='<div class="hm-wrap"><div class="hm-days gh-days">';
+  for(dw=0;dw<7;dw++)html+='<span>'+nm[dw]+'</span>';
+  html+='</div><div class="hm gh" id="ghMap">';
+  for(i=0;i<24;i++)for(dw=0;dw<7;dw++){
+    var ms=hh[dw*24+i]||0,lvl=0;
+    if(ms>0)lvl=ms>=g.mx*0.75?4:ms>=g.mx*0.5?3:ms>=g.mx*0.25?2:1;
+    var win=g.pass&&(i===g.bi||i===(g.bi+1)%24);
+    html+='<div class="hcell'+(lvl?' l'+lvl:'')+(win?' win':'')+'" data-gh="'+dw+'_'+i+'"></div>';
+  }
+  html+='</div></div><div class="gh-hours"><span>00</span><span>06</span><span>12</span><span>18</span><span>23</span></div>';
+  box.innerHTML=html;
+  var act=$('#ghAct');
+  if(act)act.addEventListener('click',function(){
+    var t=this.getAttribute('data-t');
+    store.settings.remTime=t;save();
+    var inp=$('#remTime');if(inp)inp.value=t;
+    askNotify();scheduleReminders();sGo();buzz(10);
+    toast(T('gh_moved')(t));renderGolden();
+  });
+  var map=$('#ghMap');
+  if(map)map.addEventListener('click',function(e){
+    var c=e.target.closest('[data-gh]');if(!c)return;
+    var p=c.getAttribute('data-gh').split('_'),d=+p[0],h=+p[1],k=d*24+h;
+    var ms=hh[k]||0,n=hhN[k]||0;
+    toast('<b>'+nm[d]+' '+hhmm(h)+'</b> · '+(ms>0?fmtHM(ms):fmtHM(0))+(n?' · '+T('gh_ndays')(n):''));
+    sTap();
+  });
+}
 function drawStats(){
   $('#stBest').textContent=bestStreakEver();
   var tot=0,k,h;
@@ -2427,7 +2544,7 @@ function drawStats(){
     bd.appendChild(el);
   });
   save();
-  renderMastery();renderRewards();drawTrace();
+  renderMastery();renderRewards();renderGolden();drawTrace();
 }
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
