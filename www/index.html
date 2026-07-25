@@ -59,6 +59,8 @@ input{font-family:inherit}
 .device[data-theme="light"] .scanlines{opacity:.02}
 /* audit #8: yorug' rejimda kichik neon matn kontrasti (WCAG AA) — quyuqroq --neon-dp (#0a7a41 ~5.4:1) */
 .device[data-theme="light"] .hc-pct,.device[data-theme="light"] .compare b,.device[data-theme="light"] .rw-bal,.device[data-theme="light"] .shop-bal,.device[data-theme="light"] .pill .ptime{color:var(--neon-dp)}
+/* yorug'da neon ochroq — ikonka uchun quyuqroq variant (WCAG 1.4.11 grafik >=3:1) */
+.device[data-theme="light"] .sec-lbl .add svg{stroke:var(--neon-dp)}
 @media (max-width:480px){.device{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}}
 
 .head{padding:calc(env(safe-area-inset-top) + 18px) 24px 6px;flex:none;display:flex;align-items:center;justify-content:space-between;z-index:5}
@@ -91,10 +93,12 @@ input{font-family:inherit}
 .sec-lbl span{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
 /* ierarxiya: "qo'shish" — IKKILAMCHI harakat (kontur). To'ldirilgan neon va glow
    asosiy harakat (.hc-play — fokusni boshlash) uchun qoldiriladi. */
-.sec-lbl .add{width:32px;height:32px;border-radius:10px;background:transparent;border:1px solid var(--line);display:grid;place-items:center;transition:transform .2s var(--ease),border-color .2s var(--ease)}
+.sec-lbl .add{width:32px;height:32px;border-radius:10px;background:transparent;border:1px solid rgba(var(--neon-rgb),.3);display:grid;place-items:center;transition:transform .2s var(--ease),border-color .2s var(--ease)}
 .sec-lbl .add:active{border-color:var(--neon)}
 .sec-lbl .add:active{transform:scale(.88)}
-.sec-lbl .add svg{width:16px;height:16px;stroke:var(--onneon);stroke-width:2.4;fill:none}
+/* fon shaffof bo'lgani uchun ikonka NEON bo'lishi shart (ilgari --onneon edi —
+   to'ldirilgan neon fonda to'g'ri, shaffof fonda ko'rinmaydi) */
+.sec-lbl .add svg{width:16px;height:16px;stroke:var(--neon);stroke-width:2.4;fill:none}
 
 /* habit cards — time based */
 .habits{display:flex;flex-direction:column;gap:10px}
