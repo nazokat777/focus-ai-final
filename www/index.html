@@ -2770,12 +2770,40 @@ function renderGolden(){
     sTap();
   });
 }
-function drawStats(){
-  $('#stBest').textContent=bestStreakEver();
+/* ============ dekod effekti (GSAP ScrambleText ruhida, kutubxonasiz) ============
+   Raqam tasodifiy belgilardan haqiqiy qiymatga "hisoblanib" tushadi — ilovaning
+   terminal DNK'siga mos. FAQAT ma'noli lahzalarda (statistika ochilishi), har
+   render'da EMAS. Oxirida DOIM haqiqiy qiymat (rAF to'xtasa ham kafolat bor). */
+var SCR='0123456789';
+function decode(el,final,dur){
+  if(!el)return;
+  final=String(final);
+  if(reduce){el.textContent=final;return;}
+  dur=dur||520;
+  var start=null,n=final.length,done=false;
+  function fin(){if(done)return;done=true;el.textContent=final;}
+  requestAnimationFrame(function frame(ts){
+    if(done)return;
+    if(!start)start=ts;
+    var p=Math.min(1,(ts-start)/dur),settled=Math.floor(p*n*1.4),out='',i,c;
+    for(i=0;i<n;i++){
+      c=final.charAt(i);
+      /* raqam bo'lmagan belgilar (nuqta, foiz, probel) darhol joyida turadi */
+      if(i<settled||c<'0'||c>'9')out+=c;
+      else out+=SCR.charAt((Math.random()*10)|0);
+    }
+    el.textContent=out;
+    if(p<1)requestAnimationFrame(frame);else fin();
+  });
+  setTimeout(fin,dur+200); /* kafolat: fon tabda rAF to'xtasa ham qiymat ko'rinadi */
+}
+function drawStats(anim){
+  var heroA=bestStreakEver();
   var tot=0,k,h;
   for(h=0;h<store.habits.length;h++)for(k in store.habits[h].dayMs)tot+=store.habits[h].dayMs[k];
-  $('#stHrs').textContent=(tot/3600000).toFixed(1);
-  $('#stDone').textContent=store.wins||0;
+  var heroB=(tot/3600000).toFixed(1),heroC=store.wins||0;
+  if(anim){decode($('#stBest'),heroA);decode($('#stHrs'),heroB,620);decode($('#stDone'),heroC,440);}
+  else{$('#stBest').textContent=heroA;$('#stHrs').textContent=heroB;$('#stDone').textContent=heroC;}
   /* taqqoslash */
   var thisW=weekMs(0),lastW=weekMs(1);
   var hTh=(thisW/3600000).toFixed(1);
@@ -3449,7 +3477,7 @@ $('#nav').addEventListener('click',function(e){
   }
   $('#v-'+v).classList.add('active');
   navIdx=ni;navInd();
-  if(v==='stats')drawStats();
+  if(v==='stats')drawStats(true); /* tab ochilganda raqamlar dekodlanadi (til almashuvida emas) */
 });
 navInd();
 window.addEventListener('resize',navInd);
