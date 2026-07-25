@@ -300,6 +300,10 @@ input{font-family:inherit}
 .session{position:absolute;inset:0;background:var(--bg);z-index:90;display:flex;flex-direction:column;
   transform:translateY(100%);transition:transform .45s var(--ease)}
 .session.open{transform:none}
+/* tortib-yopish tutqichi (iOS-uslub) + drag holati */
+.s-grab{position:absolute;top:calc(env(safe-area-inset-top) + 8px);left:50%;transform:translateX(-50%);width:40px;height:5px;border-radius:3px;background:rgba(var(--neon-rgb),.28);z-index:6;transition:background .25s var(--ease),width .25s var(--ease);touch-action:none;cursor:grab}
+.session.dragging .s-grab{background:rgba(var(--neon-rgb),.65);width:56px}
+.session.dragging{transition:none;will-change:transform}
 /* sessiya kirish koreografiyasi — panel kelgach ichki bloklar bosqichma-bosqich ochiladi (transform+opacity) */
 @keyframes sRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
 @keyframes sRingIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
@@ -930,6 +934,7 @@ input{font-family:inherit}
   <div class="session" id="session">
     <canvas id="aurora"></canvas>
     <i class="msweep" id="msweep"></i>
+    <div class="s-grab" id="sGrab"></div>
     <div class="zen-hint" data-i18n="zen_hint"></div>
     <div class="s-head">
       <button class="s-close" id="sClose"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
@@ -2270,6 +2275,42 @@ $('#sClose').addEventListener('click',function(){
   clearTimeout(zenTm);sessionOpen=false;openHabitId=null;
   renderHabits();sTap();
 });
+/* ULTRA-interaktiv: sessiyani pastga tortib yopish — rubber-band qarshilik,
+   flick tezligi va chegara bilan (iOS-uslub). Faqat transform (60fps). */
+(function(){
+  var sess=$('#session'), dragging=false, startY=0, curDy=0, lastY=0, vel=0, cancelDrag=false;
+  function py(e){return e.touches&&e.touches[0]?e.touches[0].clientY:e.clientY;}
+  function down(e){
+    if(!sess.classList.contains('open')||sess.classList.contains('zen'))return;
+    /* interaktiv element ustidan boshlansa tortmaymiz (tugma/kirish) */
+    if(e.target&&e.target.closest&&e.target.closest('button,input,a,.s-close'))cancelDrag=true; else cancelDrag=false;
+    dragging=true;startY=py(e);lastY=startY;curDy=0;vel=0;
+  }
+  function move(e){
+    if(!dragging||cancelDrag)return;
+    var y=py(e), dy=y-startY;
+    if(dy<0)dy*=0.22;                 /* yuqoriga rubber-band qarshilik */
+    curDy=dy;vel=y-lastY;lastY=y;
+    if(dy>2){ sess.classList.add('dragging'); sess.style.transform='translateY('+dy+'px)'; if(e.cancelable&&e.preventDefault)e.preventDefault(); }
+  }
+  function up(){
+    if(!dragging)return;dragging=false;
+    if(cancelDrag||!sess.classList.contains('dragging')){cancelDrag=false;return;}
+    sess.classList.remove('dragging');   /* o'tish qayta yoqiladi (.45s) */
+    sess.style.transform='';             /* snap-back yoki yopilish shu holatdan silliq davom etadi */
+    if(curDy>110||vel>8){ $('#sClose').click(); buzz(8); }
+    else { sTap(); }
+  }
+  var grab=$('#sGrab'), head=sess.querySelector('.s-head');
+  [grab,head].forEach(function(el){ if(!el)return;
+    el.addEventListener('touchstart',down,{passive:true});
+    el.addEventListener('touchmove',move,{passive:false});
+    el.addEventListener('touchend',up);
+    el.addEventListener('mousedown',down);
+  });
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',up);
+})();
 function renderSession(){
   var h=getH(openHabitId);if(!h)return;
   if(h.type==='check')return;
