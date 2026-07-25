@@ -329,6 +329,10 @@ input{font-family:inherit}
 .s-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding-bottom:20px}
 .s-ring{position:relative;width:280px;height:280px}
 .s-ring .breathe{position:absolute;inset:46px;border-radius:50%;background:radial-gradient(circle,rgba(var(--neon-rgb),.28),rgba(var(--neon-rgb),0) 70%)}
+/* rotary dial: fokus halqasi tortiladigan (tayyor holatда) */
+#fRing{cursor:grab;touch-action:none}
+#fRing.dialing{cursor:grabbing}
+#fRing.dialing .head{filter:drop-shadow(0 0 6px var(--neon));stroke-width:3.4}
 .s-ring.run .breathe{animation:breathe 5s var(--ease) infinite}
 @keyframes breathe{0%,100%{transform:scale(.85);opacity:.5}50%{transform:scale(1.1);opacity:1}}
 .s-ring svg{position:absolute;inset:0}
@@ -1205,7 +1209,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   gm:"Xayrli tong",ga:"Xayrli kun",ge:"Xayrli kech",
   start:"Boshlash",pause:"Pauza",resume:"Davom etish",finish:"Yakunlash",
   remain:function(t){return "qoldi: "+t;},day_done:"Kunlik norma bajarildi ✓",deep_off:"Telefonni yuztuban qo'y — bonus vaqt",deep_on:"Telefonsiz rejim faol · +10% bonus",
-  deep_hint:"💡 Telefonni yuztuban qo'ysang — chalg'imaysan va +10% bonus vaqt olasan",cal_tap_hint:"Batafsil ko'rish uchun kunni bosing",
+  deep_hint:"💡 Telefonni yuztuban qo'ysang — chalg'imaysan va +10% bonus vaqt olasan",dial_hint:"💡 Halqani aylantirib fokus vaqtini belgila",cal_tap_hint:"Batafsil ko'rish uchun kunni bosing",
   help_streak:"🔥 Seriya — ketma-ket faol kunlar. Bugun biror odatga vaqt ajratsang, uzilmaydi.",help_today:"Bugun barcha odatlarga jami sarflangan vaqt.",
   help_growth:"O'sish — bugungi kunlik me'yorlaring o'rtacha bajarilishi.",help_strength:"⚡ Kuch — izchillik indeksi. Har kun me'yorni bajarsang o'sadi, o'tkazsang ozgina tushadi. Bitta o'tkazilgan kun hammasini nolga tushirmaydi.",
   eta_range:function(a,b){return "≈ "+a+" – "+b;},
@@ -1301,7 +1305,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   gm:"Доброе утро",ga:"Добрый день",ge:"Добрый вечер",
   start:"Старт",pause:"Пауза",resume:"Продолжить",finish:"Завершить",
   remain:function(t){return "осталось: "+t;},day_done:"Дневная норма выполнена ✓",deep_off:"Положи телефон экраном вниз — бонус",deep_on:"Режим без телефона · +10% бонус",
-  deep_hint:"💡 Положи телефон экраном вниз — не будешь отвлекаться и получишь +10% бонуса",cal_tap_hint:"Нажми на день для подробностей",
+  deep_hint:"💡 Положи телефон экраном вниз — не будешь отвлекаться и получишь +10% бонуса",dial_hint:"💡 Крути кольцо, чтобы задать время фокуса",cal_tap_hint:"Нажми на день для подробностей",
   help_streak:"🔥 Серия — дни подряд с активностью. Уделишь сегодня время любой привычке — не прервётся.",help_today:"Всего времени, потраченного сегодня на все привычки.",
   help_growth:"Рост — среднее выполнение твоих дневных норм за сегодня.",help_strength:"⚡ Сила — индекс постоянства. Выполняешь норму каждый день — растёт, пропустишь — чуть падает. Один пропуск не обнуляет всё.",
   eta_range:function(a,b){return "≈ "+a+" – "+b;},
@@ -1397,7 +1401,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   gm:"Good morning",ga:"Good afternoon",ge:"Good evening",
   start:"Start",pause:"Pause",resume:"Resume",finish:"Finish",
   remain:function(t){return "left: "+t;},day_done:"Daily goal reached ✓",deep_off:"Place phone face down — bonus time",deep_on:"Deep mode active · +10% bonus",
-  deep_hint:"💡 Place your phone face down — no distractions and +10% bonus time",cal_tap_hint:"Tap a day for details",
+  deep_hint:"💡 Place your phone face down — no distractions and +10% bonus time",dial_hint:"💡 Rotate the ring to set your focus time",cal_tap_hint:"Tap a day for details",
   help_streak:"🔥 Streak — consecutive active days. Give any habit some time today and it won't break.",help_today:"Total time spent on all habits today.",
   help_growth:"Growth — your average daily-goal completion for today.",help_strength:"⚡ Strength — a consistency index. Meet your goal daily and it grows; skip and it dips slightly. One missed day doesn't reset everything.",
   eta_range:function(a,b){return "≈ "+a+" – "+b;},
@@ -3011,12 +3015,14 @@ var fSegs=[],fHead=null,fPrevOn=0;
   fHead=mkHead(ns,svg,cx,cy,ri,ro);
 })();
 var fDur=25*60000,fEndAt=null,fPausedRemain=fDur,fRunning=false,fLastMin=-1,fStateK='ready',fStartRemain=fDur;
+var MAXDIAL=60*60000; /* rotary dial: halqa = 60 daqiqa (soat metaforasi) */
 function fRemain(){return fRunning?Math.max(0,fEndAt-Date.now()):fPausedRemain;}
 function fFmt(ms){var s=Math.ceil(ms/1000),m=Math.floor(s/60),ss=s%60;return (m<10?'0':'')+m+':'+(ss<10?'0':'')+ss;}
 function fDraw(){
   var rm=fRemain();
   $('#fTime').textContent=fFmt(rm);
-  var ff=1-rm/fDur;
+  /* tayyor holatда halqa TANLANGAN davomiylikni ko'rsatadi (dial); ishlaganda progress */
+  var ff=(!fRunning&&fStateK==='ready')?Math.min(1,fDur/MAXDIAL):(1-rm/fDur);
   var on=Math.round(ff*fSegs.length);
   segFlash(fSegs,on,fPrevOn);fPrevOn=on;
   fSegs.forEach(function(l,i){l.classList.toggle('on',i<on);});
@@ -3049,6 +3055,48 @@ $$('#v-focus .preset').forEach(function(b){
     fDur=parseInt(b.getAttribute('data-min'),10)*60000;fPausedRemain=fDur;fStateK='ready';fDraw();
   });
 });
+/* ULTRA-interaktiv: fokus halqasini AYLANTIRIB vaqt belgilash (rotary dial, soat metaforasi).
+   Halqa = 60 daqiqa; boshi = tutqich. Faqat tayyor holatда (ishlaganда o'chiq). */
+(function(){
+  var ring=$('#fRing'), dialing=false, dialMin=25;
+  function angleAt(e){
+    var r=ring.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+    var px=(e.touches&&e.touches[0]?e.touches[0].clientX:e.clientX)-cx;
+    var pyv=(e.touches&&e.touches[0]?e.touches[0].clientY:e.clientY)-cy;
+    var a=Math.atan2(pyv,px)*180/Math.PI+90;      /* 0 = tepa, soat yo'nalishi */
+    if(a<0)a+=360; if(a>=360)a-=360; return a;
+  }
+  function apply(a,guard){
+    var mins=Math.round((a/360*60)/5)*5;           /* 5-lik qadam, 5..60 */
+    if(mins<5)mins=5; if(mins>60)mins=60;
+    if(guard&&Math.abs(mins-dialMin)>30)return;    /* tepani kesib o'tishда sakramasin */
+    if(mins===dialMin)return;
+    dialMin=mins; fDur=mins*60000; fPausedRemain=fDur; fStateK='ready';
+    $$('#v-focus .preset').forEach(function(p){p.classList.toggle('sel',parseInt(p.getAttribute('data-min'),10)===mins);});
+    fDraw(); buzz(6); tone(520,.025,0,'sine');
+  }
+  function down(e){
+    if(fRunning)return;                            /* ishlaganда dial yo'q — swipe/scroll ishlaydi */
+    dialing=true; dialMin=Math.round(fDur/60000);
+    ring.classList.add('dialing');
+    apply(angleAt(e),false);                       /* birinchi teginишда darhol (guardsiz) */
+    if(e.stopPropagation)e.stopPropagation();       /* tab-swipe'ni to'xtatamiz */
+    if(e.cancelable&&e.preventDefault)e.preventDefault();
+  }
+  function move(e){
+    if(!dialing)return;
+    apply(angleAt(e),true);
+    if(e.stopPropagation)e.stopPropagation();
+    if(e.cancelable&&e.preventDefault)e.preventDefault();
+  }
+  function up(){ if(!dialing)return; dialing=false; ring.classList.remove('dialing'); sTap(); }
+  ring.addEventListener('touchstart',down,{passive:false});
+  ring.addEventListener('touchmove',move,{passive:false});
+  ring.addEventListener('touchend',up);
+  ring.addEventListener('mousedown',down);
+  window.addEventListener('mousemove',move);
+  window.addEventListener('mouseup',up);
+})();
 $('#fStart').addEventListener('click',function(){
   tone(494,.05);
   if(fRunning){
@@ -3619,6 +3667,10 @@ function goToView(ni){
   navIdx=ni;navInd();
   if(!reduce){var ni2=$('#navind');if(ni2){ni2.classList.remove('stretch');void ni2.getBoundingClientRect();ni2.classList.add('stretch');}}
   if(v==='stats')drawStats(true); /* tab ochilganda raqamlar dekodlanadi (til almashuvida emas) */
+  if(v==='focus'&&!store.settings.dialHintShown){ /* rotary dial — birinchi marta oshkor qilamiz */
+    store.settings.dialHintShown=true;save();
+    setTimeout(function(){if(navIdx===VIEWS.indexOf('focus'))toast(T('dial_hint'));},700);
+  }
 }
 $('#nav').addEventListener('click',function(e){
   var b=e.target.closest('.tab');if(!b)return;
