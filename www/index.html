@@ -628,6 +628,10 @@ input{font-family:inherit}
 /* sessiya ochilganda halqa o'zini yig'adi — faqat opacity (arzon), bir martalik */
 @keyframes segIn{from{opacity:0}to{opacity:1}}
 .s-ring.intro .seg{animation:segIn .3s var(--ease-out) both}
+/* ▶/⏸ ikonkasi almashganda kichik zarba (ro'yxat qayta qurilmaydi) */
+@keyframes iswap{0%{transform:scale(.6);opacity:.4}60%{transform:scale(1.12)}100%{transform:scale(1);opacity:1}}
+.hc-play.swap svg{animation:iswap .32s var(--spring)}
+.reduce .hc-play.swap svg{animation:none}
 .reduce .hcard.enter,.reduce .s-ring .seg.just{animation:none}
 
 #aurora{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s var(--ease)}
@@ -1936,6 +1940,33 @@ function refreshChips(){
   $('#profSub').textContent=T('prof')(globalStreak());
 }
 var cardRefs={};
+/* ============ karta holati O'RNIDA o'zgaradi ============
+   Ilgari ▶ START bosilganda renderHabits() butun ro'yxatni o'chirib qayta
+   qurardi: element o'zligi yo'qolar, shine animatsiyasi noldan boshlanar,
+   hech qanday o'tish bo'lmasdi (GSAP Flip aynan shu muammoni yechadi).
+   Endi faqat o'sha kartaning holati yangilanadi. */
+var SVG_PLAY='<svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7z"/></svg>',
+    SVG_PAUSE='<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>';
+function svgCheck(done){
+  return '<svg viewBox="0 0 24 24" style="fill:none;stroke:'+(done?'var(--onneon)':'var(--neon)')+';stroke-width:2.6"><path d="M5 13l4 4L19 7"/></svg>';
+}
+function updateCardState(h){
+  var el=cardRefs[h.id];if(!el)return false;
+  var btn=el.querySelector('.hc-play');if(!btn)return false;
+  if(h.type==='check'){
+    var dn=!!(h.days&&h.days.indexOf(TODAY)!==-1);
+    el.classList.toggle('completed',dn||!!h.completed);
+    btn.innerHTML=svgCheck(dn);
+    btn.style.background=dn?'var(--neon)':'';
+  }else{
+    el.classList.toggle('running',!!h.runningSince);
+    el.classList.toggle('completed',!!h.completed);
+    btn.innerHTML=h.runningSince?SVG_PAUSE:SVG_PLAY;
+  }
+  /* ikonka almashuvi sezilsin — kichik zarba (faqat transform) */
+  if(!reduce){btn.classList.remove('swap');void btn.getBoundingClientRect();btn.classList.add('swap');}
+  return true;
+}
 var firstCardRender=true;
 function renderHabits(){
   var list=$('#habitList');list.innerHTML='';cardRefs={};
@@ -1967,7 +1998,9 @@ function renderHabits(){
       if(isCheck){toggleCheck(h);return;}
       if(h.completed)return;
       if(h.runningSince)pauseH(h);else startH(h);
-      renderHabits();refreshCards();
+      /* ro'yxat QAYTA QURILMAYDI — faqat shu kartaning holati o'zgaradi */
+      if(!updateCardState(h))renderHabits();
+      refreshCards();
     });
     el.querySelector('.hc-stat').addEventListener('click',function(e){e.stopPropagation();openDetail(h.id);});
     el.addEventListener('click',function(){openSession(h.id);});
@@ -1981,7 +2014,7 @@ function toggleCheck(h){
   var i=h.days.indexOf(TODAY);
   if(i===-1){h.days.push(TODAY);sGo();buzz([10,30,14]);awardDayCoins(h);}
   else{h.days.splice(i,1);sTap();}
-  save();renderHabits();computeTarget();refreshChips();
+  save();if(!updateCardState(h))renderHabits();computeTarget();refreshChips();refreshCards();
 }
 function refreshCards(){
   store.habits.forEach(function(h){
