@@ -393,6 +393,9 @@ input{font-family:inherit}
   border:1px solid rgba(57,255,140,.35);border-radius:14px;padding:12px 18px;color:var(--text);font-size:13px;
   line-height:1.4;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:.35s var(--ease)}
 .toast.show{opacity:1;transform:translate(-50%,0)}
+.toast.act{pointer-events:auto;display:flex;align-items:center;gap:14px;justify-content:center}
+.t-act{flex:none;color:var(--neon);font-weight:700;font-size:12px;letter-spacing:.06em;padding:3px 4px;text-transform:uppercase}
+.t-act:active{opacity:.6}
 .device[data-theme="light"] .toast{background:rgba(255,255,255,.94)}
 .mini-conf{position:absolute;inset:0;z-index:96;pointer-events:none;opacity:0;transition:opacity .2s}
 .mini-conf.show{opacity:1}
@@ -1048,6 +1051,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   eta_closer:function(n){return "sana "+n+" kunga yaqinlashdi";},
   eta_further:function(n){return "sana "+n+" kunga uzoqlashdi";},
   eta_done:"Eng yuqori daraja — yangi ufq yo'q 👑",
+  undo:"Qaytarish",undo_ok:"Qaytarildi",
   g_q:"Sizningcha bugun bu odatga qancha vaqt sarfladingiz?",
   g_show:"Haqiqatni ko'rsatish",g_skip:"O'tkazib yuborish",
   g_err:function(p){return "xato "+p+"%";},
@@ -1139,6 +1143,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   eta_closer:function(n){return "дата приблизилась на "+n+" дн.";},
   eta_further:function(n){return "дата отдалилась на "+n+" дн.";},
   eta_done:"Высший уровень — нового горизонта нет 👑",
+  undo:"Вернуть",undo_ok:"Восстановлено",
   g_q:"Как думаете, сколько времени вы сегодня потратили на эту привычку?",
   g_show:"Показать правду",g_skip:"Пропустить",
   g_err:function(p){return "ошибка "+p+"%";},
@@ -1230,6 +1235,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   eta_closer:function(n){return "date moved "+n+" days closer";},
   eta_further:function(n){return "date moved "+n+" days further";},
   eta_done:"Top level — no horizon left 👑",
+  undo:"Undo",undo_ok:"Restored",
   g_q:"How much time do you think you spent on this habit today?",
   g_show:"Reveal the truth",g_skip:"Skip",
   g_err:function(p){return p+"% off";},
@@ -2198,9 +2204,16 @@ $('#dEdit').addEventListener('click',function(){
 $('#dDelete').addEventListener('click',function(){
   var h=getH(openDetailId);if(!h)return;
   if(!confirm(T('del_confirm')(h.name)))return;
+  /* qaytarish uchun o'rin va nusxani saqlaymiz — o'chirish endi qaytarilmas emas */
+  var idx=0,i;
+  for(i=0;i<store.habits.length;i++)if(store.habits[i].id===h.id){idx=i;break;}
+  var snap=h;
   store.habits=store.habits.filter(function(x){return x.id!==h.id;});
-  save();closeDetail();renderHabits();refreshChips();
-  toast(T('del_ok'));buzz(14);
+  save();closeDetail();renderHabits();refreshChips();buzz(14);
+  toast(T('del_ok'),T('undo'),function(){
+    store.habits.splice(Math.min(idx,store.habits.length),0,snap);
+    save();renderHabits();refreshChips();sGo();buzz(10);toast(T('undo_ok'));
+  });
 });
 
 /* ============ deep mode — yuztuban (bonus + avtomatik zen) ============ */
@@ -2231,11 +2244,20 @@ function armOrient(){
 /* ============ achievement ============ */
 var confCv=$('#confetti'),confCtx=confCv.getContext('2d'),confs=[];
 /* umumiy toast (blok F/G/H) */
-function toast(msg){
+/* toast(msg) — oddiy xabar; toast(msg,label,fn) — amal tugmasi bilan (masalan QAYTARISH) */
+function toast(msg,actLabel,fn){
   var t=$('#toast');
   if(!t){t=document.createElement('div');t.id='toast';t.className='toast';$('#device').appendChild(t);}
-  t.innerHTML=msg;t.classList.add('show');
-  clearTimeout(t._tm);t._tm=setTimeout(function(){t.classList.remove('show');},2800);
+  t.innerHTML=msg+(actLabel?'<button class="t-act">'+actLabel+'</button>':'');
+  t.classList.toggle('act',!!actLabel);
+  t.classList.add('show');
+  var btn=t.querySelector('.t-act');
+  if(btn)btn.addEventListener('click',function(){
+    clearTimeout(t._tm);t.classList.remove('show','act');
+    try{if(fn)fn();}catch(e){}
+  });
+  clearTimeout(t._tm);
+  t._tm=setTimeout(function(){t.classList.remove('show','act');},actLabel?9000:2800);
 }
 /* ============ coachmark: birinchi kirishda 4 bosqichli tanishtiruv (mvow-ai home.html'dan) ============ */
 function coachMark(){
