@@ -4,4 +4,5 @@
     <string name="title_activity_main">Focus AI</string>
     <string name="package_name">uz.lumnaara.focusai</string>
     <string name="custom_url_scheme">uz.lumnaara.focusai</string>
+    <string name="widget_desc">Bugungi fokus vaqti va streak</string>
 </resources>

@@ -1316,7 +1316,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   strength:"Kuch",strength_sub:"Izchillik indeksi",
   photo_none:"Rasm tanlash…",photo_ok:"Rasm tanlandi ✓",
   save_full:"Saqlab bo'lmadi: xotira to'ldi. Rasmlarni kamaytiring yoki eski odatlarni o'chiring.",
-  u_h:" soat",u_m:" min",
+  u_h:" soat",u_m:" min",wid_sub:"Bugungi fokus",
   err_name:"Odat nomini kiriting",err_name_auth:"Iltimos, ismingizni kiriting",
   ob1t:"Vaqtingni <b>o'lcha</b>",ob1p:"Boshqa ilovalar «qildingmi?» deb so'raydi. Focus AI haqiqiy sarflangan vaqtni hisoblaydi.",
   ob2t:"Natijang <b>ko'z oldingda</b>",ob2p:"Har bir fokus daqiqasi statistikangga yoziladi. Barqarorlik — eng katta kuch.",
@@ -1413,7 +1413,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   strength:"Сила",strength_sub:"Индекс постоянства",
   photo_none:"Выбрать фото…",photo_ok:"Фото выбрано ✓",
   save_full:"Не удалось сохранить: память заполнена. Уменьшите фото или удалите старые привычки.",
-  u_h:" ч",u_m:" мин",
+  u_h:" ч",u_m:" мин",wid_sub:"Сегодняшний фокус",
   err_name:"Введите название привычки",err_name_auth:"Пожалуйста, введите имя",
   ob1t:"<b>Измеряй</b> время",ob1p:"Другие приложения спрашивают «сделал?». Focus AI считает реально потраченное время.",
   ob2t:"Прогресс <b>на виду</b>",ob2p:"Каждая минута фокуса записывается в статистику. Постоянство — главная сила.",
@@ -1510,7 +1510,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   strength:"Strength",strength_sub:"Consistency index",
   photo_none:"Choose photo…",photo_ok:"Photo selected ✓",
   save_full:"Couldn't save: storage full. Reduce photos or delete old habits.",
-  u_h:" h",u_m:" min",
+  u_h:" h",u_m:" min",wid_sub:"Today's focus",
   err_name:"Please enter a habit name",err_name_auth:"Please enter your name",
   ob1t:"<b>Measure</b> your time",ob1p:"Other apps ask “did you do it?”. Focus AI counts the time you actually spend.",
   ob2t:"Progress <b>you can see</b>",ob2p:"Every focused minute lands in your stats. Consistency is the superpower.",
@@ -2168,12 +2168,33 @@ function setTodayTime(ms){
   }
   _lastTodayMs=ms;
 }
+/* ============ Bosh-ekran widgeti (Android) ============
+   Native FocusWidget plugini bo'lsa — bugungi fokus + norma foizi + streakni
+   telefon widgetiga uzatamiz. Faqat KO'RSATILADIGAN qiymat o'zgarganda yozamiz
+   (daqiqada bir marta) — SharedPreferences va widget qayta chizishни tejaydi. */
+var _wLast='';
+function widgetPct(){
+  var hs=store.habits.filter(function(h){return !isSkip(h,TODAY);});
+  if(!hs.length)return 0;
+  var sum=0;hs.forEach(function(h){sum+=dayRatio(h,TODAY);});
+  return Math.round(sum/hs.length*100);
+}
+function pushWidget(){
+  var FW=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.FocusWidget)||null;
+  if(!FW)return; /* faqat native Androidda mavjud */
+  var today=fmtHM(dayTotalMs(TODAY)),pct=widgetPct(),streak=globalStreak(),sub=T('wid_sub');
+  var sig=today+'|'+pct+'|'+streak+'|'+sub;
+  if(sig===_wLast)return;
+  _wLast=sig;
+  try{FW.update({today:today,pct:pct,streak:streak,subtitle:sub});}catch(e){}
+}
 function refreshChips(){
   $('#streakN').textContent=globalStreak();
   setTodayTime(dayTotalMs(TODAY));
   if(typeof renderAvatar==='function')renderAvatar();
   $('#profName').textContent=store.user.name||'';
   $('#profSub').textContent=T('prof')(globalStreak());
+  pushWidget();
 }
 var cardRefs={};
 /* ============ karta holati O'RNIDA o'zgaradi ============
@@ -3848,9 +3869,11 @@ setInterval(function(){
   if(store.settings.alarmTime===hm&&store.lastAlarmDay!==TODAY&&!alarmActive){
     alarmFire();
   }
+  pushWidget(); /* sessiya davomida ham widget jonli (daqiqada bir marta yoziladi) */
 },15000);
 if(store.settings.pinHash)pinOpen('enter');
 renderAvatar();
+pushWidget(); /* ilova ochilганda widgetni darhol to'ldiramiz */
 
 /* ============ WOW qatlami ============ */
 /* aurora — sessiya fonida nafas oluvchi nur pardasi */

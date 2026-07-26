@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/w_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/widget_bg"
+    android:padding="16dp">
+
+    <!-- Yuqori qator: brend + streak -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="FOCUS AI"
+            android:textColor="@color/w_neon"
+            android:textSize="11sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.18"
+            android:fontFamily="sans-serif-medium" />
+
+        <TextView
+            android:id="@+id/w_streak"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="🔥 0"
+            android:textColor="@color/w_text"
+            android:textSize="13sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <!-- Bugungi fokus vaqti -->
+    <TextView
+        android:id="@+id/w_today"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="0m"
+        android:textColor="@color/w_text"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif-medium"
+        android:includeFontPadding="false" />
+
+    <TextView
+        android:id="@+id/w_sub"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:text="Bugungi fokus"
+        android:textColor="@color/w_muted"
+        android:textSize="12sp" />
+
+    <!-- Kunlik norma progressi -->
+    <ProgressBar
+        android:id="@+id/w_prog"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="7dp"
+        android:layout_marginTop="12dp"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/widget_progress" />
+
+</LinearLayout>

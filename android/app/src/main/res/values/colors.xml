@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="w_neon">#39FF8C</color>
+    <color name="w_bg">#0B120E</color>
+    <color name="w_line">#1E2C24</color>
+    <color name="w_track">#16241C</color>
+    <color name="w_text">#EAF3EE</color>
+    <color name="w_muted">#7C8A83</color>
+    <color name="w_onneon">#04150B</color>
+</resources>
