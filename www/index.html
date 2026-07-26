@@ -659,6 +659,8 @@ input{font-family:inherit}
 .fr-row{display:flex;align-items:center;gap:11px;background:var(--elev);border:1px solid var(--line);border-radius:13px;padding:11px 13px}
 .fr-row.me{border-color:var(--neon)}
 .fr-rank{width:22px;flex:none;text-align:center;font-size:13.5px;font-family:'JetBrains Mono',monospace;color:var(--muted)}
+.lg-med{width:22px;flex:none;text-align:center;font-size:17px}
+.lg-week{margin-left:auto;font-size:11px;color:var(--muted);font-weight:400;letter-spacing:0;text-transform:none}
 .fr-nm{flex:1;min-width:0;font-size:14px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fr-nm .you{color:var(--neon)}
 .fr-stat{font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex:none;text-align:right}
@@ -955,15 +957,22 @@ input{font-family:inherit}
         <div class="m-bar"><div class="m-fill" id="mFill"></div></div>
         <div class="m-eta mono" id="mEta"></div>
       </div>
-      <div class="grid-lbl" id="rewardsLbl" style="cursor:pointer"><span data-i18n="rewards"></span><span class="rw-bal mono" id="rwBal">🛍</span></div>
-      <div class="medals" id="medals"></div>
-      <div class="grid-lbl" data-i18n="streak_week"></div>
-      <div class="streak-row" id="streakRow"></div>
       <div class="coach">
         <div class="c-top">🤖 <span data-i18n="coach"></span></div>
         <div class="c-msg dim" id="coachMsg"></div>
         <button id="coachBtn" data-i18n="coach_btn"></button>
       </div>
+    </section>
+
+    <!-- LIGA (mukofot + streak + haftalik reyting) -->
+    <section class="view" id="v-league">
+      <div class="greet"><h1 style="font-size:24px" data-i18n="tab_league"></h1><p data-i18n="league_sub"></p></div>
+      <div class="grid-lbl" data-i18n="streak_week"></div>
+      <div class="streak-row" id="streakRow"></div>
+      <div class="grid-lbl" id="rewardsLbl" style="cursor:pointer"><span data-i18n="rewards"></span><span class="rw-bal mono" id="rwBal">🛍</span></div>
+      <div class="medals" id="medals"></div>
+      <div class="grid-lbl"><span data-i18n="league_lbl"></span><span class="lg-week mono" data-i18n="league_week"></span></div>
+      <div class="fr-board" id="leagueBoard"></div>
     </section>
 
     <!-- PROFILE -->
@@ -1010,6 +1019,7 @@ input{font-family:inherit}
     <button class="tab on" data-view="home"><svg viewBox="0 0 24 24"><path d="M4 11l8-7 8 7M6 9.5V20h12V9.5"/></svg><span data-i18n="tab_home"></span></button>
     <button class="tab" data-view="focus"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-i18n="tab_focus"></span></button>
     <button class="tab" data-view="stats"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg><span data-i18n="tab_stats"></span></button>
+    <button class="tab" data-view="league"><svg viewBox="0 0 24 24"><path d="M7 4h10v4a5 5 0 0 1-10 0zM7 6H4v1a3 3 0 0 0 3 3M17 6h3v1a3 3 0 0 1-3 3M9 20h6M12 13v7"/></svg><span data-i18n="tab_league"></span></button>
     <button class="tab" data-view="you"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><span data-i18n="tab_you"></span></button>
   </nav>
 
@@ -1331,7 +1341,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   cmp_less:function(h,p){return "Bu hafta <b>"+h+" soat</b> — o'tgan haftadan "+p+"% kam. Bugun bitta sessiya boshla!";},
   cmp_first:function(h){return "Bu hafta <b>"+h+" soat</b> fokus qilding. Ajoyib boshlanish!";},
   lang:"Til",theme:"Tungi rejim",sound:"Ovoz",logout:"Chiqish",
-  tab_home:"Asosiy",tab_stats:"Statistika",tab_you:"Profil",
+  tab_home:"Asosiy",tab_stats:"Statistika",tab_you:"Profil",tab_league:"Liga",league_lbl:"Haftalik reyting",league_week:"· 7 kun",league_sub:"Mukofot, seriya va reyting",league_empty:"Hali reyting yo'q — fokus qiling!",league_cloud:"Reyting bulut rejimida ishlaydi",
   gm:"Xayrli tong",ga:"Xayrli kun",ge:"Xayrli kech",
   start:"Boshlash",pause:"Pauza",resume:"Davom etish",finish:"Yakunlash",
   remain:function(t){return "qoldi: "+t;},day_done:"Kunlik norma bajarildi ✓",deep_off:"Telefonni yuztuban qo'y — bonus vaqt",deep_on:"Telefonsiz rejim faol · +10% bonus",
@@ -1428,7 +1438,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   cmp_less:function(h,p){return "На этой неделе <b>"+h+" ч</b> — на "+p+"% меньше прошлой. Начни сессию сегодня!";},
   cmp_first:function(h){return "На этой неделе <b>"+h+" ч</b> фокуса. Отличное начало!";},
   lang:"Язык",theme:"Тёмная тема",sound:"Звук",logout:"Выйти",
-  tab_home:"Главная",tab_stats:"Статы",tab_you:"Профиль",
+  tab_home:"Главная",tab_stats:"Статы",tab_you:"Профиль",tab_league:"Лига",league_lbl:"Недельный рейтинг",league_week:"· 7 дней",league_sub:"Награды, серия и рейтинг",league_empty:"Пока нет рейтинга — фокусируйтесь!",league_cloud:"Рейтинг работает в облачном режиме",
   gm:"Доброе утро",ga:"Добрый день",ge:"Добрый вечер",
   start:"Старт",pause:"Пауза",resume:"Продолжить",finish:"Завершить",
   remain:function(t){return "осталось: "+t;},day_done:"Дневная норма выполнена ✓",deep_off:"Положи телефон экраном вниз — бонус",deep_on:"Режим без телефона · +10% бонус",
@@ -1525,7 +1535,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   cmp_less:function(h,p){return "This week <b>"+h+"h</b> — "+p+"% less than last week. Start a session today!";},
   cmp_first:function(h){return "You focused <b>"+h+"h</b> this week. Great start!";},
   lang:"Language",theme:"Dark mode",sound:"Sound",logout:"Log out",
-  tab_home:"Home",tab_stats:"Stats",tab_you:"Profile",
+  tab_home:"Home",tab_stats:"Stats",tab_you:"Profile",tab_league:"League",league_lbl:"Weekly ranking",league_week:"· 7 days",league_sub:"Rewards, streak and ranking",league_empty:"No ranking yet — go focus!",league_cloud:"Ranking works in cloud mode",
   gm:"Good morning",ga:"Good afternoon",ge:"Good evening",
   start:"Start",pause:"Pause",resume:"Resume",finish:"Finish",
   remain:function(t){return "left: "+t;},day_done:"Daily goal reached ✓",deep_off:"Place phone face down — bonus time",deep_on:"Deep mode active · +10% bonus",
@@ -3286,7 +3296,7 @@ function drawStats(anim){
     bd.appendChild(el);
   });
   save();
-  renderMastery();renderRewards();renderGolden();renderStreakRow();
+  renderMastery();renderGolden();
 }
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
@@ -3944,7 +3954,7 @@ function navInd(){
   if(!b||!ind||!b.offsetWidth)return;
   ind.style.setProperty('--x',(b.offsetLeft+b.offsetWidth/2-7)+'px');
 }
-var VIEWS=['home','focus','stats','you'],navIdx=0,leaveTm=null;
+var VIEWS=['home','focus','stats','league','you'],navIdx=0,leaveTm=null;
 /* markazlashtirilgan tab o'tishi — ham bosish, ham swipe shu funksiyani chaqiradi */
 function goToView(ni){
   if(ni<0||ni>=VIEWS.length||ni===navIdx)return;
@@ -3963,6 +3973,7 @@ function goToView(ni){
   navIdx=ni;navInd();
   if(!reduce){var ni2=$('#navind');if(ni2){ni2.classList.remove('stretch');void ni2.getBoundingClientRect();ni2.classList.add('stretch');}}
   if(v==='stats')drawStats(true); /* tab ochilganda raqamlar dekodlanadi (til almashuvida emas) */
+  if(v==='league'){renderStreakRow();renderRewards();renderLeague();} /* Liga tab: streak + mukofot + reyting */
   if(v==='you'&&typeof refreshFriendsRowDot==='function')refreshFriendsRowDot(); /* profil: o'qilmagan nuqta */
   if(v==='focus'&&!store.settings.dialHintShown){ /* rotary dial — birinchi marta oshkor qilamiz */
     store.settings.dialHintShown=true;save();
@@ -4167,6 +4178,22 @@ function refreshUnread(codes){
       setUnreadBadge(document.querySelector('.fr-unread[data-unread-for="'+code+'"]'),n);
     });
   });
+}
+/* Duolingo uslubi haftalik liga — barcha userlar, oxirgi 7 kun fokus */
+function renderLeague(){
+  var box=$('#leagueBoard');if(!box)return;
+  if(typeof Social==='undefined'||!Social.cloud()){box.innerHTML='<div class="fr-empty">'+T('league_cloud')+'</div>';return;}
+  box.innerHTML='<div class="fr-empty">…</div>';
+  Social.league().then(function(list){
+    if(!list||!list.length){box.innerHTML='<div class="fr-empty">'+T('league_empty')+'</div>';return;}
+    var med=['🥇','🥈','🥉'];
+    box.innerHTML=list.slice(0,50).map(function(x,i){
+      var rank=i<3?('<span class="lg-med">'+med[i]+'</span>'):('<span class="fr-rank">'+(i+1)+'</span>');
+      var nm=x.me?('<span class="you">'+T('fr_you')+'</span>'):esc(x.name);
+      return '<div class="fr-row'+(x.me?' me':'')+'">'+rank+'<span class="fr-nm">'+nm+'</span>'+
+        '<span class="fr-stat"><b>'+frFocusTxt(Math.round(x.mins/60*10)/10)+'</b></span></div>';
+    }).join('');
+  },function(){box.innerHTML='<div class="fr-empty">'+T('league_empty')+'</div>';});
 }
 /* bulut kutubxonasi kech yuklansa, ochiq do'stlar panelini yangilaymiz (kalitlar qo'yilganda) */
 window.onSupabaseReady=function(){try{syncMyName();}catch(e){}try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}};
@@ -4557,6 +4584,27 @@ window.addEventListener('beforeunload',function(){
     }).catch(function () { var lb = localBoard(kind); lb.offline = true; return lb; }); /* bulut xatosi — offline bayroq bilan lokal */
   }
 
+  // ── Haftalik liga (BARCHA userlar, oxirgi 7 kun fokus daqiqasi) ──
+  function league() {
+    var c = client(); if (!c) return Promise.resolve([]);
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return Promise.resolve([]);
+    var wkStart = new Date(new Date(todayIso() + 'T00:00:00Z').getTime() - 6 * 86400000).toISOString().slice(0, 10);
+    return Promise.all([ensureProfile(), syncStats()]).then(function () {
+      return c.from('daily_stats').select('code,focus_mins').gte('d', wkStart).limit(1000);
+    }).then(function (res) {
+      if (res && res.error) return [];
+      var rows = (res && res.data) || [], sum = {};
+      rows.forEach(function (r) { if (r.focus_mins != null && r.focus_mins > 0) sum[r.code] = (sum[r.code] || 0) + r.focus_mins; });
+      var codes = Object.keys(sum); if (!codes.length) return [];
+      return fetchNames(codes).then(function (pn) {
+        var mine = myCode();
+        var list = codes.map(function (cd) { return { code: cd, name: cd === mine ? '__ME__' : (pn[cd] || cd), mins: sum[cd], me: cd === mine }; });
+        list.sort(function (a, b) { return b.mins - a.mins; });
+        return list;
+      });
+    }, function () { return []; });
+  }
+
   // ── Chat (bulut rejimida) ──
   function _directInsert(c, toCode, body) {
     return c.from('messages').insert({ from_code: myCode(), to_code: toCode, body: body })
@@ -4633,7 +4681,7 @@ window.addEventListener('beforeunload',function(){
 
   window.Social = {
     myCode: myCode, myStats: myStats, cloud: cloud, syncStats: syncStats, wards: wards, ensureProfile: ensureProfile,
-    friends: friends, addFriend: addFriend, removeFriend: removeFriend, renameFriend: renameFriend, nameOf: nameOf, leaderboard: leaderboard,
+    friends: friends, addFriend: addFriend, removeFriend: removeFriend, renameFriend: renameFriend, nameOf: nameOf, leaderboard: leaderboard, league: league,
     sendMessage: sendMessage, getMessages: getMessages, subscribeMessages: subscribeMessages, unsubscribe: unsubscribe,
     hiddenSet: hiddenSet, setHidden: setHidden, isHidden: isHidden, myTasksToday: myTasksToday,
     visGet: visGet, visSet: visSet
