@@ -598,6 +598,12 @@ input{font-family:inherit}
 .sd-wd{font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
 .sd-today .sd-wd{color:var(--neon);font-weight:700}
 .reduce .sd-ic{transition:none}
+.sr-freeze{display:flex;align-items:center;gap:7px;margin-top:13px;padding-top:12px;border-top:1px solid var(--line)}
+.sr-freeze .sf-ic{font-size:15px}
+.sr-freeze .sf-n{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--neon)}
+.sr-freeze .sf-lbl{font-size:12px;color:var(--muted);margin-right:auto}
+.sf-buy{background:rgba(var(--neon-rgb),.14);border:1px solid rgba(var(--neon-rgb),.4);color:var(--neon);border-radius:9px;padding:6px 11px;font-size:12px;font-weight:600;font-family:'JetBrains Mono',monospace;cursor:pointer}
+.sf-buy:active{transform:scale(.94)}
 /* do'stlar */
 .setting.link{cursor:pointer}
 .setting .arrow{color:var(--muted);font-size:20px;line-height:1}
@@ -1337,7 +1343,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   all_done_today:"Bugun hammasi bajarildi!",
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
-  wisdom:"Hikmat to'plami",trace:"Fokus izi",streak_week:"Seriya",streak_days:"kunlik seriya",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
+  wisdom:"Hikmat to'plami",trace:"Fokus izi",streak_week:"Seriya",streak_days:"kunlik seriya",freeze_lbl:"muzlatgich",freeze_got:"Muzlatgich olindi 🧊 — bir kunni himoyalaydi",freeze_need:"Tanga yetarli emas",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
   rewards:"Mukofotlar",md1:"Birinchi qadam",md2:"10 soat",md3:"50 soat",md4:"100 soat",md5:"500 soat",md6:"Maqsadli",md7:"3 kun",md8:"Temir iroda",md9:"Afsona",
   shop_hint:"Fokus qilib to'plagan tanga va olmoslaringni o'zing belgilagan mukofotlarga sarfla. 🪙 — har bajarilgan kunlik norma uchun; 💎 — kunning barcha odatlari bajarilganda.",my_rewards:"Mening mukofotlarim",reward_history:"Olingan mukofotlar",
   new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
@@ -1434,7 +1440,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   all_done_today:"Всё выполнено сегодня!",
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
-  wisdom:"Мудрость",trace:"След фокуса",streak_week:"Серия",streak_days:"дней подряд",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
+  wisdom:"Мудрость",trace:"След фокуса",streak_week:"Серия",streak_days:"дней подряд",freeze_lbl:"заморозка",freeze_got:"Заморозка куплена 🧊 — защитит один день",freeze_need:"Недостаточно монет",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
   rewards:"Награды",md1:"Первый шаг",md2:"10 часов",md3:"50 часов",md4:"100 часов",md5:"500 часов",md6:"Целеустремлённый",md7:"3 дня",md8:"Железная воля",md9:"Легенда",
   shop_hint:"Трать монеты и алмазы, накопленные фокусом, на свои собственные награды. 🪙 — за каждую выполненную дневную норму; 💎 — когда выполнены все привычки дня.",my_rewards:"Мои награды",reward_history:"Полученные награды",
   new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
@@ -1531,7 +1537,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   all_done_today:"All done today!",
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
-  wisdom:"Wisdom",trace:"Focus trace",streak_week:"Streak",streak_days:"day streak",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
+  wisdom:"Wisdom",trace:"Focus trace",streak_week:"Streak",streak_days:"day streak",freeze_lbl:"freeze",freeze_got:"Freeze bought 🧊 — protects one day",freeze_need:"Not enough coins",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
   rewards:"Rewards",md1:"First step",md2:"10 hours",md3:"50 hours",md4:"100 hours",md5:"500 hours",md6:"Goal-driven",md7:"3 days",md8:"Iron will",md9:"Legend",
   shop_hint:"Spend the coins and diamonds you earned by focusing on your own rewards. 🪙 — for each daily goal met; 💎 — when all of today's habits are done.",my_rewards:"My rewards",reward_history:"Redeemed rewards",
   new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
@@ -1585,8 +1591,11 @@ if(store.settings.dayOffsetH===undefined)store.settings.dayOffsetH=0; /* blok B:
 if(store.coins===undefined)store.coins=0;          /* mukofot 1b: tanga 🪙 */
 if(store.diamonds===undefined)store.diamonds=0;    /* mukofot 1b: olmos 💎 */
 if(store.diamondsLifetime===undefined)store.diamondsLifetime=store.diamonds; /* prestij (sarflansa ham kamaymaydi) */
+if(store.freezes===undefined)store.freezes=0;      /* Duolingo streak-muzlatgich soni */
+if(!store.frozenDays)store.frozenDays=[];          /* muzlatilgan (himoyalangan) kunlar */
 if(!store.rewards)store.rewards=[];                /* mukofot 4: o'z mukofotlari */
 if(!store.rewardLog)store.rewardLog=[];            /* mukofot 4: olingan mukofotlar tarixi */
+applyFreeze();                                     /* Duolingo: kecha o'tkazilgan bo'lsa muzlatgich himoyalaydi */
 if(!store.rewardNextId)store.rewardNextId=1;
 /* soat qatlami: hh[hafta_kuni*24+soat]=ms, hhN=alohida faol kunlar, hhLast=oxirgi kun,
    dayHour[kun][soat]=ms. Retroaktiv to'ldirish YO'Q — faqat shu paytdan yig'iladi (halol). */
@@ -2029,10 +2038,20 @@ function habitStrength(h){
 function checksDone(day){var n=0;store.habits.forEach(function(h){if(h.type==='check'&&h.days&&h.days.indexOf(day)!==-1)n++;});return n;}
 function dayActive(day){return dayTotalMs(day)>=60000||checksDone(day)>0;}
 function dayScore(day){return dayTotalMs(day)+checksDone(day)*30*60000;}
+/* kun "ushlangan": faol, YOKI muzlatilgan (freeze), YOKI rejali dam kun — seriya uzilmaydi */
+function dayFrozen(day){return !!(store.frozenDays&&store.frozenDays.indexOf(day)!==-1);}
+function dayRest(day){return !dayActive(day)&&(dayFrozen(day)||store.habits.some(function(h){return isSkip(h,day);}));}
+function dayHeld(day){return dayActive(day)||dayRest(day);}
 function globalStreak(){
-  var d=dayActive(TODAY)?TODAY:TODAY-1,n=0;
-  while(dayActive(d)){n++;d--;}
+  var d=dayHeld(TODAY)?TODAY:TODAY-1,n=0;
+  while(dayHeld(d)){n++;d--;}
   return n;
+}
+/* Duolingo streak-muzlatgich: kecha o'tkazilgan bo'lsa va muzlatgich bo'lsa — himoyalaydi */
+function applyFreeze(){
+  if(!store.freezes||store.freezes<=0)return;
+  var y=TODAY-1;
+  if(!dayHeld(y)&&dayHeld(y-1)){store.frozenDays.push(y);store.freezes--;save();}
 }
 function bestStreakEver(){
   var days={},h,k,i;
@@ -3384,8 +3403,14 @@ function renderMastery(){
 function dayFlame(day){
   if(day>TODAY)return 'future';
   if(dayActive(day))return 'fire';
-  if(store.habits.some(function(h){return isSkip(h,day);}))return 'ice'; /* dam kun — seriya uzilmaydi */
+  if(dayRest(day))return 'ice'; /* dam yoki muzlatilgan kun — seriya uzilmaydi */
   return 'miss';
+}
+var FREEZE_COST=25; /* muzlatgich narxi (tanga) */
+function buyFreeze(){
+  if((store.coins||0)<FREEZE_COST){toast(T('freeze_need'));buzz(20);return;}
+  store.coins-=FREEZE_COST;store.freezes=(store.freezes||0)+1;save();sGo();buzz(10);
+  toast(T('freeze_got'));renderStreakRow();refreshChips();
 }
 function renderStreakRow(){
   var wrap=$('#streakRow');if(!wrap)return;
@@ -3398,7 +3423,9 @@ function renderStreakRow(){
     var ic=st==='fire'?'🔥':(st==='ice'?'🧊':(st==='future'?'':'·'));
     html+='<div class="sd sd-'+st+(d===TODAY?' sd-today':'')+'"><span class="sd-ic">'+ic+'</span><span class="sd-wd">'+names[(dow+6)%7]+'</span></div>';
   }
-  wrap.innerHTML=html+'</div>';
+  html+='</div><div class="sr-freeze"><span class="sf-ic">🧊</span><span class="sf-n">'+(store.freezes||0)+'</span><span class="sf-lbl">'+T('freeze_lbl')+'</span><button class="sf-buy" data-sfbuy>+ '+FREEZE_COST+' 🪙</button></div>';
+  wrap.innerHTML=html;
+  var b=wrap.querySelector('[data-sfbuy]');if(b)b.addEventListener('click',buyFreeze);
 }
 
 /* ============ natija kartasi + share ============ */
