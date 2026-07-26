@@ -611,6 +611,8 @@ input{font-family:inherit}
 .fr-stat b{color:var(--text);font-weight:600}
 .fr-badge{font-size:10.5px;color:var(--muted);background:var(--elev2);border-radius:6px;padding:3px 7px;font-family:'JetBrains Mono',monospace;flex:none}
 .fr-del{color:var(--danger);font-size:16px;opacity:.5;padding:2px 4px;flex:none}
+.fr-chat{font-size:15px;opacity:.78;padding:2px 4px;flex:none;background:none;border:none;cursor:pointer;line-height:1}
+.fr-chat:active{transform:scale(.9)}
 .fr-row.tap{cursor:pointer}
 .fr-caret{flex:none;color:var(--muted);font-size:11px;transition:transform .2s var(--ease)}
 .fr-row.open .fr-caret{transform:rotate(180deg)}
@@ -630,6 +632,22 @@ input{font-family:inherit}
 .fr-priv-empty{font-size:12.5px;color:var(--muted);text-align:center;padding:8px}
 .fr-empty{padding:14px 2px;font-size:13px;color:var(--muted);text-align:center;line-height:1.5}
 .fr-note{font-size:12px;color:var(--muted);line-height:1.5;background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-top:10px}
+/* ===== CHAT (do'st/ustoz/shogird bilan yozishma) ===== */
+#chat{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
+#chatBody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 10px;display:flex;flex-direction:column;gap:8px}
+.chat-msg{max-width:78%;padding:9px 13px;border-radius:15px;font-size:14px;line-height:1.42;white-space:pre-wrap;word-break:break-word}
+.chat-msg.me{align-self:flex-end;background:var(--neon);color:var(--onneon);border-bottom-right-radius:5px}
+.chat-msg.them{align-self:flex-start;background:var(--elev2);color:var(--text);border:1px solid var(--line);border-bottom-left-radius:5px}
+.chat-empty{margin:auto;color:var(--muted);font-size:13px;text-align:center;padding:24px;line-height:1.5}
+.chat-input{flex:none;display:flex;gap:9px;padding:12px 16px calc(env(safe-area-inset-bottom) + 14px);border-top:1px solid var(--line);background:var(--bg)}
+.chat-tf{flex:1;min-width:0;background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--text);font-size:16px;outline:none}
+.chat-tf:focus{border-color:var(--neon)}
+.chat-tf::placeholder{color:var(--muted)}
+.chat-send{width:46px;flex:none;border-radius:12px;background:var(--neon);display:grid;place-items:center}
+.chat-send svg{width:20px;height:20px;stroke:var(--onneon);stroke-width:2.4;fill:none}
+.chat-send:active{transform:scale(.94)}
+.fr-unread{min-width:18px;height:18px;border-radius:9px;background:var(--neon);color:var(--onneon);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;padding:0 5px;flex:none;box-shadow:0 0 8px rgba(var(--neon-rgb),.6)}
+#friendsRow .fr-unread{margin-left:6px}
 
 /* budilnik */
 .alarm{position:absolute;inset:0;z-index:130;background:#050b07;display:none;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:30px;text-align:center;touch-action:none}
@@ -899,7 +917,7 @@ input{font-family:inherit}
         <div class="avatar" id="avatar">?</div><h2 id="profName"></h2><p id="profSub"></p>
       </div>
       <div class="settings">
-        <div class="setting link" id="friendsRow"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-4.7 5.5-4.7s5.5 1.7 5.5 4.7"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 15.5c2.5.2 4.7 1.8 4.7 4.5"/></svg><span data-i18n="friends"></span></div><span class="arrow">›</span></div>
+        <div class="setting link" id="friendsRow"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-4.7 5.5-4.7s5.5 1.7 5.5 4.7"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 15.5c2.5.2 4.7 1.8 4.7 4.5"/></svg><span data-i18n="friends"></span><span class="fr-unread" id="friendsRowDot" style="display:none"></span></div><span class="arrow">›</span></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M3 5h12M9 3v2M10 19l4-9 4 9M11.5 15.5h5"/><path d="M5 9c0 4 3 7 7 8M11 9c0 4-3 7-7 8"/></svg><span data-i18n="lang"></span></div>
           <div class="langseg" id="langSeg"><button data-lang="uz">UZ</button><button data-lang="ru">RU</button><button data-lang="en">EN</button></div>
         </div>
@@ -1101,6 +1119,10 @@ input{font-family:inherit}
       <div class="sec-lbl"><span data-i18n="fr_mentors"></span></div>
       <div class="fr-mlist" id="frMentorList"></div>
     </div>
+    <div class="d-sec" id="frWardSec" style="display:none">
+      <div class="sec-lbl"><span data-i18n="fr_wards"></span></div>
+      <div class="fr-mlist" id="frWardList"></div>
+    </div>
     <div class="d-sec" id="frPrivSec">
       <div class="sec-lbl"><span data-i18n="fr_priv"></span></div>
       <div class="fr-priv-hint" data-i18n="fr_priv_hint"></div>
@@ -1108,6 +1130,20 @@ input{font-family:inherit}
     </div>
     <div class="d-sec">
       <div class="fr-note" id="frLocalNote" data-i18n="fr_local_note"></div>
+    </div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="detail" id="chat">
+    <div class="d-head">
+      <button class="d-close" id="chatClose"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+      <div class="d-title" style="flex:1"><span id="chatName"></span></div>
+      <span class="fr-badge mono" id="chatRole"></span>
+    </div>
+    <div id="chatBody"></div>
+    <div class="chat-input">
+      <input id="chatInput" class="chat-tf" type="text" maxlength="500" autocomplete="off" spellcheck="false">
+      <button class="chat-send" id="chatSend"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-5 16-3.5-6.5L4 12z"/></svg></button>
     </div>
   </div>
 
@@ -1225,6 +1261,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   fr_share_hint:"Kodingizni do'stingizga yoki ota-ona/ustozingizga bering — ular bugungi fokusingiz va bajarilgan odatlaringizni ko'radi. Halol javobgarlik.",
   fr_add:"Kod bilan qo'shish",fr_role_friend:"Do'st",fr_role_mentor:"Ota-ona/Ustoz",
   fr_leaderboard:"Bugungi reyting",fr_you:"Siz",fr_pending:"kutilmoqda",fr_h:"s",
+  chat_ph:"Xabar yozing…",chat_send:"Yuborish",chat_empty:"Hali xabar yo'q. Birinchi bo'lib yozing.",chat_cloud_only:"Chat faqat bulut rejimida ishlaydi.",chat_err:"Xabar yuborilmadi. Qayta urining.",fr_wards:"Shogirdlarim",
   fr_empty:"Hali do'st yo'q. Do'stingizning kodini yuqorida qo'shing.",
   fr_mentors:"Ota-ona / ustoz",fr_copied:"Kod nusxalandi",fr_invalid:"Kod formati: ABC123",
   fr_added:"Qo'shildi",fr_exists:"Bu kod allaqachon qo'shilgan",fr_self:"Bu sizning kodingiz",fr_cloud_err:"Serverga ulanmadi. Qayta urinib ko'ring.",fr_cloud_off:"Bulut (oflayn)",fr_offline:"Serverga ulanib bo'lmadi — oflayn ko'rinish.",fr_retry:"Qayta urinish",
@@ -1321,6 +1358,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   fr_share_hint:"Дайте свой код другу или родителю/наставнику — они увидят ваш сегодняшний фокус и выполненные привычки. Честная ответственность.",
   fr_add:"Добавить по коду",fr_role_friend:"Друг",fr_role_mentor:"Родитель/Ментор",
   fr_leaderboard:"Рейтинг сегодня",fr_you:"Вы",fr_pending:"ожидание",fr_h:"ч",
+  chat_ph:"Напишите сообщение…",chat_send:"Отправить",chat_empty:"Сообщений пока нет. Напишите первым.",chat_cloud_only:"Чат работает только в облачном режиме.",chat_err:"Не отправлено. Повторите.",fr_wards:"Мои подопечные",
   fr_empty:"Пока нет друзей. Добавьте код друга выше.",
   fr_mentors:"Родитель / ментор",fr_copied:"Код скопирован",fr_invalid:"Формат кода: ABC123",
   fr_added:"Добавлено",fr_exists:"Этот код уже добавлен",fr_self:"Это ваш код",fr_cloud_err:"Не удалось подключиться к серверу. Попробуйте снова.",fr_cloud_off:"Облако (офлайн)",fr_offline:"Не удалось подключиться — офлайн-режим.",fr_retry:"Повторить",
@@ -1417,6 +1455,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   fr_share_hint:"Share your code with a friend or parent/mentor — they'll see today's focus and completed habits. Honest accountability.",
   fr_add:"Add by code",fr_role_friend:"Friend",fr_role_mentor:"Parent/Mentor",
   fr_leaderboard:"Today's ranking",fr_you:"You",fr_pending:"pending",fr_h:"h",
+  chat_ph:"Write a message…",chat_send:"Send",chat_empty:"No messages yet. Say hi first.",chat_cloud_only:"Chat works only in cloud mode.",chat_err:"Not sent. Try again.",fr_wards:"My wards",
   fr_empty:"No friends yet. Add a friend's code above.",
   fr_mentors:"Parent / mentor",fr_copied:"Code copied",fr_invalid:"Code format: ABC123",
   fr_added:"Added",fr_exists:"This code is already added",fr_self:"That's your own code",fr_cloud_err:"Couldn't reach the server. Try again.",fr_cloud_off:"Cloud (offline)",fr_offline:"Couldn't connect — offline view.",fr_retry:"Retry",
@@ -1565,7 +1604,8 @@ function downscaleImage(file,maxDim,cb){
   };
   rd.readAsDataURL(file);
 }
-function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish */
+function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish (belgilarni o'chiradi — qisqa yorliqlar uchun) */
+function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');} /* XSS-toza HTML-kodlash — chat matni yaxlit qoladi ("don't", "5<10") */
 /* blok E: avto-backup — har 24 soatda oldingi holat nusxasi (buzilishdan himoya) */
 (function(){try{
   var last=store.settings.lastBackup||0,now=Date.now();
@@ -1870,11 +1910,18 @@ function finishOnb(){
   if(!store.user.name)$('#auth').classList.remove('gone');
 }
 /* guest auth */
+/* ism -> focusai.userName + Supabase profil (do'stlar ekranida ismingiz avtomatik tursin,
+   do'stlar panelini kutmasdan) */
+function syncMyName(){
+  try{ if(store.user.name)localStorage.setItem('focusai.userName',store.user.name); }catch(e){}
+  try{ if(window.Social&&Social.cloud&&Social.cloud()&&Social.ensureProfile)Social.ensureProfile(); }catch(e){}
+}
 $('#authGo').addEventListener('click',function(){
   var v=esc($('#authName').value.trim());
   if(!v){$('#authErr').textContent=T('err_name_auth');buzz(20);return;}
   $('#authErr').textContent='';
   store.user.name=v;save();
+  syncMyName(); /* ismni darhol profilga yozamiz */
   $('#auth').classList.add('gone');
   sGo();buzz(12);
   applyI18N();refreshAll();
@@ -3761,6 +3808,7 @@ $('#pill').addEventListener('click',function(){
     if(e.key!=='Escape'&&e.key!=='Esc')return;
     if($('#rSheet')&&$('#rSheet').classList.contains('open')){openRSheet(false);return;}
     if($('#sheet')&&$('#sheet').classList.contains('open')){openSheet(false);return;}
+    if($('#chat')&&$('#chat').classList.contains('open')){closeChat();return;} /* eng ustki overlay — closeChat taymerni tozalaydi */
     var det=document.querySelector('.detail.open');if(det){det.classList.remove('open');sTap();return;}
     if(sessionOpen){$('#sClose').click();return;}
   });
@@ -3807,6 +3855,7 @@ function goToView(ni){
   navIdx=ni;navInd();
   if(!reduce){var ni2=$('#navind');if(ni2){ni2.classList.remove('stretch');void ni2.getBoundingClientRect();ni2.classList.add('stretch');}}
   if(v==='stats')drawStats(true); /* tab ochilganda raqamlar dekodlanadi (til almashuvida emas) */
+  if(v==='you'&&typeof refreshFriendsRowDot==='function')refreshFriendsRowDot(); /* profil: o'qilmagan nuqta */
   if(v==='focus'&&!store.settings.dialHintShown){ /* rotary dial — birinchi marta oshkor qilamiz */
     store.settings.dialHintShown=true;save();
     setTimeout(function(){if(navIdx===VIEWS.indexOf('focus'))toast(T('dial_hint'));},700);
@@ -3927,7 +3976,9 @@ function renderFriends(){
   if(mentors.length)$('#frMentorList').innerHTML=mentors.map(function(m){
     return '<div class="fr-row"><span class="fr-rank">🎓</span>'+
       '<span class="fr-nm">'+esc(m.name||m.code)+'</span>'+
+      '<span class="fr-unread" data-unread-for="'+esc(m.code)+'" style="display:none"></span>'+
       '<span class="fr-badge">'+esc(m.code)+'</span>'+
+      '<button class="fr-chat" data-chat="'+esc(m.code)+'" data-chatname="'+esc(m.name||m.code)+'" data-chatkind="mentor">💬</button>'+
       '<button class="fr-del" data-frdel="'+esc(m.code)+'" data-frkind="mentor">×</button></div>';
   }).join('');
   /* Do'stlarga nima ko'rinadi — har odatni yashirish mumkin (setHidden lokal, serverga bormaydi) */
@@ -3956,8 +4007,10 @@ function renderFriends(){
       var canTap=!x.me&&x.report&&x.report.length; /* do'st + ko'rinadigan vazifasi bor */
       var row='<div class="fr-row'+(x.me?' me':'')+(canTap?' tap':'')+'"'+(canTap?' data-frtap="'+i+'"':'')+'>'+
         '<span class="fr-rank">'+(x.me?'●':(i+1))+'</span>'+
-        '<span class="fr-nm">'+nm+'</span>'+stat+
+        '<span class="fr-nm">'+nm+'</span>'+
+        (x.me?'':'<span class="fr-unread" data-unread-for="'+esc(x.code)+'" style="display:none"></span>')+stat+
         (canTap?'<span class="fr-caret">▾</span>':'')+
+        (x.me?'':'<button class="fr-chat" data-chat="'+esc(x.code)+'" data-chatname="'+esc(x.name||x.code)+'" data-chatkind="friend">💬</button>')+
         (x.me?'':'<button class="fr-del" data-frdel="'+esc(x.code)+'" data-frkind="friend">×</button>')+
         '</div>';
       var tasks='';
@@ -3974,15 +4027,41 @@ function renderFriends(){
     el.querySelectorAll('[data-frtap]').forEach(function(rw){
       rw.addEventListener('click',function(e){
         if(e.target.closest('[data-frdel]'))return; /* o'chirish tugmasi — kengaytirmaydi */
+        if(e.target.closest('[data-chat]'))return;  /* chat tugmasi — kengaytirmaydi */
         var t=$('#frT'+rw.getAttribute('data-frtap'));if(!t)return;
         var op=t.style.display==='none';
         t.style.display=op?'':'none';rw.classList.toggle('open',op);sTap();
       });
     });
   });
+  /* shogirdlar (meni ustoz qilib qo'shganlar) — faqat bulut */
+  var wsec=$('#frWardSec');
+  if(Social.cloud()){
+    Social.wards().then(function(list){
+      list=list||[];
+      if(wsec)wsec.style.display=list.length?'':'none';
+      if(list.length)$('#frWardList').innerHTML=list.map(function(w){
+        return '<div class="fr-row"><span class="fr-rank">👤</span>'+
+          '<span class="fr-nm">'+esc(w.name||w.code)+'</span>'+
+          '<span class="fr-unread" data-unread-for="'+esc(w.code)+'" style="display:none"></span>'+
+          '<span class="fr-badge">'+esc(w.code)+'</span>'+
+          '<button class="fr-chat" data-chat="'+esc(w.code)+'" data-chatname="'+esc(w.name||w.code)+'" data-chatkind="ward">💬</button></div>';
+      }).join('');
+      refreshUnread(Social.friends().map(function(x){return x.code;}).concat(list.map(function(w){return w.code;})));
+    },function(){if(wsec)wsec.style.display='none';refreshUnread(Social.friends().map(function(x){return x.code;}));}); /* wards xato -> do'st/ustoz nuqtalari baribir yangilanadi */
+  } else { if(wsec)wsec.style.display='none'; }
+}
+/* har kontakt uchun o'qilmagan nuqtani yangilaydi (chatUnread orqali) */
+function refreshUnread(codes){
+  if(typeof Social==='undefined'||!Social.cloud())return;
+  (codes||[]).forEach(function(code){
+    chatUnread(code).then(function(n){
+      setUnreadBadge(document.querySelector('.fr-unread[data-unread-for="'+code+'"]'),n);
+    });
+  });
 }
 /* bulut kutubxonasi kech yuklansa, ochiq do'stlar panelini yangilaymiz (kalitlar qo'yilganda) */
-window.onSupabaseReady=function(){try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}};
+window.onSupabaseReady=function(){try{syncMyName();}catch(e){}try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}};
 /* audit #3: internet holati o'zgarsa — ochiq do'stlar panelini qayta chizamiz (badge + banner) */
 function _frNetSync(){try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}}
 window.addEventListener('online',_frNetSync);window.addEventListener('offline',_frNetSync);
@@ -4019,9 +4098,109 @@ function openFriends(){
     Social.setHidden(n,!Social.isHidden(n));sTap();buzz(6);renderFriends();
   });
   var pan=$('#friends');if(pan)pan.addEventListener('click',function(e){
-    var d=e.target.closest('[data-frdel]');if(!d)return;
-    Social.removeFriend(d.getAttribute('data-frdel'),d.getAttribute('data-frkind'));sTap();renderFriends();});
+    var d=e.target.closest('[data-frdel]');
+    if(d){Social.removeFriend(d.getAttribute('data-frdel'),d.getAttribute('data-frkind'));sTap();renderFriends();return;}
+    var c=e.target.closest('[data-chat]');
+    if(c)openChat(c.getAttribute('data-chat'),c.getAttribute('data-chatname'),c.getAttribute('data-chatkind'));
+  });
 })();
+
+/* ============ CHAT (do'st/ustoz/shogird bilan; polling) ============ */
+var chatWith=null, chatTimer=null, chatLastLen=-1;
+function chatSeenKey(code){return 'focusai.chat.seen.'+code;}
+function chatMarkSeen(code,iso){try{localStorage.setItem(chatSeenKey(code),iso||new Date().toISOString());}catch(e){}}
+function chatSeenAt(code){try{return localStorage.getItem(chatSeenKey(code))||'';}catch(e){return '';}}
+/* o'qilmagan KIRUVCHI xabarlar SONI (seen'dan keyingi, from_code!==me) — Telegram uslubi */
+function chatUnreadN(msgs,me,seen){
+  var n=0;
+  for(var i=0;i<msgs.length;i++){var m=msgs[i];if(m.from_code!==me&&(!seen||m.created_at>seen))n++;}
+  return n;
+}
+function chatUnread(code){
+  if(typeof Social==='undefined'||!Social.cloud())return Promise.resolve(0);
+  return Social.getMessages(code).then(function(msgs){
+    return chatUnreadN(msgs||[],Social.myCode(),chatSeenAt(code));
+  },function(){return 0;});
+}
+/* o'qilmagan badge: son>0 -> raqam (99+), aks holda yashirin */
+function setUnreadBadge(el,n){
+  if(!el)return;
+  if(n>0){el.textContent=n>99?'99+':String(n);el.style.display='';}
+  else{el.textContent='';el.style.display='none';}
+}
+function renderChat(msgs){
+  var body=$('#chatBody');if(!body)return;
+  var me=Social.myCode();
+  if(!msgs||!msgs.length){body.innerHTML='<div class="chat-empty">'+T('chat_empty')+'</div>';return;}
+  body.innerHTML=msgs.map(function(m){
+    return '<div class="chat-msg '+(m.from_code===me?'me':'them')+'">'+escH(m.body)+'</div>';
+  }).join('');
+  body.scrollTop=body.scrollHeight;
+}
+function chatPoll(){
+  if(!chatWith)return;
+  var code=chatWith.code;
+  Social.getMessages(code).then(function(msgs){
+    if(!chatWith||chatWith.code!==code)return;
+    msgs=msgs||[];
+    if(msgs.length!==chatLastLen){
+      chatLastLen=msgs.length;renderChat(msgs);
+      if(msgs.length)chatMarkSeen(code,msgs[msgs.length-1].created_at);
+    }
+  },function(){}); /* poll xatosini jimgina yut — keyingi poll qayta urinadi */
+}
+function openChat(code,name,kind){
+  if(typeof Social==='undefined'||!Social.cloud()){toast(T('chat_cloud_only'));return;}
+  chatWith={code:code,name:name,kind:kind};chatLastLen=-1;
+  $('#chatName').textContent=name||code;
+  $('#chatRole').textContent=code;
+  $('#chatInput').placeholder=T('chat_ph');$('#chatInput').value='';
+  $('#chatBody').innerHTML='<div class="chat-empty">…</div>';
+  $('#chat').classList.add('open');sTap();
+  chatPoll();
+  if(chatTimer)clearInterval(chatTimer);
+  chatTimer=setInterval(chatPoll,3000);
+}
+function closeChat(){
+  if(chatTimer){clearInterval(chatTimer);chatTimer=null;}
+  chatWith=null;$('#chat').classList.remove('open');sTap();
+  if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();
+  if(typeof refreshFriendsRowDot==='function')refreshFriendsRowDot(); /* o'qilgandan keyin nuqta so'nadi */
+}
+function chatSend(){
+  if(!chatWith)return;
+  var inp=$('#chatInput'),body=(inp.value||'').trim().slice(0,500);
+  if(!body)return;
+  inp.value='';
+  Social.sendMessage(chatWith.code,body).then(function(ok){
+    if(ok){chatLastLen=-1;chatPoll();buzz(8);}
+    else{toast(T('chat_err'));if(!inp.value)inp.value=body;}
+  },function(){toast(T('chat_err'));if(!inp.value)inp.value=body;});
+}
+(function(){
+  var cc=$('#chatClose');if(cc)cc.addEventListener('click',closeChat);
+  var cs=$('#chatSend');if(cs)cs.addEventListener('click',chatSend);
+  var ci=$('#chatInput');if(ci)ci.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();chatSend();}});
+})();
+/* profil "Do'stlar" tugmasida umumiy o'qilmagan nuqta */
+function refreshFriendsRowDot(){
+  var dot=$('#friendsRowDot');if(!dot)return;
+  if(typeof Social==='undefined'||!Social.cloud()){dot.style.display='none';return;}
+  var codes=Social.friends().map(function(x){return x.code;});
+  Social.wards().then(function(w){
+    var all=codes.concat((w||[]).map(function(x){return x.code;}));
+    if(!all.length){dot.style.display='none';return;}
+    Promise.all(all.map(chatUnread)).then(function(res){
+      setUnreadBadge(dot,res.reduce(function(a,b){return a+(b||0);},0)); /* jami o'qilmagan soni */
+    });
+  },function(){dot.style.display='none';});
+}
+/* profil ko'rinib turganда, chat yopiq bo'lganда ~30s da yengil tekshiruv */
+var _friendsDotTimer=setInterval(function(){
+  try{ if(document.visibilityState!=='hidden' && typeof Social!=='undefined' && Social.cloud()
+        && typeof navIdx!=='undefined' && navIdx===VIEWS.indexOf('you')
+        && !$('#chat').classList.contains('open')) refreshFriendsRowDot(); }catch(e){}
+},30000);
 
 /* ============ do'stlar: ma'lumot adapteri (social.js uchun) ============ */
 /* social.js window.MVOW_DATA orqali bizning store'dan bugungi fokusni va tarixni oladi.
@@ -4345,7 +4524,7 @@ window.addEventListener('beforeunload',function(){
   }
 
   window.Social = {
-    myCode: myCode, myStats: myStats, cloud: cloud, syncStats: syncStats, wards: wards,
+    myCode: myCode, myStats: myStats, cloud: cloud, syncStats: syncStats, wards: wards, ensureProfile: ensureProfile,
     friends: friends, addFriend: addFriend, removeFriend: removeFriend, renameFriend: renameFriend, nameOf: nameOf, leaderboard: leaderboard,
     sendMessage: sendMessage, getMessages: getMessages, subscribeMessages: subscribeMessages, unsubscribe: unsubscribe,
     hiddenSet: hiddenSet, setHidden: setHidden, isHidden: isHidden, myTasksToday: myTasksToday,
