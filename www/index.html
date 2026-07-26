@@ -1676,9 +1676,12 @@ function sWin(){tone(523,.3);tone(659,.3,.12);tone(784,.3,.24);tone(1046,.6,.36)
 function buzz(p){if('vibrate' in navigator){try{navigator.vibrate(p);}catch(e){}}}
 /* tabiat ambient ovozlari — hammasi sintez, audio faylsiz */
 var ambient={cur:null,nodes:[]};
+var ambStream=null; /* real mp3 streaming (Audio elementi) */
+function ambStreamStop(){if(ambStream){try{ambStream.pause();ambStream.src='';ambStream.load();}catch(e){}ambStream=null;}}
 function ambStopAll(){
   ambient.nodes.forEach(function(n){try{n.stop?n.stop():n.disconnect();}catch(e){}});
   ambient.nodes=[];ambient.cur=null;
+  ambStreamStop(); /* streaming ovozни ham to'xtatadi */
   $$('#ambi .s-chipbtn').forEach(function(b){b.classList.remove('on');});
 }
 function noiseBuf(a){var len=2*a.sampleRate,buf=a.createBuffer(1,len,a.sampleRate),d=buf.getChannelData(0);
@@ -1744,14 +1747,37 @@ function ambStart(kind){
     var btn=$('#ambi [data-amb="'+kind+'"]');if(btn)btn.classList.add('on');
   }catch(e){}
 }
-var AMB=[['rain','🌧'],['fire','🔥'],['ocean','🌊'],['birds','🐦'],['stream','🏞'],['wind','🌬'],['night','🌙'],['white','▫️']];
+/* real yozuvli mp3 (archive.org, royalty-free) — internet bo'lganda oqadi; xato/offline -> sintez */
+var AMB_BASE='https://archive.org/download/rain-sounds-gentle-rain-thunderstorms/';
+/* toza tabiat ovozlari (o'rmon/suv/qushlar/yengil yomg'ir) — momaqaldiroq/drone yo'q */
+var AMB_URL={
+  forest:'rain-in-forest-birds-nature-111405.mp3',
+  stream:'relaxing-mountains-rivers-streams-running-water-18178.mp3',
+  birds:'relaxing-rain-and-birds-6-minutes-52191.mp3',
+  rain:'gentle-rainfall-16960.mp3'
+};
+function ambToggle(kind){
+  var already=(ambient.cur===kind)||!!(ambStream&&ambStream._kind===kind);
+  ambStopAll();
+  if(already)return;
+  var file=AMB_URL[kind];
+  if(file&&navigator.onLine!==false){
+    var au=new Audio(AMB_BASE+encodeURIComponent(file));
+    au.loop=true;au.volume=.6;au._kind=kind;
+    au.addEventListener('error',function(){if(ambStream===au){ambStreamStop();ambStart(kind);}});
+    var p=au.play();if(p&&p.catch)p.catch(function(){if(ambStream===au){ambStreamStop();ambStart(kind);}});
+    ambStream=au;
+    var btn=$('#ambi [data-amb="'+kind+'"]');if(btn)btn.classList.add('on');
+  } else { ambStart(kind); } /* URL yo'q yoki offline -> sintez */
+}
+var AMB=[['forest','🌲'],['stream','💧'],['birds','🐦'],['rain','🌧']];
 (function(){
   var box=$('#ambi');
   AMB.forEach(function(p){
     var b=document.createElement('button');
     b.className='s-chipbtn';b.setAttribute('data-amb',p[0]);
     b.innerHTML='<span>'+p[1]+'</span>';
-    b.addEventListener('click',function(){ambStart(p[0]);sTap();});
+    b.addEventListener('click',function(){ambToggle(p[0]);sTap();});
     box.appendChild(b);
   });
 })();
@@ -2503,6 +2529,7 @@ function openSession(id){
 $('#sClose').addEventListener('click',function(){
   $('#session').classList.remove('open','zen');$('#session').classList.remove('zen');
   clearTimeout(zenTm);sessionOpen=false;openHabitId=null;
+  if(typeof ambStopAll==='function')ambStopAll(); /* sessiya yopilsa ambient ovoz to'xtaydi */
   renderHabits();sTap();
 });
 /* ULTRA-interaktiv: sessiyani pastga tortib yopish — rubber-band qarshilik,
