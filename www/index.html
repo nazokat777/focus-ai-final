@@ -3968,7 +3968,7 @@ function frFocusTxt(h){return (Math.round((h||0)*10)/10)+T('fr_h');}
 function renderFriends(){
   if(typeof Social==='undefined')return;
   $('#frCodeVal').textContent=Social.myCode();
-  var badge=$('#frModeBadge');if(badge)badge.textContent=Social.cloud()?(navigator.onLine===false?T('fr_cloud_off'):T('fr_cloud')):T('fr_local');
+  var badge=$('#frModeBadge');if(badge)badge.style.display='none'; /* texnik rejim ko'rsatkichi yashirin (oflayn ogohlantirish board bannerida) */
   var note=$('#frLocalNote');if(note)note.style.display=Social.cloud()?'none':'';
   /* ota-ona/ustoz ro'yxati (men qo'shganlar) */
   var mentors=Social.friends().filter(function(x){return x.role==='mentor';});
