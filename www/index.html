@@ -604,15 +604,6 @@ input{font-family:inherit}
 .sr-freeze .sf-lbl{font-size:12px;color:var(--muted);margin-right:auto}
 .sf-buy{background:rgba(var(--neon-rgb),.14);border:1px solid rgba(var(--neon-rgb),.4);color:var(--neon);border-radius:9px;padding:6px 11px;font-size:12px;font-weight:600;font-family:'JetBrains Mono',monospace;cursor:pointer}
 .sf-buy:active{transform:scale(.94)}
-/* Rivojlanish kutubxonasi */
-.lib-list{display:flex;flex-direction:column;gap:8px}
-.lib-item{display:flex;align-items:center;gap:11px;width:100%;background:var(--elev);border:1px solid var(--line);border-radius:13px;padding:12px 13px;cursor:pointer;transition:transform .12s var(--ease)}
-.lib-item:active{transform:scale(.99)}
-.lib-item .li-ic{font-size:19px;flex:none}
-.lib-item .li-t{flex:1;text-align:left;font-weight:500;font-size:14px;color:var(--text)}
-.lib-item .li-act{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);flex:none}
-.lib-item.open{border-color:rgba(var(--neon-rgb),.4)}
-.lib-item.open .li-act{color:var(--neon)}
 /* do'stlar */
 .setting.link{cursor:pointer}
 .setting .arrow{color:var(--muted);font-size:20px;line-height:1}
@@ -934,8 +925,6 @@ input{font-family:inherit}
       <div class="medals" id="medals"></div>
       <div class="grid-lbl" data-i18n="streak_week"></div>
       <div class="streak-row" id="streakRow"></div>
-      <div class="grid-lbl" data-i18n="lib_lbl"></div>
-      <div class="lib-list" id="libList"></div>
       <div class="coach">
         <div class="c-top">🤖 <span data-i18n="coach"></span></div>
         <div class="c-msg dim" id="coachMsg"></div>
@@ -1354,7 +1343,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   all_done_today:"Bugun hammasi bajarildi!",
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
-  wisdom:"Hikmat to'plami",trace:"Fokus izi",streak_week:"Seriya",streak_days:"kunlik seriya",freeze_lbl:"muzlatgich",freeze_got:"Muzlatgich olindi 🧊 — bir kunni himoyalaydi",freeze_need:"Tanga yetarli emas",lib_lbl:"Rivojlanish",lib_open:"Ochish",lib_unlocked:"Ochildi ✓ — YouTube'da",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
+  wisdom:"Hikmat to'plami",trace:"Fokus izi",streak_week:"Seriya",streak_days:"kunlik seriya",freeze_lbl:"muzlatgich",freeze_got:"Muzlatgich olindi 🧊 — bir kunni himoyalaydi",freeze_need:"Tanga yetarli emas",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
   rewards:"Mukofotlar",md1:"Birinchi qadam",md2:"10 soat",md3:"50 soat",md4:"100 soat",md5:"500 soat",md6:"Maqsadli",md7:"3 kun",md8:"Temir iroda",md9:"Afsona",
   shop_hint:"Fokus qilib to'plagan tanga va olmoslaringni o'zing belgilagan mukofotlarga sarfla. 🪙 — har bajarilgan kunlik norma uchun; 💎 — kunning barcha odatlari bajarilganda.",my_rewards:"Mening mukofotlarim",reward_history:"Olingan mukofotlar",
   new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
@@ -1451,7 +1440,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   all_done_today:"Всё выполнено сегодня!",
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
-  wisdom:"Мудрость",trace:"След фокуса",streak_week:"Серия",streak_days:"дней подряд",freeze_lbl:"заморозка",freeze_got:"Заморозка куплена 🧊 — защитит один день",freeze_need:"Недостаточно монет",lib_lbl:"Развитие",lib_open:"Открыть",lib_unlocked:"Открыто ✓ — на YouTube",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
+  wisdom:"Мудрость",trace:"След фокуса",streak_week:"Серия",streak_days:"дней подряд",freeze_lbl:"заморозка",freeze_got:"Заморозка куплена 🧊 — защитит один день",freeze_need:"Недостаточно монет",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
   rewards:"Награды",md1:"Первый шаг",md2:"10 часов",md3:"50 часов",md4:"100 часов",md5:"500 часов",md6:"Целеустремлённый",md7:"3 дня",md8:"Железная воля",md9:"Легенда",
   shop_hint:"Трать монеты и алмазы, накопленные фокусом, на свои собственные награды. 🪙 — за каждую выполненную дневную норму; 💎 — когда выполнены все привычки дня.",my_rewards:"Мои награды",reward_history:"Полученные награды",
   new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
@@ -1548,7 +1537,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   all_done_today:"All done today!",
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
-  wisdom:"Wisdom",trace:"Focus trace",streak_week:"Streak",streak_days:"day streak",freeze_lbl:"freeze",freeze_got:"Freeze bought 🧊 — protects one day",freeze_need:"Not enough coins",lib_lbl:"Growth",lib_open:"Open",lib_unlocked:"Unlocked ✓ — on YouTube",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
+  wisdom:"Wisdom",trace:"Focus trace",streak_week:"Streak",streak_days:"day streak",freeze_lbl:"freeze",freeze_got:"Freeze bought 🧊 — protects one day",freeze_need:"Not enough coins",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
   rewards:"Rewards",md1:"First step",md2:"10 hours",md3:"50 hours",md4:"100 hours",md5:"500 hours",md6:"Goal-driven",md7:"3 days",md8:"Iron will",md9:"Legend",
   shop_hint:"Spend the coins and diamonds you earned by focusing on your own rewards. 🪙 — for each daily goal met; 💎 — when all of today's habits are done.",my_rewards:"My rewards",reward_history:"Redeemed rewards",
   new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
@@ -1604,7 +1593,6 @@ if(store.diamonds===undefined)store.diamonds=0;    /* mukofot 1b: olmos 💎 */
 if(store.diamondsLifetime===undefined)store.diamondsLifetime=store.diamonds; /* prestij (sarflansa ham kamaymaydi) */
 if(store.freezes===undefined)store.freezes=0;      /* Duolingo streak-muzlatgich soni */
 if(!store.frozenDays)store.frozenDays=[];          /* muzlatilgan (himoyalangan) kunlar */
-if(!store.unlockedLib)store.unlockedLib=[];        /* ochilgan rivojlanish mavzulari */
 if(!store.rewards)store.rewards=[];                /* mukofot 4: o'z mukofotlari */
 if(!store.rewardLog)store.rewardLog=[];            /* mukofot 4: olingan mukofotlar tarixi */
 applyFreeze();                                     /* Duolingo: kecha o'tkazilgan bo'lsa muzlatgich himoyalaydi */
@@ -3259,7 +3247,7 @@ function drawStats(anim){
     bd.appendChild(el);
   });
   save();
-  renderMastery();renderRewards();renderGolden();renderStreakRow();renderLibrary();
+  renderMastery();renderRewards();renderGolden();renderStreakRow();
 }
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
@@ -3465,39 +3453,6 @@ function renderStreakRow(){
   html+='</div><div class="sr-freeze"><span class="sf-ic">🧊</span><span class="sf-n">'+(store.freezes||0)+'</span><span class="sf-lbl">'+T('freeze_lbl')+'</span><button class="sf-buy" data-sfbuy>+ '+FREEZE_COST+' 🪙</button></div>';
   wrap.innerHTML=html;
   var b=wrap.querySelector('[data-sfbuy]');if(b)b.addEventListener('click',buyFreeze);
-}
-/* Rivojlanish kutubxonasi: tanga bilan ochiladigan QONUNIY bepul kontent
-   (YouTube qidiruv, foydalanuvchi tilida — havola o'chmaydi, mualliflik muammosi yo'q) */
-var LIB_COST=20;
-var LIBRARY=[
-  {id:'goal',ic:'🎯',t:{uz:'Maqsad qo\'yish',ru:'Постановка целей',en:'Goal setting'},q:{uz:'maqsad qo\'yish rivojlanish',ru:'постановка целей саморазвитие',en:'goal setting self development'}},
-  {id:'time',ic:'⏰',t:{uz:'Vaqtni boshqarish',ru:'Управление временем',en:'Time management'},q:{uz:'vaqtni boshqarish samaradorlik',ru:'управление временем продуктивность',en:'time management productivity'}},
-  {id:'focus',ic:'🧠',t:{uz:'Fokus va diqqat',ru:'Фокус и внимание',en:'Focus & attention'},q:{uz:'diqqatni jamlash chuqur ish',ru:'концентрация внимания фокус',en:'improve focus deep work'}},
-  {id:'habit',ic:'🔁',t:{uz:'Odat qurish',ru:'Привычки',en:'Building habits'},q:{uz:'yaxshi odat qurish',ru:'как выработать полезную привычку',en:'build good habits'}},
-  {id:'disc',ic:'💪',t:{uz:'Intizom',ru:'Самодисциплина',en:'Discipline'},q:{uz:'o\'z-o\'zini intizom motivatsiya',ru:'самодисциплина мотивация',en:'self discipline motivation'}}
-];
-function libTitle(it){return it.t[store.settings.lang]||it.t.en;}
-function libQuery(it){return it.q[store.settings.lang]||it.q.en;}
-function openLib(id){
-  var it=LIBRARY.filter(function(x){return x.id===id;})[0];if(!it)return;
-  try{window.open('https://www.youtube.com/results?search_query='+encodeURIComponent(libQuery(it)),'_blank');}catch(e){}
-  sTap();
-}
-function unlockLib(id){
-  if(store.unlockedLib.indexOf(id)!==-1){openLib(id);return;}
-  if((store.coins||0)<LIB_COST){toast(T('freeze_need'));buzz(20);return;}
-  store.coins-=LIB_COST;store.unlockedLib.push(id);save();sGo();buzz(10);
-  toast(T('lib_unlocked'));renderLibrary();refreshChips();openLib(id);
-}
-function renderLibrary(){
-  var box=$('#libList');if(!box)return;
-  box.innerHTML=LIBRARY.map(function(it){
-    var open=store.unlockedLib.indexOf(it.id)!==-1;
-    return '<button class="lib-item'+(open?' open':'')+'" data-lib="'+it.id+'">'+
-      '<span class="li-ic">'+it.ic+'</span><span class="li-t">'+esc(libTitle(it))+'</span>'+
-      '<span class="li-act">'+(open?('▶ '+T('lib_open')):(LIB_COST+' 🪙'))+'</span></button>';
-  }).join('');
-  box.querySelectorAll('[data-lib]').forEach(function(b){b.addEventListener('click',function(){unlockLib(b.getAttribute('data-lib'));});});
 }
 
 /* ============ natija kartasi + share ============ */
