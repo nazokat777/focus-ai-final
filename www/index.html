@@ -154,6 +154,25 @@ input{font-family:inherit}
 .hc-play svg{width:17px;height:17px;fill:var(--neon);stroke:none}
 .hcard.running .hc-play{background:var(--neon);box-shadow:0 0 16px rgba(var(--neon-rgb),.5)}
 .hcard.running .hc-play svg{fill:var(--onneon)}
+/* ===== karta-swipe -> "bugun dam" + dam guruhi ===== */
+.hcard-wrap{position:relative}
+.hcard-wrap>.hcard{position:relative;z-index:1}
+.hc-skipbg{position:absolute;inset:0;border-radius:var(--r);overflow:hidden;display:flex;align-items:center;justify-content:center;pointer-events:none;background:linear-gradient(90deg,rgba(var(--neon-rgb),.14),rgba(var(--neon-rgb),.30));opacity:0;transition:opacity .2s var(--ease)}
+.hcard-wrap.swiping .hc-skipbg{opacity:1}
+.hc-skipbg-in{font-family:'JetBrains Mono',monospace;font-size:13px;font-weight:600;letter-spacing:.04em;color:var(--neon);white-space:nowrap;text-shadow:0 0 12px rgba(var(--neon-rgb),.5);transform:scale(.9);transition:transform .2s var(--spring)}
+.hcard-wrap.armed .hc-skipbg{background:linear-gradient(90deg,rgba(var(--neon-rgb),.22),rgba(var(--neon-rgb),.44))}
+.hcard-wrap.armed .hc-skipbg-in{transform:scale(1.06)}
+.hcard.skipped{opacity:.62}
+.reduce .hc-skipbg,.reduce .hc-skipbg-in{transition:none}
+/* dam guruhi sarlavhasi (yig'iladigan) */
+.rest-group{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;margin-top:2px;background:var(--elev);border:1px solid var(--line);border-radius:var(--r);cursor:pointer;color:var(--muted);font-size:13px;transition:background .2s var(--ease)}
+.rest-group:active{transform:scale(.99)}
+.rest-group .rg-moon{font-size:15px}
+.rest-group .rg-lbl{font-weight:600;letter-spacing:.02em;color:var(--text)}
+.rest-group .rg-n{font-family:'JetBrains Mono',monospace;color:var(--neon);font-size:12px}
+.rest-group .rg-chev{margin-left:auto;display:grid;place-items:center;transition:transform .25s var(--ease)}
+.rest-group .rg-chev svg{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2}
+.rest-group.open .rg-chev{transform:rotate(180deg)}
 /* ---- odat kartasidagi statistika tugmasi ---- */
 .hc-stat{width:40px;height:40px;flex:none;border-radius:12px;background:var(--elev2);border:1px solid var(--line);display:grid;place-items:center;transition:.25s var(--ease)}
 .hc-stat svg{width:16px;height:16px;stroke:var(--neon);fill:none;stroke-width:2.2;stroke-linecap:round}
@@ -1258,7 +1277,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
   ready:"tayyor",focusing:"fokusda",paused:"pauza",done:"tugadi ✓",reset:"Qayta",cal_lbl:"Faol kunlar",
   cal_streak:function(n,m){return "🔥 "+n+" kun · max "+m;},
-  zen_hint:"chiqish uchun ekranga tegin",skip_day:"Bugun dam",skip_undo:"Damni bekor qilish",
+  zen_hint:"chiqish uchun ekranga tegin",skip_day:"Bugun dam",skip_undo:"Damni bekor qilish",rest_group:"Dam kunida",
   micro_5:"⚡ Faqat 5 daqiqa boshla",micro_hint:"Boshlash — eng qiyin qadam. Qolganini o'zing his qilasan 💪",
   micro_left:function(t){return "5 daqiqa rejim · "+t;},micro_done:"🎉 5 daqiqa to'ldi! Zo'r ketyapsan — davom et",
   milestone:function(n,h){return "🏆 <b>"+n+"</b> — "+h+" soatga yetding! Mahorat sari yana bir marra.";},
@@ -1354,7 +1373,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
   ready:"готов",focusing:"фокус",paused:"пауза",done:"готово ✓",reset:"Сброс",cal_lbl:"Активные дни",
   cal_streak:function(n,m){return "🔥 "+n+" дн. · макс "+m;},
-  zen_hint:"коснитесь, чтобы выйти",skip_day:"Сегодня отдых",skip_undo:"Отменить отдых",
+  zen_hint:"коснитесь, чтобы выйти",skip_day:"Сегодня отдых",skip_undo:"Отменить отдых",rest_group:"На отдыхе",
   micro_5:"⚡ Начни всего с 5 минут",micro_hint:"Начать — самое трудное. Дальше пойдёт само 💪",
   micro_left:function(t){return "Режим 5 минут · "+t;},micro_done:"🎉 5 минут позади! Отлично идёшь — продолжай",
   milestone:function(n,h){return "🏆 <b>"+n+"</b> — "+h+" часов пройдено! Ещё одна веха мастерства.";},
@@ -1450,7 +1469,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
   ready:"ready",focusing:"focusing",paused:"paused",done:"done ✓",reset:"Reset",cal_lbl:"Active days",
   cal_streak:function(n,m){return "🔥 "+n+" days · max "+m;},
-  zen_hint:"tap to wake",skip_day:"Rest today",skip_undo:"Cancel rest",
+  zen_hint:"tap to wake",skip_day:"Rest today",skip_undo:"Cancel rest",rest_group:"Resting",
   micro_5:"⚡ Just start 5 minutes",micro_hint:"Starting is the hardest part. The rest follows 💪",
   micro_left:function(t){return "5-min mode · "+t;},micro_done:"🎉 5 minutes done! Great momentum — keep going",
   milestone:function(n,h){return "🏆 <b>"+n+"</b> — "+h+" hours reached! Another milestone toward mastery.";},
@@ -2035,7 +2054,45 @@ function celebrate(el){
   }
   setTimeout(function(){for(var j=0;j<made.length;j++){if(made[j].parentNode)made[j].parentNode.removeChild(made[j]);}},1000);
 }
-var firstCardRender=true;
+var firstCardRender=true,restOpen=false;
+/* bitta odat kartasini quradi (wrapper + swipe-skip fon bilan) va wrapper'ni qaytaradi */
+function renderOneCard(h,ci,stagger){
+  var isCheck=h.type==='check';
+  var doneToday=isCheck&&h.days&&h.days.indexOf(TODAY)!==-1;
+  var el=document.createElement('div');
+  el.className='hcard'+(h.runningSince?' running':'')+((h.completed||doneToday)?' completed':'')+(isSkip(h,TODAY)?' skipped':'');
+  var btnSvg;
+  if(isCheck)btnSvg='<svg viewBox="0 0 24 24" style="fill:none;stroke:'+(doneToday?'var(--onneon)':'var(--neon)')+';stroke-width:2.6"><path d="M5 13l4 4L19 7"/></svg>';
+  else btnSvg=h.runningSince?'<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>':'<svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7z"/></svg>';
+  el.innerHTML='<div class="hc-icon" style="background:'+h.color+'">'+(h.image?'<img src="'+h.image+'">':'')+icon(h.icon)+'</div>'+
+    '<div class="hc-body"><div class="hc-top"><div class="hc-name"></div><div class="hc-pct mono"></div></div>'+
+    '<div class="hc-bar"><div class="hc-fill"></div></div>'+
+    '<div class="hc-sub"><span class="el"></span><span class="gl"></span></div></div>'+
+    '<button class="hc-stat"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7"/></svg></button>'+
+    '<button class="hc-play'+(isCheck&&doneToday?'" style="background:var(--neon)':'')+'">'+btnSvg+'</button>';
+  el.querySelector('.hc-name').textContent=h.name;
+  el.querySelector('.gl').textContent=isCheck?'':(fmtNum(h.goalH)+' '+T('hours'));
+  cardRefs[h.id]=el;
+  el.querySelector('.hc-play').addEventListener('click',function(e){
+    e.stopPropagation();
+    if(isCheck){toggleCheck(h);return;}
+    if(h.completed)return;
+    if(h.runningSince)pauseH(h);else startH(h);
+    /* ro'yxat QAYTA QURILMAYDI — faqat shu kartaning holati o'zgaradi */
+    if(!updateCardState(h))renderHabits();
+    refreshCards();
+  });
+  el.querySelector('.hc-stat').addEventListener('click',function(e){e.stopPropagation();openDetail(h.id);});
+  el.addEventListener('click',function(){if(el._swiped){el._swiped=false;return;}openSession(h.id);});
+  if(stagger){el.classList.add('enter');el.style.animationDelay=(ci*45)+'ms';}
+  var wrap=document.createElement('div');wrap.className='hcard-wrap';
+  var bg=document.createElement('div');bg.className='hc-skipbg';
+  var bgin=document.createElement('span');bgin.className='hc-skipbg-in';
+  bgin.textContent='🌙 '+(isSkip(h,TODAY)?T('skip_undo'):T('skip_day'));
+  bg.appendChild(bgin);wrap.appendChild(bg);wrap.appendChild(el);
+  bindCardSwipe(el,h);
+  return wrap;
+}
 function renderHabits(){
   var list=$('#habitList');list.innerHTML='';cardRefs={};
   var stagger=firstCardRender&&!reduce;firstCardRender=false;
@@ -2044,38 +2101,77 @@ function renderHabits(){
     em.innerHTML='<div class="big">⏱</div><p><b>'+T('empty1')+'</b></p><p>'+T('empty2')+'</p>';
     list.appendChild(em);return;
   }
-  store.habits.forEach(function(h,ci){
-    var isCheck=h.type==='check';
-    var doneToday=isCheck&&h.days&&h.days.indexOf(TODAY)!==-1;
-    var el=document.createElement('div');
-    el.className='hcard'+(h.runningSince?' running':'')+((h.completed||doneToday)?' completed':'');
-    var btnSvg;
-    if(isCheck)btnSvg='<svg viewBox="0 0 24 24" style="fill:none;stroke:'+(doneToday?'var(--onneon)':'var(--neon)')+';stroke-width:2.6"><path d="M5 13l4 4L19 7"/></svg>';
-    else btnSvg=h.runningSince?'<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>':'<svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7z"/></svg>';
-    el.innerHTML='<div class="hc-icon" style="background:'+h.color+'">'+(h.image?'<img src="'+h.image+'">':'')+icon(h.icon)+'</div>'+
-      '<div class="hc-body"><div class="hc-top"><div class="hc-name"></div><div class="hc-pct mono"></div></div>'+
-      '<div class="hc-bar"><div class="hc-fill"></div></div>'+
-      '<div class="hc-sub"><span class="el"></span><span class="gl"></span></div></div>'+
-      '<button class="hc-stat"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7"/></svg></button>'+
-      '<button class="hc-play'+(isCheck&&doneToday?'" style="background:var(--neon)':'')+'">'+btnSvg+'</button>';
-    el.querySelector('.hc-name').textContent=h.name;
-    el.querySelector('.gl').textContent=isCheck?'':(fmtNum(h.goalH)+' '+T('hours'));
-    cardRefs[h.id]=el;
-    el.querySelector('.hc-play').addEventListener('click',function(e){
-      e.stopPropagation();
-      if(isCheck){toggleCheck(h);return;}
-      if(h.completed)return;
-      if(h.runningSince)pauseH(h);else startH(h);
-      /* ro'yxat QAYTA QURILMAYDI — faqat shu kartaning holati o'zgaradi */
-      if(!updateCardState(h))renderHabits();
-      refreshCards();
-    });
-    el.querySelector('.hc-stat').addEventListener('click',function(e){e.stopPropagation();openDetail(h.id);});
-    el.addEventListener('click',function(){openSession(h.id);});
-    if(stagger){el.classList.add('enter');el.style.animationDelay=(ci*45)+'ms';}
-    list.appendChild(el);
-  });
+  /* bugun dam qo'yilgan odatlar pastdagi yig'ilgan guruhga — yuqorida faqat bugungilar */
+  var active=[],rested=[];
+  store.habits.forEach(function(h){(isSkip(h,TODAY)?rested:active).push(h);});
+  var ci=0;
+  active.forEach(function(h){list.appendChild(renderOneCard(h,ci++,stagger));});
+  if(rested.length){
+    var gh=document.createElement('button');gh.className='rest-group'+(restOpen?' open':'');
+    gh.innerHTML='<span class="rg-moon">🌙</span><span class="rg-lbl"></span><span class="rg-n">'+rested.length+'</span>'+
+      '<span class="rg-chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>';
+    gh.querySelector('.rg-lbl').textContent=T('rest_group');
+    gh.addEventListener('click',function(){restOpen=!restOpen;renderHabits();});
+    list.appendChild(gh);
+    if(restOpen){rested.forEach(function(h){list.appendChild(renderOneCard(h,ci++,false));});}
+  }
   refreshCards();
+}
+/* karta-swipe -> "bugun dam": surib chegaradan oshsa dam qo'yiladi va odat guruhga tushadi.
+   Tab-swipe bilan to'qnashuv: karta .views avlodi -> bubble'da OLDIN ishlaydi -> stopPropagation. */
+function bindCardSwipe(el,h){
+  var sx=0,sy=0,dx=0,active=false,decided=false,claim=false,TH=72;
+  function labelSync(){
+    var bi=el.parentNode&&el.parentNode.querySelector('.hc-skipbg-in');
+    if(bi)bi.textContent='🌙 '+(isSkip(h,TODAY)?T('skip_undo'):T('skip_day'));
+  }
+  function clearTrans(){el.style.transition='';el.removeEventListener('transitionend',clearTrans);}
+  function endReset(){
+    var w=el.parentNode;if(w)w.classList.remove('swiping','armed');
+    if(reduce){el.style.transition='';el.style.transform='';return;}
+    el.style.transition='transform .32s var(--spring)';el.style.transform='';
+    el.addEventListener('transitionend',clearTrans);setTimeout(clearTrans,400); /* leak fallback */
+  }
+  function commitSkip(){
+    toggleSkip(h);sTap();buzz(8);
+    var w=el.parentNode;if(w)w.classList.remove('swiping','armed');
+    function reorder(){renderHabits();refreshChips();if(sessionOpen&&openHabitId===h.id){refreshSkipBtn(h);renderSessionCal(h);}}
+    if(reduce){reorder();return;}
+    el.style.transition='transform .26s var(--ease-in),opacity .22s var(--ease-in)';
+    el.style.transform='translateX('+((dx<0?-1:1)*((el.offsetWidth||320)+40))+'px)';el.style.opacity='0';
+    setTimeout(reorder,250);
+  }
+  el.addEventListener('touchstart',function(e){
+    if(!e.touches||e.touches.length>1){active=false;return;}
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    active=true;decided=false;claim=false;dx=0;el._swiped=false;
+    TH=Math.max(64,(el.offsetWidth||300)*0.30);
+    el.style.transition='none';labelSync();
+  },{passive:true});
+  el.addEventListener('touchmove',function(e){
+    if(!active||!e.touches)return;
+    var mx=e.touches[0].clientX-sx,my=e.touches[0].clientY-sy;
+    if(!decided){
+      if(Math.abs(mx)<12&&Math.abs(my)<12)return;   /* .views bilan bir xil 12px darvoza */
+      decided=true;claim=Math.abs(mx)>Math.abs(my)*1.6;
+      if(!claim){active=false;return;}               /* vertikal -> list scroll saqlanadi */
+      var w0=el.parentNode;if(w0)w0.classList.add('swiping');
+    }
+    if(e.stopPropagation)e.stopPropagation();         /* .views tab-swipe bloklanadi */
+    if(e.cancelable)e.preventDefault();
+    el._swiped=true;dx=mx;
+    el.style.transform='translateX('+dx+'px)';
+    var w=el.parentNode;if(w)w.classList.toggle('armed',Math.abs(dx)>=TH);
+  },{passive:false});
+  function up(e){
+    if(decided&&e&&e.stopPropagation)e.stopPropagation(); /* decided -> har doim (diagonal-latch himoyasi) */
+    if(!active&&!claim)return;
+    active=false;
+    if(claim){ if(Math.abs(dx)>=TH)commitSkip(); else endReset(); }
+    claim=false;
+  }
+  el.addEventListener('touchend',up);
+  el.addEventListener('touchcancel',function(){active=false;claim=false;endReset();}); /* skip QILMAYDI */
 }
 function toggleCheck(h){
   if(!h.days)h.days=[];
