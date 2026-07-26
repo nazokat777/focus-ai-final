@@ -282,6 +282,9 @@ input{font-family:inherit}
 .setting{display:flex;align-items:center;justify-content:space-between;background:var(--elev);border:1px solid var(--line);border-radius:15px;padding:13px 16px}
 .setting .lab{display:flex;align-items:center;gap:12px;font-size:14px}
 .setting .lab svg{width:19px;height:19px;stroke:var(--neon);fill:none;stroke-width:1.7}
+/* aniq HARAKAT tugmasi (toggle emas — "yoqish/o'chirish" bilan chalkashmasin) */
+.act-btn{flex:none;padding:8px 14px;border-radius:10px;background:rgba(var(--neon-rgb),.13);border:1px solid rgba(var(--neon-rgb),.38);color:var(--neon);font-size:12px;font-weight:600;white-space:nowrap;cursor:pointer;transition:transform .12s var(--ease)}
+.act-btn:active{transform:scale(.94)}
 .tog{width:46px;height:27px;border-radius:8px;background:var(--elev2);border:1px solid var(--line);position:relative;transition:.3s var(--ease)}
 .tog::after{content:"";position:absolute;top:2px;left:2px;width:21px;height:21px;border-radius:6px;background:var(--muted);transition:.3s var(--ease)}
 .tog.on{background:var(--neon)}
@@ -985,11 +988,11 @@ input{font-family:inherit}
             <option value="0">00:00</option><option value="2">02:00</option><option value="3">03:00</option><option value="4">04:00</option></select></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="pin"></span></div><button class="tog" id="pinTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z"/><path d="M9 8.5l5 2.5-5 2.5z"/><path d="M8 20h8"/></svg><span data-i18n="replay_onb"></span></div>
-          <button class="tog" id="onbReplay" style="width:auto;height:auto;padding:8px 14px;border-radius:10px;background:var(--elev2);font-size:12px;color:var(--neon)">▶</button></div>
+          <button class="act-btn" id="onbReplay"><span data-i18n="onb_watch"></span></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg><span data-i18n="backup"></span><span id="lastBakTxt" style="font-size:11px;color:var(--muted);margin-left:7px"></span></div>
-          <button class="tog" id="exportBtn" style="width:auto;height:auto;padding:8px 16px;border-radius:10px;background:var(--elev2);font-size:12px;color:var(--neon);font-weight:600">⬇</button></div>
+          <button class="act-btn" id="exportBtn"><span data-i18n="bak_save"></span></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 21V9M8 13l4-4 4 4M5 3h14"/></svg><span data-i18n="restore"></span></div>
-          <button class="tog" id="importBtn" style="width:auto;height:auto;padding:8px 16px;border-radius:10px;background:var(--elev2);font-size:12px;color:var(--neon);font-weight:600">⬆</button></div>
+          <button class="act-btn" id="importBtn"><span data-i18n="bak_load"></span></button></div>
         <input type="file" id="importInput" accept=".json,application/json" style="display:none">
       </div>
       <input type="file" id="avatarInput" accept="image/*" style="display:none">
@@ -1379,7 +1382,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
   shop_empty:"Hali mukofot yo'q. + tugmasi bilan o'zingga mukofot belgila.",rw_bought:function(n){return "🎁 «"+n+"» olindi — o'zingga ruxsat!";},
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
-  backup:"Zaxira nusxa",restore:"Tiklash",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
+  backup:"Zaxira nusxa",restore:"Tiklash",bak_save:"Faylga saqlash",bak_load:"Fayldan tiklash",onb_watch:"Ko'rish",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",rem_msg_ph:"O'z eslatma so'zingiz (ixtiyoriy)…",
   al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
@@ -1476,7 +1479,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
   shop_empty:"Пока нет наград. Нажми + и задай себе награду.",rw_bought:function(n){return "🎁 «"+n+"» получено — ты заслужил!";},
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
-  backup:"Резервная копия",restore:"Восстановить",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
+  backup:"Резервная копия",restore:"Восстановить",bak_save:"Сохранить в файл",bak_load:"Загрузить файл",onb_watch:"Смотреть",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",rem_msg_ph:"Своё напоминание (необязательно)…",
   al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
@@ -1573,7 +1576,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
   shop_empty:"No rewards yet. Tap + to set your own reward.",rw_bought:function(n){return "🎁 “"+n+"” redeemed — you earned it!";},
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
-  backup:"Backup",restore:"Restore",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
+  backup:"Backup",restore:"Restore",bak_save:"Save to file",bak_load:"Load file",onb_watch:"Watch",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",rem_msg_ph:"Your own reminder (optional)…",
   al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
