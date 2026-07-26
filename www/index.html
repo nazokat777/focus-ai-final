@@ -582,7 +582,22 @@ input{font-family:inherit}
 .si-del{color:var(--danger);font-size:17px;opacity:.55;padding:2px 4px;flex:none}
 .shop-log-item{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted);padding:7px 0;border-bottom:1px solid var(--line)}
 .shop-log-item:last-child{border-bottom:none}
-#trace{width:100%;height:110px;border-radius:14px;background:var(--elev);border:1px solid var(--line)}
+/* Duolingo uslubi streak — kun-kun 🔥/🧊 */
+.streak-row{background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:14px 12px}
+.sr-head{display:flex;align-items:baseline;gap:7px;justify-content:center;margin-bottom:13px}
+.sr-head .sr-fire{font-size:20px}
+.sr-head .sr-n{font-size:26px;font-weight:800;color:var(--neon);font-family:'JetBrains Mono',monospace}
+.sr-head .sr-lbl{font-size:12px;color:var(--muted)}
+.sr-days{display:flex;justify-content:space-between;gap:4px}
+.sd{flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.sd-ic{width:34px;height:34px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--elev2);border:1px solid var(--line);transition:transform .2s var(--spring)}
+.sd-fire .sd-ic{background:rgba(var(--neon-rgb),.15);border-color:rgba(var(--neon-rgb),.4)}
+.sd-miss .sd-ic{color:var(--muted)}
+.sd-future .sd-ic{opacity:.3}
+.sd-today .sd-ic{box-shadow:0 0 0 2px var(--neon),0 0 12px rgba(var(--neon-rgb),.4);transform:scale(1.06)}
+.sd-wd{font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.sd-today .sd-wd{color:var(--neon);font-weight:700}
+.reduce .sd-ic{transition:none}
 /* do'stlar */
 .setting.link{cursor:pointer}
 .setting .arrow{color:var(--muted);font-size:20px;line-height:1}
@@ -902,8 +917,8 @@ input{font-family:inherit}
       </div>
       <div class="grid-lbl" id="rewardsLbl" style="cursor:pointer"><span data-i18n="rewards"></span><span class="rw-bal mono" id="rwBal">🛍</span></div>
       <div class="medals" id="medals"></div>
-      <div class="grid-lbl" data-i18n="trace"></div>
-      <canvas id="trace"></canvas>
+      <div class="grid-lbl" data-i18n="streak_week"></div>
+      <div class="streak-row" id="streakRow"></div>
       <div class="coach">
         <div class="c-top">🤖 <span data-i18n="coach"></span></div>
         <div class="c-msg dim" id="coachMsg"></div>
@@ -1322,7 +1337,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   all_done_today:"Bugun hammasi bajarildi!",
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Mahorat",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
-  wisdom:"Hikmat to'plami",trace:"Fokus izi",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
+  wisdom:"Hikmat to'plami",trace:"Fokus izi",streak_week:"Seriya",streak_days:"kunlik seriya",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
   rewards:"Mukofotlar",md1:"Birinchi qadam",md2:"10 soat",md3:"50 soat",md4:"100 soat",md5:"500 soat",md6:"Maqsadli",md7:"3 kun",md8:"Temir iroda",md9:"Afsona",
   shop_hint:"Fokus qilib to'plagan tanga va olmoslaringni o'zing belgilagan mukofotlarga sarfla. 🪙 — har bajarilgan kunlik norma uchun; 💎 — kunning barcha odatlari bajarilganda.",my_rewards:"Mening mukofotlarim",reward_history:"Olingan mukofotlar",
   new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
@@ -1419,7 +1434,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   all_done_today:"Всё выполнено сегодня!",
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Мастерство",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
-  wisdom:"Мудрость",trace:"След фокуса",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
+  wisdom:"Мудрость",trace:"След фокуса",streak_week:"Серия",streak_days:"дней подряд",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
   rewards:"Награды",md1:"Первый шаг",md2:"10 часов",md3:"50 часов",md4:"100 часов",md5:"500 часов",md6:"Целеустремлённый",md7:"3 дня",md8:"Железная воля",md9:"Легенда",
   shop_hint:"Трать монеты и алмазы, накопленные фокусом, на свои собственные награды. 🪙 — за каждую выполненную дневную норму; 💎 — когда выполнены все привычки дня.",my_rewards:"Мои награды",reward_history:"Полученные награды",
   new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
@@ -1516,7 +1531,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   all_done_today:"All done today!",
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Mastery",mastery_s:"Level",close:"Close",share:"Share 📤",
-  wisdom:"Wisdom",trace:"Focus trace",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
+  wisdom:"Wisdom",trace:"Focus trace",streak_week:"Streak",streak_days:"day streak",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
   rewards:"Rewards",md1:"First step",md2:"10 hours",md3:"50 hours",md4:"100 hours",md5:"500 hours",md6:"Goal-driven",md7:"3 days",md8:"Iron will",md9:"Legend",
   shop_hint:"Spend the coins and diamonds you earned by focusing on your own rewards. 🪙 — for each daily goal met; 💎 — when all of today's habits are done.",my_rewards:"My rewards",reward_history:"Redeemed rewards",
   new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
@@ -3186,7 +3201,7 @@ function drawStats(anim){
     bd.appendChild(el);
   });
   save();
-  renderMastery();renderRewards();renderGolden();drawTrace();
+  renderMastery();renderRewards();renderGolden();renderStreakRow();
 }
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
@@ -3365,33 +3380,25 @@ function renderMastery(){
   box.innerHTML='<b>'+T('eta_range')(e.d1,e.d2)+'</b> · '+T('eta_pace')(Math.round(p.R/60000))+dtxt+
     '<br><span class="nt">'+T('eta_note')+'</span>';
 }
-function drawTrace(){
-  var c=$('#trace');if(!c)return;
-  var r=c.getBoundingClientRect(),dpr=Math.min(window.devicePixelRatio||1,2);
-  c.width=r.width*dpr;c.height=110*dpr;
-  var x=c.getContext('2d');x.setTransform(dpr,0,0,dpr,0,0);
-  x.clearRect(0,0,r.width,110);
-  var mins=Math.floor(totalHours()*60),C=neonRGB();
-  if(mins<1)return;
-  var seed=mins,rnd=RNG(seed*7919+13);
-  var px=14,py=88,ang=-0.5,steps=Math.min(420,20+mins);
-  x.lineWidth=1.4;x.lineCap='round';
-  x.shadowColor='rgba('+C+',.7)';x.shadowBlur=4;
-  x.beginPath();x.moveTo(px,py);
-  for(var i=0;i<steps;i++){
-    ang+=(rnd()-.48)*0.7;
-    var len=3+rnd()*7;
-    px+=Math.cos(ang)*len;py+=Math.sin(ang)*len*0.6;
-    if(px>r.width-12){px=r.width-12;ang=Math.PI-ang;}
-    if(px<12){px=12;ang=Math.PI-ang;}
-    if(py>96){py=96;ang=-ang;}
-    if(py<14){py=14;ang=-ang;}
-    x.strokeStyle='rgba('+C+','+(0.25+0.6*(i/steps))+')';
-    x.lineTo(px,py);x.stroke();x.beginPath();x.moveTo(px,py);
+/* Duolingo uslubi streak: kun holati — 🔥 faol / 🧊 dam / xira o'tkazilgan */
+function dayFlame(day){
+  if(day>TODAY)return 'future';
+  if(dayActive(day))return 'fire';
+  if(store.habits.some(function(h){return isSkip(h,day);}))return 'ice'; /* dam kun — seriya uzilmaydi */
+  return 'miss';
+}
+function renderStreakRow(){
+  var wrap=$('#streakRow');if(!wrap)return;
+  var dn={uz:['Du','Se','Ch','Pa','Ju','Sh','Ya'],ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],en:['Mo','Tu','We','Th','Fr','Sa','Su']};
+  var names=dn[store.settings.lang]||dn.en;
+  var html='<div class="sr-head"><span class="sr-fire">🔥</span><span class="sr-n">'+globalStreak()+'</span><span class="sr-lbl">'+T('streak_days')+'</span></div><div class="sr-days">';
+  for(var i=6;i>=0;i--){
+    var d=TODAY-i, st=dayFlame(d);
+    var dow=new Date((d*86400000)+new Date().getTimezoneOffset()*60000).getDay();
+    var ic=st==='fire'?'🔥':(st==='ice'?'🧊':(st==='future'?'':'·'));
+    html+='<div class="sd sd-'+st+(d===TODAY?' sd-today':'')+'"><span class="sd-ic">'+ic+'</span><span class="sd-wd">'+names[(dow+6)%7]+'</span></div>';
   }
-  x.shadowBlur=8;
-  x.fillStyle='rgba('+C+',.95)';
-  x.beginPath();x.arc(px,py,3,0,7);x.fill();
+  wrap.innerHTML=html+'</div>';
 }
 
 /* ============ natija kartasi + share ============ */
