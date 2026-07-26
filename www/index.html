@@ -430,10 +430,40 @@ input{font-family:inherit}
 .onb-skip{position:absolute;top:calc(env(safe-area-inset-top) + 18px);right:22px;font-size:13px;color:var(--muted);padding:8px 12px;z-index:2}
 .onb-track{flex:1;display:flex;transition:transform .45s var(--ease)}
 .onb-slide{min-width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:0 36px;text-align:center}
-.onb-art{font-size:74px;filter:drop-shadow(0 0 24px rgba(var(--neon-rgb),.35))}
+/* onboarding animatsiyali brend heroes (neon, geometrik — barg/daraxt yo'q) */
+.ob-hero{width:132px;height:132px;display:grid;place-items:center;margin-bottom:6px;position:relative}
+.ob-ring{width:132px;height:132px}
+.obr-track{fill:none;stroke:var(--elev2);stroke-width:5}
+.obr-arc{fill:none;stroke:var(--neon);stroke-width:5;stroke-linecap:round;stroke-dasharray:314;stroke-dashoffset:314;transform-origin:60px 60px;transform:rotate(-90deg);filter:drop-shadow(0 0 6px rgba(var(--neon-rgb),.6));animation:obrArc 2.8s var(--ease) infinite}
+@keyframes obrArc{0%{stroke-dashoffset:314}55%,100%{stroke-dashoffset:66}}
+.obr-hand{stroke:var(--neon);stroke-width:3;stroke-linecap:round;transform-origin:60px 60px;animation:obrSpin 2.8s linear infinite}
+@keyframes obrSpin{to{transform:rotate(360deg)}}
+.obr-hub{fill:var(--neon)}
+.ob-bars{display:flex;align-items:flex-end;gap:9px;height:104px}
+.ob-bars i{width:14px;height:100%;background:linear-gradient(180deg,var(--neon),var(--neon-dp));border-radius:5px;transform-origin:bottom;transform:scaleY(.16);animation:obBar 1.9s var(--ease) infinite;animation-delay:calc(var(--d)*.13s);box-shadow:0 0 10px rgba(var(--neon-rgb),.4)}
+@keyframes obBar{0%,100%{transform:scaleY(.16)}50%{transform:scaleY(1)}}
+.ob-medal{position:relative}
+.obm-core{width:78px;height:78px;border-radius:50%;background:rgba(var(--neon-rgb),.14);border:2px solid var(--neon);display:grid;place-items:center;box-shadow:0 0 22px rgba(var(--neon-rgb),.45);position:relative;z-index:1}
+.obm-core svg{width:40px;height:40px}
+.obm-core path{fill:none;stroke:var(--neon);stroke-width:3.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:obmCheck .7s var(--ease-out) .3s forwards}
+@keyframes obmCheck{to{stroke-dashoffset:0}}
+.obm-ring{position:absolute;left:50%;top:50%;width:78px;height:78px;margin:-39px 0 0 -39px;border-radius:50%;border:2px solid rgba(var(--neon-rgb),.6);animation:obmPulse 2.6s var(--ease-out) infinite}
+.obm-ring:nth-child(2){animation-delay:1.3s}
+@keyframes obmPulse{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.1);opacity:0}}
+.reduce .obr-arc,.reduce .obr-hand,.reduce .ob-bars i,.reduce .obm-ring{animation:none}
+.reduce .obr-arc{stroke-dashoffset:66}.reduce .ob-bars i{transform:scaleY(.7)}.reduce .obm-core path{stroke-dashoffset:0}
 .onb-slide h2{font-size:24px;font-weight:700;line-height:1.2}
 .onb-slide h2 b{color:var(--neon)}
 .onb-slide p{color:var(--muted);font-size:14px;line-height:1.6;max-width:280px}
+/* kamera + matn motion (GSAP-uslub): faol slaydda hero zoom-in, matn bosqichma-bosqich ko'tariladi */
+.onb-slide .ob-hero,.onb-slide h2,.onb-slide p{opacity:0}
+.onb-slide.active .ob-hero{animation:obHeroIn .62s var(--ease-out) both}
+.onb-slide.active h2{animation:obTextIn .6s var(--ease-out) .14s both}
+.onb-slide.active p{animation:obTextIn .6s var(--ease-out) .24s both}
+@keyframes obHeroIn{from{opacity:0;transform:translateY(18px) scale(.82)}to{opacity:1;transform:none}}
+@keyframes obTextIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.reduce .onb-slide .ob-hero,.reduce .onb-slide h2,.reduce .onb-slide p{opacity:1}
+.reduce .onb-slide.active .ob-hero,.reduce .onb-slide.active h2,.reduce .onb-slide.active p{animation:none}
 .onb-dots{display:flex;gap:8px;justify-content:center;margin:18px 0}
 .onb-dots i{width:8px;height:8px;border-radius:4px;background:var(--elev2);transition:.3s var(--ease)}
 .onb-dots i.on{width:24px;background:var(--neon)}
@@ -831,9 +861,9 @@ input{font-family:inherit}
   <div class="flow onb gone" id="onb">
     <button class="onb-skip" id="onbSkip"></button>
     <div class="onb-track" id="onbTrack">
-      <div class="onb-slide"><div class="onb-art">⏱️</div><h2 data-i18n="ob1t"></h2><p data-i18n="ob1p"></p></div>
-      <div class="onb-slide"><div class="onb-art">📊</div><h2 data-i18n="ob2t"></h2><p data-i18n="ob2p"></p></div>
-      <div class="onb-slide"><div class="onb-art">🏆</div><h2 data-i18n="ob3t"></h2><p data-i18n="ob3p"></p></div>
+      <div class="onb-slide"><div class="ob-hero"><svg class="ob-ring" viewBox="0 0 120 120"><circle class="obr-track" cx="60" cy="60" r="50"/><circle class="obr-arc" cx="60" cy="60" r="50"/><line class="obr-hand" x1="60" y1="60" x2="60" y2="18"/><circle class="obr-hub" cx="60" cy="60" r="4.5"/></svg></div><h2 data-i18n="ob1t"></h2><p data-i18n="ob1p"></p></div>
+      <div class="onb-slide"><div class="ob-hero ob-bars"><i style="--d:0"></i><i style="--d:1"></i><i style="--d:2"></i><i style="--d:3"></i><i style="--d:4"></i></div><h2 data-i18n="ob2t"></h2><p data-i18n="ob2p"></p></div>
+      <div class="onb-slide"><div class="ob-hero ob-medal"><span class="obm-ring"></span><span class="obm-ring"></span><div class="obm-core"><svg viewBox="0 0 48 48"><path d="M14 24l7 7 13-14"/></svg></div></div><h2 data-i18n="ob3t"></h2><p data-i18n="ob3p"></p></div>
     </div>
     <div class="onb-dots" id="onbDots"><i class="on"></i><i></i><i></i></div>
     <button class="onb-next" id="onbNext"></button>
@@ -1758,7 +1788,7 @@ function ambToggle(kind){
     var btn=$('#ambi [data-amb="'+kind+'"]');if(btn)btn.classList.add('on');
   } else { ambStart(kind); } /* URL yo'q yoki offline -> sintez */
 }
-var AMB=[['forest','🌲'],['stream','💧'],['birds','🐦'],['rain','🌧']];
+var AMB=[['forest','🏞'],['stream','💧'],['birds','🐦'],['rain','🌧']];
 (function(){
   var box=$('#ambi');
   AMB.forEach(function(p){
@@ -1931,7 +1961,7 @@ function refreshBakTxt(){
   function nextFlow(){
     if(done)return;done=true;
     $('#splash').classList.add('gone');
-    if(!store.user.onboarded)$('#onb').classList.remove('gone');
+    if(!store.user.onboarded){onbGo(0);$('#onb').classList.remove('gone');} /* onbGo -> birinchi slayd motioni */
     else if(!store.user.name)$('#auth').classList.remove('gone');
     else setTimeout(coachMark,900); /* coachmark: app ochildi (mavjud foydalanuvchi) */
   }
@@ -1943,6 +1973,9 @@ function onbGo(i){
   onbIx=Math.max(0,Math.min(2,i));
   $('#onbTrack').style.transform='translateX(-'+(onbIx*100)+'%)';
   $$('#onbDots i').forEach(function(d,j){d.classList.toggle('on',j===onbIx);});
+  var sl=$$('#onbTrack .onb-slide');
+  sl.forEach(function(s){s.classList.remove('active');});
+  if(sl[onbIx]){void sl[onbIx].offsetWidth;sl[onbIx].classList.add('active');} /* kamera+matn motionni qayta ishga tushiradi */
   refreshOnbBtn();
 }
 $('#onbNext').addEventListener('click',function(){sTap();if(onbIx<2)onbGo(onbIx+1);else finishOnb();});
@@ -2888,7 +2921,7 @@ function awardDayCoins(h){
 function medalDefs(){
   var th=totalHours(),st=globalStreak(),wins=store.wins||0;
   return [
-    {ic:'🌱',nm:T('md1'),ok:th>0,cur:th,need:0.1},
+    {ic:'⚡',nm:T('md1'),ok:th>0,cur:th,need:0.1},
     {ic:'🔥',nm:T('md2'),ok:th>=10,cur:th,need:10},
     {ic:'⭐',nm:T('md3'),ok:th>=50,cur:th,need:50},
     {ic:'🏆',nm:T('md4'),ok:th>=100,cur:th,need:100},
