@@ -923,6 +923,7 @@ input{font-family:inherit}
         <button class="s-chipbtn preset" data-min="50">50:00</button>
         <button class="s-chipbtn preset" data-min="90">90:00</button>
       </div>
+      <div class="ambi" id="ambiF"></div>
       <div class="s-controls" style="padding:0 2px">
         <button class="s-btn s-fin" id="fReset" data-i18n="reset"></button>
         <button class="s-btn s-main" id="fStart"></button>
@@ -1703,7 +1704,7 @@ function ambStopAll(){
   ambient.nodes.forEach(function(n){try{n.stop?n.stop():n.disconnect();}catch(e){}});
   ambient.nodes=[];ambient.cur=null;
   ambStreamStop(); /* streaming ovozни ham to'xtatadi */
-  $$('#ambi .s-chipbtn').forEach(function(b){b.classList.remove('on');});
+  $$('#ambi .s-chipbtn,#ambiF .s-chipbtn').forEach(function(b){b.classList.remove('on');});
 }
 function noiseBuf(a){var len=2*a.sampleRate,buf=a.createBuffer(1,len,a.sampleRate),d=buf.getChannelData(0);
   for(var i=0;i<len;i++)d[i]=Math.random()*2-1;return buf;}
@@ -1765,7 +1766,7 @@ function ambStart(kind){
         setTimeout(cricket,700+Math.random()*1200);
       })();
     }
-    var btn=$('#ambi [data-amb="'+kind+'"]');if(btn)btn.classList.add('on');
+    $$('#ambi [data-amb="'+kind+'"],#ambiF [data-amb="'+kind+'"]').forEach(function(b){b.classList.add('on');}); /* ikkala ekran sinxron */
   }catch(e){}
 }
 /* real yozuvli mp3 (archive.org, royalty-free) — internet bo'lganda oqadi; xato/offline -> sintez */
@@ -1788,18 +1789,20 @@ function ambToggle(kind){
     au.addEventListener('error',function(){if(ambStream===au){ambStreamStop();ambStart(kind);}});
     var p=au.play();if(p&&p.catch)p.catch(function(){if(ambStream===au){ambStreamStop();ambStart(kind);}});
     ambStream=au;
-    var btn=$('#ambi [data-amb="'+kind+'"]');if(btn)btn.classList.add('on');
+    $$('#ambi [data-amb="'+kind+'"],#ambiF [data-amb="'+kind+'"]').forEach(function(b){b.classList.add('on');});
   } else { ambStart(kind); } /* URL yo'q yoki offline -> sintez */
 }
 var AMB=[['forest','🏞'],['stream','💧'],['birds','🐦'],['rain','🌧']];
 (function(){
-  var box=$('#ambi');
-  AMB.forEach(function(p){
-    var b=document.createElement('button');
-    b.className='s-chipbtn';b.setAttribute('data-amb',p[0]);
-    b.innerHTML='<span>'+p[1]+'</span>';
-    b.addEventListener('click',function(){ambToggle(p[0]);sTap();});
-    box.appendChild(b);
+  ['#ambi','#ambiF'].forEach(function(sel){   /* sessiya VA fokus taymer ekrani */
+    var box=$(sel);if(!box)return;
+    AMB.forEach(function(p){
+      var b=document.createElement('button');
+      b.className='s-chipbtn';b.setAttribute('data-amb',p[0]);
+      b.innerHTML='<span>'+p[1]+'</span>';
+      b.addEventListener('click',function(){ambToggle(p[0]);sTap();});
+      box.appendChild(b);
+    });
   });
 })();
 
