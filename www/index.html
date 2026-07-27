@@ -932,7 +932,7 @@ input{font-family:inherit}
 .hero.empty .hero-edit span{color:var(--neon)}
 
 /* Bugungi progress kartasi — halqa + sparkline */
-.pcard{background:rgba(10,20,14,.34);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);border-radius:18px;padding:13px 15px;margin:20px 0 0}
+.pcard{background:rgba(10,20,14,.34);backdrop-filter:blur(22px) saturate(1.2);-webkit-backdrop-filter:blur(22px) saturate(1.2);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);border-radius:18px;padding:13px 15px;margin:238px 0 0}
 .device[data-theme="light"] .pcard{background:rgba(255,255,255,.42);border-color:rgba(255,255,255,.5)}
 .pcard .pc-head{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
 .pcard .pc-row{display:flex;align-items:center;gap:16px}
@@ -985,12 +985,13 @@ input{font-family:inherit}
    pastga qarab so'nadi; kontent ustida. Shaffof PNG bo'lsa "suzuvchi" ko'rinadi. */
 /* Landscape (16:9) fon banneri: to'liq kenglik, tepada, pastga fonga so'nadi.
    Chap tomonda nozik qoralik -> salom/sitata matni o'qiladi; kontent ustida (z1). */
-#homeBg{position:absolute;top:0;left:-20px;right:-20px;height:256px;z-index:0;pointer-events:none;
+#homeBg{position:absolute;top:0;left:-20px;right:-20px;height:322px;z-index:0;pointer-events:none;
   background-position:center top;background-size:cover;background-repeat:no-repeat;
-  -webkit-mask-image:linear-gradient(to bottom,#000 50%,rgba(0,0,0,.35) 78%,transparent 100%);
-  mask-image:linear-gradient(to bottom,#000 50%,rgba(0,0,0,.35) 78%,transparent 100%)}
+  -webkit-mask-image:linear-gradient(to bottom,#000 62%,rgba(0,0,0,.35) 84%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 62%,rgba(0,0,0,.35) 84%,transparent 100%)}
 #homeBg::after{content:"";position:absolute;inset:0;
   background:linear-gradient(102deg,rgba(3,8,6,.85) 0%,rgba(3,8,6,.4) 40%,rgba(3,8,6,0) 70%)}
+.device[data-theme="light"] #homeBg::after{background:linear-gradient(102deg,rgba(243,250,245,.9) 0%,rgba(243,250,245,.45) 42%,rgba(243,250,245,0) 72%)}
 #v-home>*:not(#homeBg){position:relative;z-index:1} /* barcha kontent fon ustida */
 #device.reduce #homeBg{filter:none}
 .home-quote{display:flex;gap:7px;margin:6px 4px 2px;max-width:70%;font-size:12.5px;line-height:1.4;color:var(--muted)}
