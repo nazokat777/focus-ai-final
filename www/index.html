@@ -2670,7 +2670,7 @@ function positionHomeFx(im){
     var dw=im.width*scale,offX=(bw-dw)/2;                /* center top */
     var k=dw/W;                                          /* namuna->ekran */
     var pxc=offX+cx*k,pyc=cy*k,dp=diaPx*k*0.98;
-    pyc-=dp*0.07; /* halqa markazi glow tufayli pastroq chiqadi — biroz yuqoriga surish */
+    pyc-=dp*0.16;pxc-=dp*0.06; /* glow markazni past-o'ngga tortadi — yuqori-chapga tuzatish */
     fx.style.width=dp+'px';fx.style.height=dp+'px';
     fx.style.left=(pxc-dp/2)+'px';fx.style.top=(pyc-dp/2)+'px';fx.style.right='auto';
   }catch(e){}
