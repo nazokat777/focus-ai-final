@@ -932,8 +932,7 @@ input{font-family:inherit}
 .hero.empty .hero-edit span{color:var(--neon)}
 
 /* Bugungi progress kartasi — halqa + sparkline */
-.pcard{background:rgba(8,18,10,.52);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(var(--neon-rgb),.16);border-radius:18px;padding:15px 16px;margin:14px 0 0}
-.device[data-theme="light"] .pcard{background:rgba(255,255,255,.55)}
+.pcard{background:var(--elev);border:1px solid var(--line);border-radius:18px;padding:15px 16px;margin:14px 0 0}
 .pcard .pc-head{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
 .pcard .pc-row{display:flex;align-items:center;gap:16px}
 .pc-ring{width:96px;height:96px;flex:none;position:relative}
@@ -982,11 +981,11 @@ input{font-family:inherit}
 #v-home .hc-play{width:42px;height:42px;border-radius:50%}
 /* Bosh ekran ORQA FON rasmi (immersiv, 3D suzuvchi) — kichraytirilgan, tepa-o'ngdagi bo'sh joyda,
    pastga qarab so'nadi; kontent ustida. Shaffof PNG bo'lsa "suzuvchi" ko'rinadi. */
-#homeBg{position:absolute;top:-6px;right:-8px;width:62%;height:300px;z-index:0;pointer-events:none;
-  background-position:center top;background-size:contain;background-repeat:no-repeat;opacity:.92;
-  filter:drop-shadow(0 10px 30px rgba(var(--neon-rgb),.35));
-  -webkit-mask-image:linear-gradient(to bottom,#000 58%,rgba(0,0,0,.2) 82%,transparent 100%);
-  mask-image:linear-gradient(to bottom,#000 58%,rgba(0,0,0,.2) 82%,transparent 100%)}
+#homeBg{position:absolute;top:-4px;right:-14px;width:88%;height:460px;z-index:0;pointer-events:none;
+  background-position:right top;background-size:contain;background-repeat:no-repeat;opacity:.96;
+  filter:drop-shadow(0 12px 34px rgba(var(--neon-rgb),.4));
+  -webkit-mask-image:linear-gradient(to bottom,#000 66%,rgba(0,0,0,.25) 86%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 66%,rgba(0,0,0,.25) 86%,transparent 100%)}
 #v-home>*:not(#homeBg){position:relative;z-index:1} /* barcha kontent fon ustida */
 #device.reduce #homeBg{filter:none}
 .home-quote{display:flex;gap:7px;margin:6px 4px 2px;max-width:70%;font-size:12.5px;line-height:1.4;color:var(--muted)}
