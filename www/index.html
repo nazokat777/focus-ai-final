@@ -783,6 +783,23 @@ input{font-family:inherit}
 .hc-play.swap svg{animation:iswap .32s var(--spring)}
 .reduce .hc-play.swap svg{animation:none}
 .reduce .hcard.enter,.reduce .s-ring .seg.just{animation:none}
+/* ===== Kinematik kamera-dolly: sahifaga kirganda kontent chuqurlik bo'yicha hal bo'ladi =====
+   Har view'ning BEVOSITA bolalari tabiiy chuqurlik steki:
+     1-bola = sarlavha (fon, uzoq)   -> kam siljiydi, erta keladi
+     keyingi bolalar = kontent (old plan) -> ko'proq siljiydi, kechroq
+   Faqat transform+opacity. .view'ning O'Z gorizontal --dir slaydiga tegmaydi
+   (u ota-elementda, X o'qida) — ikkisi qo'shilib diagonal kamera harakatini beradi.
+   Klass faqat goToView'dan qo'yiladi -> ilk yuklanishda ishlamaydi. */
+@keyframes dollyIn{
+  0%{opacity:0;transform:translate3d(0,var(--dy,20px),0) scale(var(--sc,1))}
+  100%{opacity:1;transform:none}
+}
+.view.dolly>*{animation:dollyIn 380ms var(--ease-out) both}
+.view.dolly>*:nth-child(1){--dy:7px;animation-delay:0ms}
+.view.dolly>*:nth-child(2){--dy:14px;animation-delay:70ms}
+.view.dolly>*:nth-child(3){--dy:20px;animation-delay:110ms}
+.view.dolly>*:nth-child(n+4){--dy:26px;--sc:.992;animation-delay:140ms}
+#device.reduce .view.dolly>*{animation:none}
 
 #aurora{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity 1.2s var(--ease)}
 .session.open #aurora{opacity:1}
@@ -4012,10 +4029,13 @@ function goToView(ni){
   var old=$('.view.active');
   if(old){
     old.classList.remove('active');old.classList.add('leaving');
+    old.classList.remove('dolly'); /* chiquvchi view bolalari o'rtada qolib ketmasin */
     clearTimeout(leaveTm); /* tez ketma-ket o'tishda klass osilib qolmasin */
     leaveTm=setTimeout(function(){$$('.view.leaving').forEach(function(s){s.classList.remove('leaving');});},260);
   }
   $('#v-'+v).classList.add('active');
+  /* kinematik kamera-dolly: kontent chuqurlik qatlamlari bo'yicha hal bo'ladi */
+  if(!reduce){var dv=$('#v-'+v);dv.classList.remove('dolly');void dv.offsetWidth;dv.classList.add('dolly');}
   navIdx=ni;navInd();
   if(!reduce){var ni2=$('#navind');if(ni2){ni2.classList.remove('stretch');void ni2.getBoundingClientRect();ni2.classList.add('stretch');}}
   if(v==='stats')drawStats(true); /* tab ochilganda raqamlar dekodlanadi (til almashuvida emas) */
