@@ -319,10 +319,13 @@ input{font-family:inherit}
 .reduce .navind.stretch>i{animation:none}
 /* markaziy + FAB (navda) — bosh qo'shish tugmasi */
 .nav-fab{flex:1;display:flex;align-items:center;justify-content:center;background:none;border:none;position:relative}
-.nav-fab .fab-in{width:54px;height:54px;border-radius:50%;background:var(--neon);display:grid;place-items:center;
-  transform:translateY(-14px);box-shadow:0 8px 22px rgba(var(--neon-rgb),.42),0 0 0 5px var(--bg);transition:transform .18s var(--ease)}
+.nav-fab .fab-in{width:56px;height:60px;background:var(--neon);display:grid;place-items:center;
+  clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+  transform:translateY(-14px);filter:drop-shadow(0 8px 18px rgba(var(--neon-rgb),.5));transition:transform .18s var(--ease)}
 .nav-fab .fab-in svg{width:26px;height:26px;stroke:var(--onneon);fill:none;stroke-width:2.6;stroke-linecap:round}
 .nav-fab:active .fab-in{transform:translateY(-14px) scale(.9)}
+/* eski WebView clip-path'ni tushunmasa — aylana fallback */
+@supports not (clip-path:polygon(0 0)){.nav-fab .fab-in{border-radius:50%;height:56px}}
 
 /* sheets & overlays */
 .scrim{position:absolute;inset:0;background:rgba(0,0,0,.62);opacity:0;pointer-events:none;transition:opacity .35s var(--ease);z-index:70;backdrop-filter:blur(2px)}
@@ -1116,6 +1119,7 @@ input{font-family:inherit}
         <div class="chip" data-help="streak"><div class="sc-ic">🔥</div><div class="sc-val" id="streakN">0</div><div class="sc-lbl" data-i18n="streak"></div><div class="sc-sub" id="streakSub"></div></div>
         <div class="chip" data-help="today"><div class="sc-ic">🕐</div><div class="sc-val" id="todayTime">0m</div><div class="sc-lbl" data-i18n="today_time"></div><div class="sc-sub" data-i18n="sc_today"></div></div>
         <div class="chip" data-help="strength"><div class="sc-ic">⚡</div><div class="sc-val" id="scoreV">0%</div><div class="sc-lbl" data-i18n="score_lbl"></div><div class="sc-sub" id="scoreSub"></div></div>
+        <div class="chip"><div class="sc-ic">🎯</div><div class="sc-val" id="tasksV">0/0</div><div class="sc-lbl" data-i18n="tasks_lbl"></div><div class="sc-sub" data-i18n="tasks_sub"></div></div>
       </div>
       <div class="sec-lbl"><span data-i18n="today_tasks"></span>
         <button class="add" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
@@ -1522,7 +1526,7 @@ var $=function(s){return document.querySelector(s);},
 /* ============ i18n ============ */
 var I18N={
 uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",today_time:"Bugun",my_habits:"Odatlarim",
-  today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",score_lbl:"Ball",sc_today:"Bugun",
+  today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",score_lbl:"Ball",sc_today:"Bugun",tasks_lbl:"Vazifalar",tasks_sub:"bajarildi",
   sc_best:function(n){return "eng yaxshi: "+n;},
   sc_w0:"boshlanish",sc_w1:"o'smoqda",sc_w2:"barqaror",sc_w3:"kuchli",sc_w4:"zo'r",
   pc_empty:"ma'lumot yig'ilmoqda",pc_up:"o'sish sari 📈",pc_keep:"shu ruhda davom!",hero_add:"Rasm qo'shish",
@@ -1627,7 +1631,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   quotes:["Har kuni 1% — bir yilda 37 barobar kuchliroq.","Boshlash eng qiyini. Qolgani osonroq.","Fokus — bu «yo'q» deyish san'ati.","Kichik qadamlar — katta natija.","Diqqating — eng qimmatli boyliging.","Chalg'imaslik — zamonaviy superkuch."],
   prof:function(s){return "seriya: "+s+" kun";}},
 ru:{tagline:"Время — самая честная мера.",growth:"Рост",streak:"Серия",today_time:"Сегодня",my_habits:"Мои привычки",
-  today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",score_lbl:"Балл",sc_today:"Сегодня",
+  today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",score_lbl:"Балл",sc_today:"Сегодня",tasks_lbl:"Задачи",tasks_sub:"выполнено",
   sc_best:function(n){return "рекорд: "+n;},
   sc_w0:"старт",sc_w1:"растёт",sc_w2:"стабильно",sc_w3:"сильно",sc_w4:"отлично",
   pc_empty:"собираем данные",pc_up:"идём в рост 📈",pc_keep:"так держать!",hero_add:"Добавить фото",
@@ -1732,7 +1736,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   quotes:["Каждый день на 1% — за год в 37 раз сильнее.","Начать — самое трудное. Дальше легче.","Фокус — это искусство говорить «нет».","Маленькие шаги — большой результат.","Твоё внимание — твой главный капитал.","Не отвлекаться — суперсила нашего времени."],
   prof:function(s){return "серия: "+s+" дн.";}},
 en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today_time:"Today",my_habits:"My habits",
-  today_progress:"Today's progress",today_tasks:"Today's tasks",score_lbl:"Score",sc_today:"Today",
+  today_progress:"Today's progress",today_tasks:"Today's tasks",score_lbl:"Score",sc_today:"Today",tasks_lbl:"Tasks",tasks_sub:"completed",
   sc_best:function(n){return "best: "+n;},
   sc_w0:"start",sc_w1:"growing",sc_w2:"steady",sc_w3:"strong",sc_w4:"excellent",
   pc_empty:"gathering data",pc_up:"trending up 📈",pc_keep:"keep going!",hero_add:"Add photo",
@@ -2486,6 +2490,7 @@ function refreshChips(){
   $('#profName').textContent=store.user.name||'';
   $('#profSub').textContent=T('prof')(globalStreak());
   renderScoreChip();
+  renderTasksChip();
   renderStreakSub();
   refreshHeadAvatar();
   renderHero();
@@ -2528,6 +2533,13 @@ function renderScoreChip(){
   var sub=$('#scoreSub');if(sub)sub.textContent=scoreWord(p);
   if(!reduce&&_scShownV>=0&&p>_scShownV){el.classList.remove('bump');void el.getBoundingClientRect();el.classList.add('bump');}
   _scShownV=p;
+}
+/* 4-chip: bugun bajarilgan vazifalar (norma to'lgan yoki check) / jami (dam bo'lmaganlar) — HALOL */
+function renderTasksChip(){
+  var el=$('#tasksV');if(!el)return;
+  var hs=store.habits.filter(function(h){return !isSkip(h,TODAY);});
+  var done=0;hs.forEach(function(h){if(dayRatio(h,TODAY)>=1)done++;});
+  el.textContent=done+'/'+hs.length;
 }
 function renderStreakSub(){
   var sub=$('#streakSub');if(!sub)return;
