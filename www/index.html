@@ -1022,7 +1022,26 @@ input{font-family:inherit}
 #homeBg::after{content:"";position:absolute;inset:0;
   background:linear-gradient(102deg,rgba(3,8,6,.85) 0%,rgba(3,8,6,.4) 40%,rgba(3,8,6,0) 70%)}
 .device[data-theme="light"] #homeBg::after{background:linear-gradient(102deg,rgba(243,250,245,.9) 0%,rgba(243,250,245,.45) 42%,rgba(243,250,245,0) 72%)}
-#v-home>*:not(#homeBg){position:relative;z-index:1} /* barcha kontent fon ustida */
+#v-home>*:not(#homeBg):not(#homeFx){position:relative;z-index:1} /* barcha kontent fon ustida */
+/* sahna "nafas oladi" — juda sekin, sezilar-sezilmas (GSAP uslubi, faqat transform) */
+#homeBg{animation:bgBreath 9s var(--ease) infinite}
+@keyframes bgBreath{50%{transform:scale(1.014)}}
+#device.reduce #homeBg{animation:none}
+/* PORTAL ENERGIYASI — rasm ustida aylanuvchi neon yoylar (screen-blend, cheksiz rotate).
+   Rasm ichidagi halqa aylanayotgandek illyuziya. Ikkinchi yoy teskari, sekinroq. */
+#homeFx{position:absolute;top:64px;right:7%;width:172px;height:172px;z-index:0;pointer-events:none;
+  mix-blend-mode:screen}
+#homeFx i{position:absolute;top:0;left:0;right:0;bottom:0;border-radius:50%;display:block;
+  background:conic-gradient(from 10deg,transparent 0%,rgba(var(--neon-rgb),0) 18%,rgba(var(--neon-rgb),.5) 30%,rgba(var(--neon-br-rgb),.95) 37%,rgba(var(--neon-rgb),.5) 44%,transparent 58%,transparent 76%,rgba(var(--neon-rgb),.35) 86%,transparent 100%);
+  -webkit-mask-image:radial-gradient(circle,transparent 50%,#000 60%,#000 71%,transparent 79%);
+  mask-image:radial-gradient(circle,transparent 50%,#000 60%,#000 71%,transparent 79%);
+  animation:fxSpin 7s linear infinite}
+#homeFx i+i{animation:fxSpin 12s linear infinite reverse;opacity:.55;transform:scale(1.14)}
+@keyframes fxSpin{to{transform:rotate(360deg)}}
+#homeFx i+i{animation-name:fxSpinB}
+@keyframes fxSpinB{from{transform:scale(1.14) rotate(0)}to{transform:scale(1.14) rotate(-360deg)}}
+#device.reduce #homeFx{display:none!important}
+.device[data-theme="light"] #homeFx{display:none!important} /* light rasmda portal joyi boshqa — faqat dark */
 #device.reduce #homeBg{filter:none}
 .home-quote{display:flex;gap:7px;margin:6px 4px 2px;max-width:70%;font-size:12.5px;line-height:1.4;color:var(--muted);opacity:0;transform:translateY(10px)}
 .home-quote.in{animation:hqIn .6s var(--ease-out) .42s forwards}
@@ -1131,6 +1150,7 @@ input{font-family:inherit}
     <section class="view active" id="v-home">
       <!-- ORQA FON RASMI: www/assets/hero.jpg ga tashlang (yoki store.user.hero). Kontent ustida suzadi, pastga qarab so'nadi. -->
       <div id="homeBg" style="display:none"></div>
+      <div id="homeFx" style="display:none"><i></i><i></i></div>
       <div class="greet"><div class="g-hi" id="greetHi"></div><h1 class="g-name" id="greetName"></h1></div>
       <div class="home-quote"><span class="hq-mark">❝</span><span id="homeQ"></span></div>
       <div class="pcard">
@@ -2618,13 +2638,42 @@ function renderHomeBg(){
   else { if(store.user.hero)cands.push(store.user.hero); cands.push('assets/dark.png?v=3','assets/hero.png'); }
   var sig=(light?'L:':'D:')+cands.join('|');
   if(sig===_bgSet&&el.style.backgroundImage&&el.style.display!=='none')return;
+  var fx=$('#homeFx');
   (function tryNext(i){
-    if(i>=cands.length){el.style.backgroundImage='';el.style.display='none';return;}
+    if(i>=cands.length){el.style.backgroundImage='';el.style.display='none';if(fx)fx.style.display='none';return;}
     var im=new Image();
-    im.onload=function(){_bgSet=sig;el.style.backgroundImage='url("'+cands[i]+'")';el.style.display='';};
+    im.onload=function(){_bgSet=sig;el.style.backgroundImage='url("'+cands[i]+'")';el.style.display='';if(fx){fx.style.display='';positionHomeFx(im);}};
     im.onerror=function(){tryNext(i+1);};
     im.src=cands[i];
   })(0);
+}
+/* fx halqasini rasm ichidagi PORTALga avtomatik moslash: rasmning yuqori qismidagi
+   yorqin-yashil piksellar markazi va o'lchami topiladi (canvas), cover-xarita bilan
+   ekran koordinatiga o'giriladi. Istalgan rasmda o'zi to'g'ri joylashadi. */
+function positionHomeFx(im){
+  var fx=$('#homeFx'),bg=$('#homeBg');if(!fx||!bg)return;
+  try{
+    var W=128,H=Math.max(1,Math.round(W*im.height/im.width));
+    var c=document.createElement('canvas');c.width=W;c.height=H;
+    var x=c.getContext('2d');x.drawImage(im,0,0,W,H);
+    var d=x.getImageData(0,0,W,H).data;
+    var sx=0,sy=0,n=0,minX=W,maxX=0,minY=H,maxY=0,lim=Math.round(H*0.6);
+    for(var py=0;py<lim;py++)for(var px=0;px<W;px++){
+      var o=(py*W+px)*4,r=d[o],g=d[o+1],b=d[o+2];
+      if(g>140&&g>r*1.4&&g>b*1.12){sx+=px;sy+=py;n++;
+        if(px<minX)minX=px;if(px>maxX)maxX=px;if(py<minY)minY=py;if(py>maxY)maxY=py;}
+    }
+    if(n<25)return; /* portal topilmadi — standart joy qoladi */
+    var cx=sx/n,cy=sy/n,diaPx=Math.max(maxX-minX,maxY-minY);
+    var bw=bg.clientWidth,bh=bg.clientHeight;
+    var scale=Math.max(bw/im.width,bh/im.height);        /* cover */
+    var dw=im.width*scale,offX=(bw-dw)/2;                /* center top */
+    var k=dw/W;                                          /* namuna->ekran */
+    var pxc=offX+cx*k,pyc=cy*k,dp=diaPx*k*0.98;
+    pyc-=dp*0.07; /* halqa markazi glow tufayli pastroq chiqadi — biroz yuqoriga surish */
+    fx.style.width=dp+'px';fx.style.height=dp+'px';
+    fx.style.left=(pxc-dp/2)+'px';fx.style.top=(pyc-dp/2)+'px';fx.style.right='auto';
+  }catch(e){}
 }
 function renderHero(){renderHomeBg();} /* eski nom bilan mos (upload handleri chaqiradi) */
 /* sparkline — oxirgi 14 kunning HAQIQIY fokus vaqti (dayTotalMs). Ma'lumot yo'q bo'lsa soxta chiziq CHIZILMAYDI. */
