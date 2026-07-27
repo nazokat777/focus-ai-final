@@ -979,6 +979,17 @@ input{font-family:inherit}
 #v-home .hc-bar{height:5px;margin-top:9px}
 #v-home .hc-sub{margin-top:6px;font-size:10.5px}
 #v-home .hc-play{width:42px;height:42px;border-radius:50%}
+/* Bosh ekran ORQA FON rasmi (immersiv, 3D suzuvchi) — kichraytirilgan, tepa-o'ngdagi bo'sh joyda,
+   pastga qarab so'nadi; kontent ustida. Shaffof PNG bo'lsa "suzuvchi" ko'rinadi. */
+#homeBg{position:absolute;top:-6px;right:-8px;width:62%;height:300px;z-index:0;pointer-events:none;
+  background-position:center top;background-size:contain;background-repeat:no-repeat;opacity:.92;
+  filter:drop-shadow(0 10px 30px rgba(var(--neon-rgb),.35));
+  -webkit-mask-image:linear-gradient(to bottom,#000 58%,rgba(0,0,0,.2) 82%,transparent 100%);
+  mask-image:linear-gradient(to bottom,#000 58%,rgba(0,0,0,.2) 82%,transparent 100%)}
+#v-home>*:not(#homeBg){position:relative;z-index:1} /* barcha kontent fon ustida */
+#device.reduce #homeBg{filter:none}
+.home-quote{display:flex;gap:7px;margin:6px 4px 2px;max-width:70%;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.home-quote .hq-mark{color:var(--neon);font-size:16px;font-weight:800;line-height:1;flex:none}
 
 /* ==================== ULTRAKREATIV: tugma bosilishi + o'tish ==================== */
 /* Neon tap portlashi — bosilgan nuqtadan tarqaladi (cbloom uslubi, kesilmaydi) */
@@ -1078,7 +1089,10 @@ input{font-family:inherit}
   <div class="views">
     <!-- DASHBOARD -->
     <section class="view active" id="v-home">
+      <!-- ORQA FON RASMI: www/assets/hero.jpg ga tashlang (yoki store.user.hero). Kontent ustida suzadi, pastga qarab so'nadi. -->
+      <div id="homeBg" style="display:none"></div>
       <div class="greet"><div class="g-hi" id="greetHi"></div><h1 class="g-name" id="greetName"></h1></div>
+      <div class="home-quote"><span class="hq-mark">❝</span><span id="homeQ"></span></div>
       <div class="pcard">
         <div class="pc-head" data-i18n="today_progress"></div>
         <div class="pc-row">
@@ -2523,17 +2537,29 @@ function refreshHeadAvatar(){
   b.classList.toggle('live',anyRunning());
 }
 /* hero sitata — kunlik deterministik (Math.random EMAS); user rasmи bo'lsa ko'rsatiladi */
-function renderHero(){
-  var q=$('#heroQ');
+/* bosh ekran orqa fon rasmi: 1) ilovada yuklangan (store.user.hero), 2) www/assets/hero.jpg fayli,
+   3) hech biri yo'q -> fon yo'q (ilova oddiy qora fon bilan ko'rinadi). Xatosiz. */
+var _bgSet='';
+function renderHomeBg(){
+  /* kichik sitata (mockupdagidek, salom ostida) — kunlik deterministik */
+  var q=$('#homeQ');
   if(q){var qs=T('quotes')||[];if(qs.length){var idx=((TODAY%qs.length)+qs.length)%qs.length;q.textContent=qs[idx];}}
-  var im=$('#heroImg'),hero=$('#hero'),ed=$('#heroEdit');
-  if(!im)return;
-  function setState(shown){if(hero)hero.classList.toggle('empty',!shown);if(ed)ed.innerHTML=shown?'📷':('📷 <span>'+esc(T('hero_add'))+'</span>');}
-  im.onload=function(){im.style.display='';setState(true);};
-  im.onerror=function(){im.removeAttribute('src');im.style.display='none';setState(false);};
-  /* 1) ilovada yuklangan rasm; 2) yo'q bo'lsa assets/hero.jpg fayli; 3) u ham yo'q -> gradient */
-  im.src=store.user.hero?store.user.hero:'assets/hero.jpg';
+  var el=$('#homeBg');if(!el)return;
+  var light=$('#device').getAttribute('data-theme')==='light';
+  var cands=[];
+  if(light){ if(store.user.heroLight)cands.push(store.user.heroLight); cands.push('assets/hero-light.png','assets/hero-light.jpg'); }
+  else { if(store.user.hero)cands.push(store.user.hero); cands.push('assets/hero.png','assets/hero.jpg'); }
+  var sig=(light?'L:':'D:')+cands.join('|');
+  if(sig===_bgSet&&el.style.backgroundImage&&el.style.display!=='none')return;
+  (function tryNext(i){
+    if(i>=cands.length){el.style.backgroundImage='';el.style.display='none';return;}
+    var im=new Image();
+    im.onload=function(){_bgSet=sig;el.style.backgroundImage='url("'+cands[i]+'")';el.style.display='';};
+    im.onerror=function(){tryNext(i+1);};
+    im.src=cands[i];
+  })(0);
 }
+function renderHero(){renderHomeBg();} /* eski nom bilan mos (upload handleri chaqiradi) */
 /* sparkline — oxirgi 14 kunning HAQIQIY fokus vaqti (dayTotalMs). Ma'lumot yo'q bo'lsa soxta chiziq CHIZILMAYDI. */
 var _spSig='';
 function renderSparkline(){
@@ -4482,6 +4508,7 @@ $('#themeTog').addEventListener('click',function(){
   $('#device').setAttribute('data-theme',dark?'light':'dark');
   $('#themeTog').classList.toggle('on',!dark);
   store.settings.theme=dark?'light':'dark';save();sTap();buzz(8);
+  _bgSet='';if(typeof renderHomeBg==='function')renderHomeBg(); /* mavzuga mos fon rasmi */
 });
 $('#themeTog').classList.toggle('on',store.settings.theme!=='light');
 $('#soundTog').addEventListener('click',function(){
