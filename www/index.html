@@ -903,14 +903,30 @@ input{font-family:inherit}
 @keyframes havPulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--neon-rgb),.5)}50%{box-shadow:0 0 0 5px rgba(var(--neon-rgb),0)}}
 #device.reduce .hav.live .hav-dot{animation:none}
 
-/* Ikki qatorli salom — faqat bosh ekran */
-#v-home .greet{margin:6px 4px 2px}
-#v-home .greet .g-hi{font-size:15px;color:var(--muted);font-weight:500;letter-spacing:-.01em}
-#v-home .greet .g-name{font-size:27px;font-weight:700;letter-spacing:-.03em;line-height:1.12;margin-top:1px}
+/* Ikki qatorli salom — faqat bosh ekran (ULTRAKREATIV matn + kirish xoreografiyasi) */
+#v-home .greet{margin:8px 4px 2px}
+#v-home .greet .g-hi{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--muted);
+  font-weight:600;letter-spacing:.16em;text-transform:uppercase;opacity:0;transform:translateX(-14px)}
+#v-home .greet .g-hi::before{content:"";width:22px;height:2px;border-radius:2px;background:var(--neon);
+  box-shadow:0 0 9px rgba(var(--neon-rgb),.8);flex:none}
+#v-home .greet .g-hi.in{animation:ghiIn .55s var(--ease-out) forwards}
+@keyframes ghiIn{to{opacity:1;transform:none}}
+#v-home .greet .g-name{font-size:31px;font-weight:800;letter-spacing:-.03em;line-height:1.1;margin-top:3px}
+/* ism harflari — sahna aktyorlaridek birma-bir ko'tarilib chiqadi */
+.gch{display:inline-block;opacity:0;transform:translateY(16px) rotate(5deg);animation:gchIn .55s var(--ease-out) forwards}
+@keyframes gchIn{to{opacity:1;transform:none}}
+/* gradient faqat qo'llagan brauzerda (aks holda oddiy oq — hech qachon ko'rinmas bo'lmaydi) */
+@supports (-webkit-background-clip:text){
+  .gch{background:linear-gradient(120deg,var(--text) 55%,var(--neon-br) 90%,var(--neon) 100%);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+}
 #v-home .greet .g-name .g-wave{display:inline-block;transform-origin:70% 80%}
-#v-home .greet .g-name .g-wave.go{animation:gWave 1.6s var(--ease) 1}
+#v-home .greet .g-name .g-wave.go{animation:gWave 1.6s var(--ease) .5s 1}
 @keyframes gWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(16deg)}80%{transform:rotate(-8deg)}90%{transform:rotate(12deg)}}
 #device.reduce #v-home .greet .g-name .g-wave.go{animation:none}
+#device.reduce .gch{opacity:1;transform:none;animation:none}
+#device.reduce #v-home .greet .g-hi{opacity:1;transform:none}
+#device.reduce #v-home .greet .g-hi.in{animation:none}
 
 /* Hero sitata kartasi — rasm/video slotи (user o'zi qo'yadi) */
 .hero{position:relative;border-radius:20px;overflow:hidden;margin:14px 0 2px;min-height:118px;
@@ -935,11 +951,16 @@ input{font-family:inherit}
 .hero.empty .hero-edit span{color:var(--neon)}
 
 /* Bugungi progress kartasi — halqa + sparkline */
-/* ULTRA hero-qator: halqa KARTASIZ rasm ustida suzadi + haftalik spark (mockup) */
-.hrow{display:flex;align-items:flex-end;gap:16px;margin:96px 0 4px}
-.pc-ring{width:112px;height:112px;flex:none;position:relative;
+/* "Bugungi progress" OYNA kartasi — rasm ustida, orqasi ko'rinadi (mockup) */
+.pcard{background:rgba(10,20,14,.26);border:1px solid rgba(255,255,255,.14);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.09);
+  border-radius:18px;padding:13px 15px 12px;margin:88px 0 0}
+.device[data-theme="light"] .pcard{background:rgba(255,255,255,.3);border-color:rgba(255,255,255,.55)}
+.pcard .pc-head{font-size:12px;font-weight:600;color:var(--text);margin-bottom:9px;letter-spacing:.01em}
+.hrow{display:flex;align-items:center;gap:15px}
+.pc-ring{width:100px;height:100px;flex:none;position:relative;
   filter:drop-shadow(0 6px 22px rgba(var(--neon-rgb),.35))}
-.pc-ring svg{width:112px;height:112px;transform:rotate(-90deg)}
+.pc-ring svg{width:100px;height:100px;transform:rotate(-90deg)}
 .pc-ring .pr-track{fill:none;stroke:rgba(255,255,255,.1);stroke-width:8}
 .device[data-theme="light"] .pc-ring .pr-track{stroke:rgba(0,0,0,.12)}
 .pc-ring .pr-arc{fill:none;stroke:var(--neon);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .5s var(--ease)}
@@ -963,9 +984,9 @@ input{font-family:inherit}
 
 /* 3 katta stat chip */
 .chips{display:flex;gap:8px;margin:12px 0 14px}
-.chip{flex:1;background:rgba(10,20,14,.34);backdrop-filter:blur(18px) saturate(1.2);-webkit-backdrop-filter:blur(18px) saturate(1.2);border:1px solid rgba(255,255,255,.12);box-shadow:inset 0 1px 0 rgba(255,255,255,.08);border-radius:14px;padding:9px 6px 8px;
+.chip{flex:1;background:rgba(10,20,14,.26);border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.09);border-radius:14px;padding:9px 6px 8px;
   text-align:center;min-width:0}
-.device[data-theme="light"] .chip{background:rgba(255,255,255,.42);border-color:rgba(255,255,255,.5)}
+.device[data-theme="light"] .chip{background:rgba(255,255,255,.3);border-color:rgba(255,255,255,.55)}
 .chip .sc-ic{font-size:16px;line-height:1;margin-bottom:3px}
 .chip .sc-val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:15px;color:var(--text);
   white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -1003,7 +1024,11 @@ input{font-family:inherit}
 .device[data-theme="light"] #homeBg::after{background:linear-gradient(102deg,rgba(243,250,245,.9) 0%,rgba(243,250,245,.45) 42%,rgba(243,250,245,0) 72%)}
 #v-home>*:not(#homeBg){position:relative;z-index:1} /* barcha kontent fon ustida */
 #device.reduce #homeBg{filter:none}
-.home-quote{display:flex;gap:7px;margin:6px 4px 2px;max-width:70%;font-size:12.5px;line-height:1.4;color:var(--muted)}
+.home-quote{display:flex;gap:7px;margin:6px 4px 2px;max-width:70%;font-size:12.5px;line-height:1.4;color:var(--muted);opacity:0;transform:translateY(10px)}
+.home-quote.in{animation:hqIn .6s var(--ease-out) .42s forwards}
+@keyframes hqIn{to{opacity:1;transform:none}}
+#device.reduce .home-quote{opacity:1;transform:none}
+#device.reduce .home-quote.in{animation:none}
 .home-quote .hq-mark{color:var(--neon);font-size:16px;font-weight:800;line-height:1;flex:none}
 
 /* ==================== ULTRAKREATIV: tugma bosilishi + o'tish ==================== */
@@ -1108,15 +1133,18 @@ input{font-family:inherit}
       <div id="homeBg" style="display:none"></div>
       <div class="greet"><div class="g-hi" id="greetHi"></div><h1 class="g-name" id="greetName"></h1></div>
       <div class="home-quote"><span class="hq-mark">❝</span><span id="homeQ"></span></div>
-      <div class="hrow">
-        <div class="pc-ring" id="pcRing">
-          <svg viewBox="0 0 100 100"><circle class="pr-track" cx="50" cy="50" r="43"/><circle class="pr-arc" id="pcArc" cx="50" cy="50" r="43"/></svg>
-          <div class="pr-in"><div class="pr-lbl" data-i18n="today_progress"></div><div class="pr-val" id="gPct">0%</div></div>
-        </div>
-        <div class="hspark">
-          <svg id="pcSpark" viewBox="0 0 100 40" preserveAspectRatio="none"><polyline class="ps-line" id="pcLine" points=""/><circle class="ps-dot" id="pcDot" r="2.6" cx="0" cy="0" style="display:none"/></svg>
-          <div class="hs-days" id="hsDays"></div>
-          <div class="pc-cap" id="pcCap"></div>
+      <div class="pcard">
+        <div class="pc-head" data-i18n="today_progress"></div>
+        <div class="hrow">
+          <div class="pc-ring" id="pcRing">
+            <svg viewBox="0 0 100 100"><circle class="pr-track" cx="50" cy="50" r="43"/><circle class="pr-arc" id="pcArc" cx="50" cy="50" r="43"/></svg>
+            <div class="pr-in"><div class="pr-val" id="gPct">0%</div></div>
+          </div>
+          <div class="hspark">
+            <svg id="pcSpark" viewBox="0 0 100 40" preserveAspectRatio="none"><polyline class="ps-line" id="pcLine" points=""/><circle class="ps-dot" id="pcDot" r="2.6" cx="0" cy="0" style="display:none"/></svg>
+            <div class="hs-days" id="hsDays"></div>
+            <div class="pc-cap" id="pcCap"></div>
+          </div>
         </div>
       </div>
       <div class="chips">
@@ -2335,12 +2363,29 @@ $('#logoutBtn').addEventListener('click',function(){
 /* ============ clock ============ */
 function refreshGreet(){
   var h=new Date().getHours();
-  var hi=$('#greetHi');if(hi)hi.textContent=(h<12?T('gm'):h<18?T('ga'):T('ge'));
+  /* salom chizig'i — chapdan kirib keladi */
+  var hi=$('#greetHi');
+  if(hi){hi.textContent=(h<12?T('gm'):h<18?T('ga'):T('ge'));
+    hi.classList.remove('in');void hi.getBoundingClientRect();hi.classList.add('in');}
+  /* ism — harflar sahna aktyorlaridek birma-bir chiqadi (DOM orqali, XSS-xavfsiz) */
   var nm=$('#greetName');
   if(nm){
-    nm.innerHTML=esc(store.user.name||'')+' <span class="g-wave">👋</span>';
-    if(!reduce){var w=nm.querySelector('.g-wave');if(w){w.classList.remove('go');void w.getBoundingClientRect();w.classList.add('go');}}
+    nm.innerHTML='';
+    var name=(store.user.name||'')+'',i,ch;
+    for(i=0;i<name.length;i++){
+      ch=document.createElement('span');ch.className='gch';
+      ch.textContent=name.charAt(i)===' '?' ':name.charAt(i);
+      ch.style.animationDelay=(90+i*45)+'ms';
+      nm.appendChild(ch);
+    }
+    nm.appendChild(document.createTextNode(' '));
+    var wv=document.createElement('span');wv.className='g-wave';wv.textContent='👋';
+    nm.appendChild(wv);
+    if(!reduce){wv.classList.add('go');}
   }
+  /* sitata — pastdan suzib chiqadi */
+  var q=$('#homeQ'),hq=q?q.parentNode:null;
+  if(hq&&hq.classList){hq.classList.remove('in');void hq.getBoundingClientRect();hq.classList.add('in');}
 }
 setInterval(function(){
   var ck=$('#clock');if(ck)ck.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
