@@ -916,8 +916,14 @@ input{font-family:inherit}
 .hero .hero-mark{color:var(--neon);font-size:18px;font-weight:800;margin-right:4px;vertical-align:-2px;
   text-shadow:0 0 12px rgba(var(--neon-rgb),.6)}
 .hero .hero-edit{position:absolute;z-index:3;right:10px;top:10px;width:28px;height:28px;border-radius:9px;
-  background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;font-size:13px}
+  background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;font-size:13px;
+  white-space:nowrap;overflow:hidden}
 .hero .hero-edit:active{transform:scale(.9)}
+/* bo'sh hero: tugma "📷 Rasm qo'shish" bo'lib kengayadi va neon bilan chaqiradi */
+.hero.empty .hero-edit{width:auto;height:auto;padding:6px 11px;border-radius:999px;gap:5px;
+  grid-auto-flow:column;font-size:12px;color:var(--neon);background:rgba(var(--neon-rgb),.14);
+  border-color:rgba(var(--neon-rgb),.5);font-weight:600}
+.hero.empty .hero-edit span{color:var(--neon)}
 
 /* Bugungi progress kartasi — halqa + sparkline */
 .pcard{background:var(--elev);border:1px solid var(--line);border-radius:18px;padding:15px 16px;margin:14px 0 0}
@@ -1470,7 +1476,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",score_lbl:"Ball",sc_today:"Bugun",
   sc_best:function(n){return "eng yaxshi: "+n;},
   sc_w0:"boshlanish",sc_w1:"o'smoqda",sc_w2:"barqaror",sc_w3:"kuchli",sc_w4:"zo'r",
-  pc_empty:"ma'lumot yig'ilmoqda",pc_up:"o'sish sari 📈",pc_keep:"shu ruhda davom!",
+  pc_empty:"ma'lumot yig'ilmoqda",pc_up:"o'sish sari 📈",pc_keep:"shu ruhda davom!",hero_add:"Rasm qo'shish",
   d_cal:"Kalendar",d_score:"Odat kuchi",d_streaks:"Eng uzun seriyalar",d_weekly:"Haftalik faollik",d_empty:"Ma'lumot hali yo'q — bir necha kun kuzating",
   new_habit:"Yangi odat",f_name:"Nomi",f_icon:"Belgi",f_color:"Rang",f_goal:"Umumiy maqsad",f_daily:"Kunlik norma",minutes:"daqiqa",f_photo:"Rasm (ixtiyoriy)",hours:"soat",add:"Odat qo'shish",
   edit_habit:"Odatni tahrirlash",save_habit:"Saqlash",edit_ok:"Yangilandi ✓",del_ok:"Odat o'chirildi",
@@ -1572,7 +1578,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",score_lbl:"Балл",sc_today:"Сегодня",
   sc_best:function(n){return "рекорд: "+n;},
   sc_w0:"старт",sc_w1:"растёт",sc_w2:"стабильно",sc_w3:"сильно",sc_w4:"отлично",
-  pc_empty:"собираем данные",pc_up:"идём в рост 📈",pc_keep:"так держать!",
+  pc_empty:"собираем данные",pc_up:"идём в рост 📈",pc_keep:"так держать!",hero_add:"Добавить фото",
   d_cal:"Календарь",d_score:"Сила привычки",d_streaks:"Лучшие серии",d_weekly:"Активность за неделю",d_empty:"Данных пока нет — отслеживайте несколько дней",
   new_habit:"Новая привычка",f_name:"Название",f_icon:"Значок",f_color:"Цвет",f_goal:"Общая цель",f_daily:"Дневная норма",minutes:"минут",f_photo:"Фото (необязательно)",hours:"часов",add:"Добавить",
   edit_habit:"Редактировать",save_habit:"Сохранить",edit_ok:"Обновлено ✓",del_ok:"Привычка удалена",
@@ -1674,7 +1680,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   today_progress:"Today's progress",today_tasks:"Today's tasks",score_lbl:"Score",sc_today:"Today",
   sc_best:function(n){return "best: "+n;},
   sc_w0:"start",sc_w1:"growing",sc_w2:"steady",sc_w3:"strong",sc_w4:"excellent",
-  pc_empty:"gathering data",pc_up:"trending up 📈",pc_keep:"keep going!",
+  pc_empty:"gathering data",pc_up:"trending up 📈",pc_keep:"keep going!",hero_add:"Add photo",
   d_cal:"Calendar",d_score:"Habit strength",d_streaks:"Best streaks",d_weekly:"Weekly activity",d_empty:"No data yet — track for a few days",
   new_habit:"New habit",f_name:"Name",f_icon:"Icon",f_color:"Color",f_goal:"Total goal",f_daily:"Daily goal",minutes:"min",f_photo:"Photo (optional)",hours:"hours",add:"Add habit",
   edit_habit:"Edit habit",save_habit:"Save",edit_ok:"Updated ✓",del_ok:"Habit deleted",
@@ -2433,8 +2439,11 @@ function refreshHeadAvatar(){
 function renderHero(){
   var q=$('#heroQ');
   if(q){var qs=T('quotes')||[];if(qs.length){var idx=((TODAY%qs.length)+qs.length)%qs.length;q.textContent=qs[idx];}}
-  var im=$('#heroImg');
-  if(im){if(store.user.hero){im.src=store.user.hero;im.style.display='';}else{im.removeAttribute('src');im.style.display='none';}}
+  var im=$('#heroImg'),hero=$('#hero'),ed=$('#heroEdit');
+  var has=!!store.user.hero;
+  if(im){if(has){im.src=store.user.hero;im.style.display='';}else{im.removeAttribute('src');im.style.display='none';}}
+  if(hero)hero.classList.toggle('empty',!has);
+  if(ed)ed.innerHTML=has?'📷':('📷 <span>'+esc(T('hero_add'))+'</span>');
 }
 /* sparkline — oxirgi 14 kunning HAQIQIY fokus vaqti (dayTotalMs). Ma'lumot yo'q bo'lsa soxta chiziq CHIZILMAYDI. */
 var _spSig='';
