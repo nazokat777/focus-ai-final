@@ -692,6 +692,17 @@ input{font-family:inherit}
 .fr-priv-empty{font-size:12.5px;color:var(--muted);text-align:center;padding:8px}
 .fr-empty{padding:14px 2px;font-size:13px;color:var(--muted);text-align:center;line-height:1.5}
 .fr-note{font-size:12px;color:var(--muted);line-height:1.5;background:var(--elev);border:1px solid var(--line);border-radius:12px;padding:11px 13px;margin-top:10px}
+/* do'st marra tabrigi (Duolingo uslubi) */
+#frCongrats{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.fr-congrat{display:flex;align-items:center;gap:9px;background:linear-gradient(135deg,rgba(var(--neon-rgb),.14),rgba(var(--neon-rgb),.05));border:1px solid rgba(var(--neon-rgb),.45);border-radius:13px;padding:10px 12px;animation:fcIn .4s var(--ease-out) both}
+.fc-emoji{font-size:18px;line-height:1}
+.fc-txt{flex:1;font-size:12.5px;color:var(--txt);line-height:1.35}
+.fc-txt b{color:var(--neon)}
+.fc-btn{background:var(--neon);color:var(--onneon);border:none;border-radius:9px;padding:7px 12px;font-size:12px;font-weight:700;white-space:nowrap}
+.fc-btn:active{transform:scale(.94)}
+.fc-x{background:transparent;border:none;color:var(--muted);font-size:17px;line-height:1;padding:2px 4px}
+@keyframes fcIn{from{opacity:0;transform:translateY(-8px) scale(.97)}to{opacity:1;transform:none}}
+#device.reduce .fr-congrat{animation:none}
 /* ===== CHAT (do'st/ustoz/shogird bilan yozishma) ===== */
 #chat{display:flex;flex-direction:column;overflow:hidden;padding-bottom:0}
 #chatBody{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:16px 16px 10px;display:flex;flex-direction:column;gap:8px}
@@ -1187,6 +1198,7 @@ input{font-family:inherit}
     </div>
     <div class="d-sec">
       <div class="sec-lbl"><span data-i18n="fr_leaderboard"></span></div>
+      <div id="frCongrats" style="display:none"></div>
       <div class="fr-board" id="frBoard"></div>
     </div>
     <div class="d-sec" id="frMentorSec" style="display:none">
@@ -1335,6 +1347,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   fr_share_hint:"Kodingizni do'stingizga yoki ota-ona/ustozingizga bering — ular bugungi fokusingiz va bajarilgan odatlaringizni ko'radi. Halol javobgarlik.",
   fr_add:"Kod bilan qo'shish",fr_role_friend:"Do'st",fr_role_mentor:"Ota-ona/Ustoz",
   fr_leaderboard:"Bugungi reyting",fr_you:"Siz",fr_pending:"kutilmoqda",fr_h:"s",
+  fr_mile:function(n,m){return "<b>"+n+"</b> "+m+" kunlik seriyaga yetdi!";},fr_mile_btn:"Tabriklash",fr_mile_sent:function(n,m){return "🎉 "+m+" kunlik seriya — zo'r natija! Davom et 💪";},fr_mile_done:"Tabrik yuborildi ✓",
   chat_ph:"Xabar yozing…",chat_send:"Yuborish",chat_empty:"Hali xabar yo'q. Birinchi bo'lib yozing.",chat_cloud_only:"Chat faqat bulut rejimida ishlaydi.",chat_err:"Xabar yuborilmadi. Qayta urining.",fr_wards:"Shogirdlarim",
   fr_empty:"Hali do'st yo'q. Do'stingizning kodini yuqorida qo'shing.",
   fr_mentors:"Ota-ona / ustoz",fr_copied:"Kod nusxalandi",fr_invalid:"Kod formati: ABC123",
@@ -1432,6 +1445,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   fr_share_hint:"Дайте свой код другу или родителю/наставнику — они увидят ваш сегодняшний фокус и выполненные привычки. Честная ответственность.",
   fr_add:"Добавить по коду",fr_role_friend:"Друг",fr_role_mentor:"Родитель/Ментор",
   fr_leaderboard:"Рейтинг сегодня",fr_you:"Вы",fr_pending:"ожидание",fr_h:"ч",
+  fr_mile:function(n,m){return "<b>"+n+"</b> — серия "+m+" дней!";},fr_mile_btn:"Поздравить",fr_mile_sent:function(n,m){return "🎉 "+m+" дней подряд — красавчик! Так держать 💪";},fr_mile_done:"Поздравление отправлено ✓",
   chat_ph:"Напишите сообщение…",chat_send:"Отправить",chat_empty:"Сообщений пока нет. Напишите первым.",chat_cloud_only:"Чат работает только в облачном режиме.",chat_err:"Не отправлено. Повторите.",fr_wards:"Мои подопечные",
   fr_empty:"Пока нет друзей. Добавьте код друга выше.",
   fr_mentors:"Родитель / ментор",fr_copied:"Код скопирован",fr_invalid:"Формат кода: ABC123",
@@ -1529,6 +1543,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   fr_share_hint:"Share your code with a friend or parent/mentor — they'll see today's focus and completed habits. Honest accountability.",
   fr_add:"Add by code",fr_role_friend:"Friend",fr_role_mentor:"Parent/Mentor",
   fr_leaderboard:"Today's ranking",fr_you:"You",fr_pending:"pending",fr_h:"h",
+  fr_mile:function(n,m){return "<b>"+n+"</b> hit a "+m+"-day streak!";},fr_mile_btn:"Congratulate",fr_mile_sent:function(n,m){return "🎉 "+m+"-day streak — awesome! Keep it up 💪";},fr_mile_done:"Congrats sent ✓",
   chat_ph:"Write a message…",chat_send:"Send",chat_empty:"No messages yet. Say hi first.",chat_cloud_only:"Chat works only in cloud mode.",chat_err:"Not sent. Try again.",fr_wards:"My wards",
   fr_empty:"No friends yet. Add a friend's code above.",
   fr_mentors:"Parent / mentor",fr_copied:"Code copied",fr_invalid:"Code format: ABC123",
@@ -4116,6 +4131,53 @@ $('#importInput').addEventListener('change',function(){var f=this.files&&this.fi
 /* ============ do'stlar: interfeys ============ */
 var frRole='friend';
 function frFocusTxt(h){return (Math.round((h||0)*10)/10)+T('fr_h');}
+/* ===== Do'st marralari (Duolingo uslubi tabrik) ===== */
+var FRIEND_MILES=[7,14,30,50,100,150,200,300,365];
+function friendMileHit(streak){var m=0,i;for(i=0;i<FRIEND_MILES.length;i++){if(streak>=FRIEND_MILES[i])m=FRIEND_MILES[i];}return m;}
+var _congBound=false;
+function checkFriendMilestones(){
+  var box=$('#frCongrats');if(!box)return;
+  if(typeof Social==='undefined'||!Social.cloud||!Social.cloud()||!Social.friendStreaks){box.style.display='none';box.innerHTML='';return;}
+  if(!_congBound){_congBound=true;box.addEventListener('click',onCongClick);}
+  Social.friendStreaks().then(function(map){
+    if(!map)return;
+    store.friendMiles=store.friendMiles||{};
+    var fr=Social.friends().filter(function(x){return x.role==='friend';});
+    var nameBy={};fr.forEach(function(f){nameBy[f.code]=f.name||f.code;});
+    var pending=[];
+    Object.keys(map).forEach(function(cd){
+      var m=friendMileHit(map[cd]||0);
+      if(m>0&&(store.friendMiles[cd]||0)<m)pending.push({code:cd,name:nameBy[cd]||cd,mile:m});
+    });
+    if(!pending.length){box.style.display='none';box.innerHTML='';return;}
+    box.style.display='';
+    box.innerHTML=pending.map(function(p){
+      return '<div class="fr-congrat">'+
+        '<span class="fc-emoji">🎉</span>'+
+        '<span class="fc-txt">'+T('fr_mile')(escH(p.name),p.mile)+'</span>'+
+        '<button class="fc-btn" data-congbtn="'+esc(p.code)+'" data-mile="'+p.mile+'">'+T('fr_mile_btn')+'</button>'+
+        '<button class="fc-x" data-congx="'+esc(p.code)+'" data-mile="'+p.mile+'">×</button>'+
+      '</div>';
+    }).join('');
+  },function(){});
+}
+function onCongClick(e){
+  var b=e.target.closest('[data-congbtn]');
+  if(b){
+    var code=b.getAttribute('data-congbtn'),mile=parseInt(b.getAttribute('data-mile'),10)||0;
+    store.friendMiles=store.friendMiles||{};store.friendMiles[code]=Math.max(store.friendMiles[code]||0,mile);save();
+    var nm=(Social.nameOf&&Social.nameOf(code))||code;
+    if(Social.sendMessage)Social.sendMessage(code,T('fr_mile_sent')(nm,mile));
+    if(typeof sGo==='function')sGo();toast(T('fr_mile_done'));checkFriendMilestones();
+    return;
+  }
+  var x=e.target.closest('[data-congx]');
+  if(x){
+    var c2=x.getAttribute('data-congx'),m2=parseInt(x.getAttribute('data-mile'),10)||0;
+    store.friendMiles=store.friendMiles||{};store.friendMiles[c2]=Math.max(store.friendMiles[c2]||0,m2);save();sTap();
+    checkFriendMilestones();
+  }
+}
 function renderFriends(){
   if(typeof Social==='undefined')return;
   $('#frCodeVal').textContent=Social.myCode();
@@ -4201,6 +4263,7 @@ function renderFriends(){
       refreshUnread(Social.friends().map(function(x){return x.code;}).concat(list.map(function(w){return w.code;})));
     },function(){if(wsec)wsec.style.display='none';refreshUnread(Social.friends().map(function(x){return x.code;}));}); /* wards xato -> do'st/ustoz nuqtalari baribir yangilanadi */
   } else { if(wsec)wsec.style.display='none'; }
+  checkFriendMilestones(); /* do'st marra tabriklari (agar bo'lsa) */
 }
 /* har kontakt uchun o'qilmagan nuqtani yangilaydi (chatUnread orqali) */
 function refreshUnread(codes){
@@ -4637,6 +4700,35 @@ window.addEventListener('beforeunload',function(){
     }, function () { return []; });
   }
 
+  // ── Do'st marralari: har do'stning FAOL kunlar seriyasi (real seriyaning quyi chegarasi) ──
+  function _streakOf(set, todayStr) {
+    function iso(t) { return new Date(t).toISOString().slice(0, 10); }
+    var base = new Date(todayStr + 'T00:00:00Z').getTime(), start = base;
+    if (!set[iso(base)]) { start = base - 86400000; if (!set[iso(start)]) return 0; } /* bugun yoki kecha faol bo'lsa boshlanadi */
+    var n = 0, t = start;
+    while (set[iso(t)]) { n++; t -= 86400000; }
+    return n;
+  }
+  function friendStreaks() {
+    var c = client(); if (!c) return Promise.resolve({});
+    if (typeof navigator !== 'undefined' && navigator.onLine === false) return Promise.resolve({});
+    var codes = friends().filter(function (x) { return x.role === 'friend'; }).map(function (x) { return x.code; });
+    if (!codes.length) return Promise.resolve({});
+    var start = new Date(new Date(todayIso() + 'T00:00:00Z').getTime() - 120 * 86400000).toISOString().slice(0, 10);
+    return c.from('daily_stats').select('code,d,focus_mins,habits').gte('d', start).in('code', codes)
+      .then(function (res) {
+        if (res && res.error) return {};
+        var days = {};
+        (res && res.data || []).forEach(function (r) {
+          var active = (r.focus_mins != null && r.focus_mins > 0) || (r.habits != null && r.habits > 0);
+          if (!active) return;
+          (days[r.code] = days[r.code] || {})[r.d] = 1;
+        });
+        var out = {}; codes.forEach(function (cd) { out[cd] = _streakOf(days[cd] || {}, todayIso()); });
+        return out;
+      }, function () { return {}; });
+  }
+
   // ── Chat (bulut rejimida) ──
   function _directInsert(c, toCode, body) {
     return c.from('messages').insert({ from_code: myCode(), to_code: toCode, body: body })
@@ -4713,7 +4805,7 @@ window.addEventListener('beforeunload',function(){
 
   window.Social = {
     myCode: myCode, myStats: myStats, cloud: cloud, syncStats: syncStats, wards: wards, ensureProfile: ensureProfile,
-    friends: friends, addFriend: addFriend, removeFriend: removeFriend, renameFriend: renameFriend, nameOf: nameOf, leaderboard: leaderboard, league: league,
+    friends: friends, addFriend: addFriend, removeFriend: removeFriend, renameFriend: renameFriend, nameOf: nameOf, leaderboard: leaderboard, league: league, friendStreaks: friendStreaks,
     sendMessage: sendMessage, getMessages: getMessages, subscribeMessages: subscribeMessages, unsubscribe: unsubscribe,
     hiddenSet: hiddenSet, setHidden: setHidden, isHidden: isHidden, myTasksToday: myTasksToday,
     visGet: visGet, visSet: visSet
