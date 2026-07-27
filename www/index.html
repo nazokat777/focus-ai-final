@@ -2476,10 +2476,12 @@ function renderHero(){
   var q=$('#heroQ');
   if(q){var qs=T('quotes')||[];if(qs.length){var idx=((TODAY%qs.length)+qs.length)%qs.length;q.textContent=qs[idx];}}
   var im=$('#heroImg'),hero=$('#hero'),ed=$('#heroEdit');
-  var has=!!store.user.hero;
-  if(im){if(has){im.src=store.user.hero;im.style.display='';}else{im.removeAttribute('src');im.style.display='none';}}
-  if(hero)hero.classList.toggle('empty',!has);
-  if(ed)ed.innerHTML=has?'📷':('📷 <span>'+esc(T('hero_add'))+'</span>');
+  if(!im)return;
+  function setState(shown){if(hero)hero.classList.toggle('empty',!shown);if(ed)ed.innerHTML=shown?'📷':('📷 <span>'+esc(T('hero_add'))+'</span>');}
+  im.onload=function(){im.style.display='';setState(true);};
+  im.onerror=function(){im.removeAttribute('src');im.style.display='none';setState(false);};
+  /* 1) ilovada yuklangan rasm; 2) yo'q bo'lsa assets/hero.jpg fayli; 3) u ham yo'q -> gradient */
+  im.src=store.user.hero?store.user.hero:'assets/hero.jpg';
 }
 /* sparkline — oxirgi 14 kunning HAQIQIY fokus vaqti (dayTotalMs). Ma'lumot yo'q bo'lsa soxta chiziq CHIZILMAYDI. */
 var _spSig='';
