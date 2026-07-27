@@ -967,6 +967,21 @@ input{font-family:inherit}
 #v-home .hc-bar{height:5px;margin-top:9px}
 #v-home .hc-sub{margin-top:6px;font-size:10.5px}
 #v-home .hc-play{width:42px;height:42px;border-radius:50%}
+
+/* ==================== ULTRAKREATIV: tugma bosilishi + o'tish ==================== */
+/* Neon tap portlashi — bosilgan nuqtadan tarqaladi (cbloom uslubi, kesilmaydi) */
+.tapfx{position:absolute;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;pointer-events:none;z-index:6;
+  background:radial-gradient(circle,rgba(var(--neon-br-rgb),.85),rgba(var(--neon-rgb),.32) 46%,transparent 72%);
+  opacity:.9;transform:scale(.3)}
+.tapfx.go{animation:tapfx .5s var(--ease-out) forwards}
+@keyframes tapfx{to{transform:scale(6.5);opacity:0}}
+#device.reduce .tapfx{display:none}
+/* portlash host'lari relative bo'lishi kerak (overflow o'zgarmaydi — tashqariga chiqadi) */
+.tab,.hc-play,.hc-stat,.sec-lbl .add,.go,.act-btn,.fc-btn,.lang-btn,.sheet .save,.s-btn,.sf-buy,.g-go{position:relative}
+/* Bosilganда tuganmaning kichik "squash" bosimи — bosim hissi (spring qaytish) */
+.tab:active svg,.hc-play:active,.sec-lbl .add:active,.act-btn:active,.fc-btn:active,.lang-btn:active,.g-go:active{transition:transform .08s var(--ease-in)}
+/* Sahifa chiqishida nozik chekinish — chuqurlik (kamera dolly bilan uyg'un) */
+.view.leaving{transform:translate3d(calc(var(--dir,1) * -26px),0,0) scale(.985)}
 </style>
 </head>
 <body>
@@ -4078,6 +4093,26 @@ $('#avatarInput').addEventListener('change',function(){
       if(!data)return;store.user.hero=data;save();renderHero();sGo();
     });
   });
+})();
+/* ULTRAKREATIV tugma bosilishi — bosilgan nuqtadan neon portlash (delegatsiya, preventDefault YO'Q) */
+(function(){
+  var SEL='.tab,.hc-play,.hc-stat,.sec-lbl .add,.go,.act-btn,.fc-btn,.lang-btn,.sheet .save,.s-btn,.sf-buy,.g-go';
+  function bloom(e){
+    if(reduce)return;
+    var t=e.target.closest?e.target.closest(SEL):null;if(!t)return;
+    var r=t.getBoundingClientRect();if(!r.width)return;
+    var p=(e.touches&&e.touches[0])?e.touches[0]:e;
+    var x=(p.clientX!=null?p.clientX:r.left+r.width/2)-r.left;
+    var y=(p.clientY!=null?p.clientY:r.top+r.height/2)-r.top;
+    var s=document.createElement('span');s.className='tapfx';
+    s.style.left=x+'px';s.style.top=y+'px';
+    t.appendChild(s);void s.getBoundingClientRect();s.classList.add('go');
+    var done=function(){if(s.parentNode)s.parentNode.removeChild(s);};
+    s.addEventListener('animationend',done);setTimeout(done,650);
+  }
+  var host=$('#device')||document.body;
+  if(window.PointerEvent)host.addEventListener('pointerdown',bloom,true);
+  else{host.addEventListener('touchstart',bloom,true);host.addEventListener('mousedown',bloom,true);}
 })();
 $('#onbReplay').addEventListener('click',function(){
   sTap();onbGo(0);$('#onb').classList.remove('gone');
