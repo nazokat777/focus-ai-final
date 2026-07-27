@@ -932,7 +932,8 @@ input{font-family:inherit}
 .hero.empty .hero-edit span{color:var(--neon)}
 
 /* Bugungi progress kartasi — halqa + sparkline */
-.pcard{background:var(--elev);border:1px solid var(--line);border-radius:18px;padding:15px 16px;margin:14px 0 0}
+.pcard{background:rgba(8,18,10,.52);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(var(--neon-rgb),.16);border-radius:18px;padding:15px 16px;margin:14px 0 0}
+.device[data-theme="light"] .pcard{background:rgba(255,255,255,.55)}
 .pcard .pc-head{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
 .pcard .pc-row{display:flex;align-items:center;gap:16px}
 .pc-ring{width:96px;height:96px;flex:none;position:relative}
@@ -2547,8 +2548,8 @@ function renderHomeBg(){
   var el=$('#homeBg');if(!el)return;
   var light=$('#device').getAttribute('data-theme')==='light';
   var cands=[];
-  if(light){ if(store.user.heroLight)cands.push(store.user.heroLight); cands.push('assets/hero-light.png','assets/hero-light.jpg'); }
-  else { if(store.user.hero)cands.push(store.user.hero); cands.push('assets/hero.png','assets/hero.jpg'); }
+  if(light){ if(store.user.heroLight)cands.push(store.user.heroLight); cands.push('assets/light.png','assets/hero-light.png'); }
+  else { if(store.user.hero)cands.push(store.user.hero); cands.push('assets/dark.png','assets/hero.png'); }
   var sig=(light?'L:':'D:')+cands.join('|');
   if(sig===_bgSet&&el.style.backgroundImage&&el.style.display!=='none')return;
   (function tryNext(i){
