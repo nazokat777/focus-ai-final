@@ -907,7 +907,7 @@ input{font-family:inherit}
 .hero{position:relative;border-radius:20px;overflow:hidden;margin:14px 0 2px;min-height:118px;
   background:radial-gradient(120% 140% at 78% 12%,rgba(var(--neon-rgb),.22),transparent 55%),
              linear-gradient(160deg,#0c1a12 0%,#081410 55%,#04100b 100%);
-  border:1px solid var(--line);display:flex;align-items:flex-end}
+  display:flex;align-items:flex-end}
 .hero .hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 .hero .hero-scrim{position:absolute;inset:0;z-index:1;
   background:linear-gradient(90deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.38) 46%,rgba(0,0,0,.05) 100%)}
@@ -1036,15 +1036,6 @@ input{font-family:inherit}
     <!-- DASHBOARD -->
     <section class="view active" id="v-home">
       <div class="greet"><div class="g-hi" id="greetHi"></div><h1 class="g-name" id="greetName"></h1></div>
-      <div class="hero" id="hero">
-        <!-- RASM/VIDEO SLOTI: user o'z faylini shu yerga qo'yadi.
-             Rasm: hero'ni bosib yuklang (localStorage'da saqlanadi) — YOKI src'ni to'ldiring.
-             Video: <img> o'rniga <video class="hero-media" autoplay muted loop playsinline src="assets/hero.mp4"></video> qo'ying. -->
-        <img class="hero-media" id="heroImg" alt="" style="display:none">
-        <div class="hero-scrim"></div>
-        <button class="hero-edit" id="heroEdit" aria-label="Rasm">📷</button>
-        <div class="hero-in"><div class="hero-q"><span class="hero-mark">❝</span><span id="heroQ"></span></div></div>
-      </div>
       <div class="pcard">
         <div class="pc-head" data-i18n="today_progress"></div>
         <div class="pc-row">
