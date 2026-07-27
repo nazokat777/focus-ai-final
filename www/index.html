@@ -983,9 +983,12 @@ input{font-family:inherit}
 #v-home .hc-play{width:42px;height:42px;border-radius:50%}
 /* Bosh ekran ORQA FON rasmi (immersiv, 3D suzuvchi) — kichraytirilgan, tepa-o'ngdagi bo'sh joyda,
    pastga qarab so'nadi; kontent ustida. Shaffof PNG bo'lsa "suzuvchi" ko'rinadi. */
-#homeBg{position:absolute;top:-28px;right:-14px;width:92%;height:470px;z-index:0;pointer-events:none;
-  background-position:right top;background-size:contain;background-repeat:no-repeat;opacity:.96;
-  filter:drop-shadow(0 12px 34px rgba(var(--neon-rgb),.4))}
+/* Aniq hero: rasm faqat yuqori-o'ngda, to'liq ko'rinadi, chekkalar fonga singadi
+   (fog chizig'i yo'q), kartalarga yetmasdan toza so'nadi -> tushunarli qoladi */
+#homeBg{position:absolute;top:-18px;right:-16px;width:74%;height:300px;z-index:0;pointer-events:none;
+  background-position:right top;background-size:contain;background-repeat:no-repeat;opacity:.98;
+  -webkit-mask-image:radial-gradient(125% 100% at 68% 42%,#000 60%,rgba(0,0,0,.35) 80%,transparent 100%);
+  mask-image:radial-gradient(125% 100% at 68% 42%,#000 60%,rgba(0,0,0,.35) 80%,transparent 100%)}
 #v-home>*:not(#homeBg){position:relative;z-index:1} /* barcha kontent fon ustida */
 #device.reduce #homeBg{filter:none}
 .home-quote{display:flex;gap:7px;margin:6px 4px 2px;max-width:70%;font-size:12.5px;line-height:1.4;color:var(--muted)}
