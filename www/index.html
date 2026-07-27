@@ -1172,6 +1172,12 @@ input{font-family:inherit}
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 21V9M8 13l4-4 4 4M5 3h14"/></svg><span data-i18n="restore"></span></div>
           <button class="act-btn" id="importBtn"><span data-i18n="bak_load"></span></button></div>
         <input type="file" id="importInput" accept=".json,application/json" style="display:none">
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M7 18a4 4 0 0 1 0-8 5.5 5.5 0 0 1 10.7-1.3A4 4 0 0 1 17 18z"/></svg><span data-i18n="cloud_bak"></span><span id="cloudStat" style="font-size:11px;color:var(--muted);margin-left:7px"></span></div></div>
+        <div class="fr-note" style="margin:0 0 8px" data-i18n="cloud_note"></div>
+        <div style="display:flex;gap:8px;margin:0 0 4px">
+          <input class="fr-input" id="cloudCode" placeholder="KOD" maxlength="8" style="flex:1;text-transform:uppercase">
+          <button class="act-btn" id="cloudRestore"><span data-i18n="cloud_get"></span></button>
+        </div>
       </div>
       <input type="file" id="avatarInput" accept="image/*" style="display:none">
       <input type="file" id="heroInput" accept="image/*" style="display:none">
@@ -1569,6 +1575,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   shop_empty:"Hali mukofot yo'q. + tugmasi bilan o'zingga mukofot belgila.",rw_bought:function(n){return "🎁 «"+n+"» olindi — o'zingga ruxsat!";},
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
   data_lbl:"Ma'lumotlarim",data_note:"Ma'lumotlaringiz faqat shu qurilmada saqlanadi (bulut yo'q). Nusxa olib qo'ying — telefon almashsangiz yoki ilovani qayta o'rnatsangiz, shu fayldan hammasini tiklaysiz.",
+  cloud_bak:"Bulut zaxira",cloud_note:"Butun tarixing shu kod ostida bulutga avtomatik saqlanadi (kod — Do'stlar bo'limida). Yangi telefonda kodni kiritib, hammasini tiklaysan.",cloud_get:"Tiklash",cloud_confirm:"Tasdiqlash?",cloud_on:"yoqilgan",cloud_off:"Bulut rejimi o'chiq",cloud_needcode:"Kodni kiriting",cloud_none:"Bu kod uchun zaxira topilmadi",cloud_done:"Tiklandi ✓",
   backup:"Zaxira nusxa",restore:"Tiklash",bak_save:"Faylga saqlash",bak_load:"Fayldan tiklash",onb_watch:"Ko'rish",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",rem_msg_ph:"O'z eslatma so'zingiz (ixtiyoriy)…",
@@ -1672,6 +1679,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   shop_empty:"Пока нет наград. Нажми + и задай себе награду.",rw_bought:function(n){return "🎁 «"+n+"» получено — ты заслужил!";},
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
   data_lbl:"Мои данные",data_note:"Данные хранятся только на этом устройстве (без облака). Сохраните копию — при смене телефона или переустановке восстановите всё из этого файла.",
+  cloud_bak:"Облачная копия",cloud_note:"Вся история автоматически сохраняется в облако под этим кодом (код — в разделе Друзья). На новом телефоне введи код и восстанови всё.",cloud_get:"Восстановить",cloud_confirm:"Подтвердить?",cloud_on:"включено",cloud_off:"Облачный режим выключен",cloud_needcode:"Введите код",cloud_none:"Копия для этого кода не найдена",cloud_done:"Восстановлено ✓",
   backup:"Резервная копия",restore:"Восстановить",bak_save:"Сохранить в файл",bak_load:"Загрузить файл",onb_watch:"Смотреть",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",rem_msg_ph:"Своё напоминание (необязательно)…",
@@ -1775,6 +1783,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   shop_empty:"No rewards yet. Tap + to set your own reward.",rw_bought:function(n){return "🎁 “"+n+"” redeemed — you earned it!";},
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
   data_lbl:"My data",data_note:"Your data is stored only on this device (no cloud). Save a copy — if you switch phones or reinstall, restore everything from this file.",
+  cloud_bak:"Cloud backup",cloud_note:"Your whole history is auto-saved to the cloud under this code (find it in Friends). On a new phone, enter the code to restore everything.",cloud_get:"Restore",cloud_confirm:"Confirm?",cloud_on:"on",cloud_off:"Cloud mode is off",cloud_needcode:"Enter the code",cloud_none:"No backup found for this code",cloud_done:"Restored ✓",
   backup:"Backup",restore:"Restore",bak_save:"Save to file",bak_load:"Load file",onb_watch:"Watch",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",rem_msg_ph:"Your own reminder (optional)…",
@@ -1840,6 +1849,25 @@ var _saveWarned=false;
 function save(){
   try{localStorage.setItem(KEY,JSON.stringify(store));_saveWarned=false;}
   catch(e){if(!_saveWarned){_saveWarned=true;try{toast(T('save_full'));}catch(_){}}} /* kvota to'ldi — jim yutma, bir marta ogohlantir */
+  cloudBackupSoon();
+}
+/* Bulut zaxira: butun tarix Supabase'ga kod bo'yicha avtomatik saqlanadi.
+   Debounce 15s + dedupe (bir xil ma'lumot qayta yuborilmaydi). */
+var _cloudTm=null,_cloudLast='',_cloudAt=0;
+function cloudBackupSoon(){
+  if(typeof Social==='undefined'||!Social.cloud||!Social.cloud()||!Social.pushBackup)return;
+  if(_cloudTm)return;
+  _cloudTm=setTimeout(function(){
+    _cloudTm=null;
+    var payload='';try{payload=localStorage.getItem(KEY)||'';}catch(e){}
+    if(!payload||payload===_cloudLast)return; /* o'zgarmagan — yubormaymiz */
+    try{Social.pushBackup().then(function(ok){if(ok){_cloudLast=payload;_cloudAt=Date.now();markCloudStatus();}});}catch(e){}
+  },15000);
+}
+function markCloudStatus(){
+  var el=$('#cloudStat');if(!el)return;
+  if(!Social||!Social.cloud||!Social.cloud()){el.textContent='';return;}
+  el.textContent=_cloudAt?('✓ '+new Date(_cloudAt).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'})):T('cloud_on');
 }
 /* rasmni ~maxDim px ga siqib qayta kodlash (localStorage kvotasini oshirmaslik uchun) */
 function downscaleImage(file,maxDim,cb){
@@ -4428,6 +4456,34 @@ function importData(file){
 $('#exportBtn').addEventListener('click',exportData);
 $('#importBtn').addEventListener('click',function(){$('#importInput').click();});
 $('#importInput').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)importData(f);this.value='';});
+/* Bulutdan tiklash — kod bilan (2 marta bosib tasdiqlash) */
+(function(){
+  var btn=$('#cloudRestore'),inp=$('#cloudCode');if(!btn||!inp)return;
+  var armed=false,armTm=null,pendData=null,pendCode='';
+  function reset(){armed=false;pendData=null;var sp=btn.querySelector('span');if(sp)sp.textContent=T('cloud_get');}
+  btn.addEventListener('click',function(){
+    if(typeof Social==='undefined'||!Social.cloud||!Social.cloud()){toast(T('cloud_off'));return;}
+    var code=(inp.value||'').trim().toUpperCase();
+    if(code.length<4){toast(T('cloud_needcode'));return;}
+    if(!armed){
+      Social.pullBackup(code).then(function(data){
+        if(!data){toast(T('cloud_none'));return;}
+        pendData=data;pendCode=code;armed=true;
+        var sp=btn.querySelector('span');if(sp)sp.textContent=T('cloud_confirm');
+        if(armTm)clearTimeout(armTm);armTm=setTimeout(reset,5000);
+      },function(){toast(T('cloud_none'));});
+      return;
+    }
+    if(armTm)clearTimeout(armTm);
+    try{
+      localStorage.setItem(KEY,pendData);
+      localStorage.setItem('focusai.myCode',pendCode);
+      window._skipUnloadSave=true;
+      toast(T('cloud_done'));
+      setTimeout(function(){location.reload();},350);
+    }catch(e){reset();toast(T('exp_bad'));}
+  });
+})();
 /* blok B: kun almashish ofseti sozlamasi */
 (function(){
   var sel=$('#dayOffsetSel');if(!sel)return;
@@ -4601,7 +4657,7 @@ function renderLeague(){
   },function(){box.innerHTML='<div class="fr-empty">'+T('league_empty')+'</div>';});
 }
 /* bulut kutubxonasi kech yuklansa, ochiq do'stlar panelini yangilaymiz (kalitlar qo'yilganda) */
-window.onSupabaseReady=function(){try{syncMyName();}catch(e){}try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}};
+window.onSupabaseReady=function(){try{syncMyName();}catch(e){}try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}try{markCloudStatus();cloudBackupSoon();}catch(e){}};
 /* audit #3: internet holati o'zgarsa — ochiq do'stlar panelini qayta chizamiz (badge + banner) */
 function _frNetSync(){try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}}
 window.addEventListener('online',_frNetSync);window.addEventListener('offline',_frNetSync);
@@ -5113,8 +5169,26 @@ window.addEventListener('beforeunload',function(){
       }).catch(function () { return []; });
   }
 
+  // ── To'liq tarix zaxirasi (bulut): butun holatni `backups` jadvaliga kod bo'yicha ──
+  function pushBackup() {
+    var c = client(); if (!c) return Promise.resolve(false);
+    var payload = ''; try { payload = localStorage.getItem('focusai.tz1') || ''; } catch (e) {}
+    if (!payload) return Promise.resolve(false);
+    var row = { code: myCode(), data: payload };
+    try { row.updated_at = new Date().toISOString(); } catch (e) {}
+    return c.from('backups').upsert(row, { onConflict: 'code' })
+      .then(function (r) { return !(r && r.error); }, function () { return false; });
+  }
+  function pullBackup(code) {
+    code = ((code || myCode()) + '').trim().toUpperCase();
+    var c = client(); if (!c || !code) return Promise.resolve(null);
+    return c.from('backups').select('data').eq('code', code).limit(1)
+      .then(function (r) { if (r && r.error) return null; var row = r && r.data && r.data[0]; return row ? row.data : null; }, function () { return null; });
+  }
+
   window.Social = {
     myCode: myCode, myStats: myStats, cloud: cloud, syncStats: syncStats, wards: wards, ensureProfile: ensureProfile,
+    pushBackup: pushBackup, pullBackup: pullBackup,
     friends: friends, addFriend: addFriend, removeFriend: removeFriend, renameFriend: renameFriend, nameOf: nameOf, leaderboard: leaderboard, league: league, friendStreaks: friendStreaks,
     sendMessage: sendMessage, getMessages: getMessages, subscribeMessages: subscribeMessages, unsubscribe: unsubscribe,
     hiddenSet: hiddenSet, setHidden: setHidden, isHidden: isHidden, myTasksToday: myTasksToday,
