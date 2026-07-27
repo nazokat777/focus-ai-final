@@ -1165,6 +1165,8 @@ input{font-family:inherit}
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="pin"></span></div><button class="tog" id="pinTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z"/><path d="M9 8.5l5 2.5-5 2.5z"/><path d="M8 20h8"/></svg><span data-i18n="replay_onb"></span></div>
           <button class="act-btn" id="onbReplay"><span data-i18n="onb_watch"></span></button></div>
+        <div class="sec-lbl" style="margin:16px 4px 8px"><span data-i18n="data_lbl"></span></div>
+        <div class="fr-note" style="margin:0 0 8px" data-i18n="data_note"></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg><span data-i18n="backup"></span><span id="lastBakTxt" style="font-size:11px;color:var(--muted);margin-left:7px"></span></div>
           <button class="act-btn" id="exportBtn"><span data-i18n="bak_save"></span></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 21V9M8 13l4-4 4 4M5 3h14"/></svg><span data-i18n="restore"></span></div>
@@ -1566,6 +1568,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
   shop_empty:"Hali mukofot yo'q. + tugmasi bilan o'zingga mukofot belgila.",rw_bought:function(n){return "🎁 «"+n+"» olindi — o'zingga ruxsat!";},
   reminder:"Kunlik eslatma",alarm:"Budilnik",pin:"PIN qulf",replay_onb:"Onboardingni qayta ko'rish",dayoffset:"Kun almashishi",
+  data_lbl:"Ma'lumotlarim",data_note:"Ma'lumotlaringiz faqat shu qurilmada saqlanadi (bulut yo'q). Nusxa olib qo'ying — telefon almashsangiz yoki ilovani qayta o'rnatsangiz, shu fayldan hammasini tiklaysiz.",
   backup:"Zaxira nusxa",restore:"Tiklash",bak_save:"Faylga saqlash",bak_load:"Fayldan tiklash",onb_watch:"Ko'rish",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",rem_msg_ph:"O'z eslatma so'zingiz (ixtiyoriy)…",
@@ -1668,6 +1671,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
   shop_empty:"Пока нет наград. Нажми + и задай себе награду.",rw_bought:function(n){return "🎁 «"+n+"» получено — ты заслужил!";},
   reminder:"Напоминание",alarm:"Будильник",pin:"PIN-замок",replay_onb:"Онбординг заново",dayoffset:"Смена дня",
+  data_lbl:"Мои данные",data_note:"Данные хранятся только на этом устройстве (без облака). Сохраните копию — при смене телефона или переустановке восстановите всё из этого файла.",
   backup:"Резервная копия",restore:"Восстановить",bak_save:"Сохранить в файл",bak_load:"Загрузить файл",onb_watch:"Смотреть",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",rem_msg_ph:"Своё напоминание (необязательно)…",
@@ -1770,6 +1774,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
   shop_empty:"No rewards yet. Tap + to set your own reward.",rw_bought:function(n){return "🎁 “"+n+"” redeemed — you earned it!";},
   reminder:"Daily reminder",alarm:"Alarm",pin:"PIN lock",replay_onb:"Replay onboarding",dayoffset:"Day start",
+  data_lbl:"My data",data_note:"Your data is stored only on this device (no cloud). Save a copy — if you switch phones or reinstall, restore everything from this file.",
   backup:"Backup",restore:"Restore",bak_save:"Save to file",bak_load:"Load file",onb_watch:"Watch",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",rem_msg_ph:"Your own reminder (optional)…",
