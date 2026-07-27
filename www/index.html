@@ -880,6 +880,93 @@ input{font-family:inherit}
    e'tiborsiz qoldiradi (xavfsiz degradatsiya). */
 .device :focus-visible{outline:2px solid var(--neon-br);outline-offset:3px}
 .device input:focus-visible,.device .fr-input:focus-visible{outline-offset:0}
+
+/* ==================== BOSH EKRAN REDIZAYNI (mockup) ==================== */
+/* Header avatar (soat o'rniga) */
+.hav{width:40px;height:40px;flex:none;border-radius:50%;position:relative;display:grid;place-items:center;
+  background:var(--elev2);border:1.5px solid rgba(var(--neon-rgb),.55);color:var(--neon);
+  font-weight:700;font-size:15px;overflow:hidden;transition:transform .18s var(--ease)}
+.hav:active{transform:scale(.9)}
+.hav img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.hav .hav-dot{position:absolute;right:1px;bottom:1px;width:10px;height:10px;border-radius:50%;
+  background:var(--neon);border:2px solid var(--bg);opacity:0;transform:scale(.4);transition:.25s var(--ease-out)}
+.hav.live .hav-dot{opacity:1;transform:none;animation:havPulse 1.8s var(--ease) infinite}
+@keyframes havPulse{0%,100%{box-shadow:0 0 0 0 rgba(var(--neon-rgb),.5)}50%{box-shadow:0 0 0 5px rgba(var(--neon-rgb),0)}}
+#device.reduce .hav.live .hav-dot{animation:none}
+
+/* Ikki qatorli salom — faqat bosh ekran */
+#v-home .greet{margin:6px 4px 2px}
+#v-home .greet .g-hi{font-size:15px;color:var(--muted);font-weight:500;letter-spacing:-.01em}
+#v-home .greet .g-name{font-size:27px;font-weight:700;letter-spacing:-.03em;line-height:1.12;margin-top:1px}
+#v-home .greet .g-name .g-wave{display:inline-block;transform-origin:70% 80%}
+#v-home .greet .g-name .g-wave.go{animation:gWave 1.6s var(--ease) 1}
+@keyframes gWave{0%,60%,100%{transform:rotate(0)}70%{transform:rotate(16deg)}80%{transform:rotate(-8deg)}90%{transform:rotate(12deg)}}
+#device.reduce #v-home .greet .g-name .g-wave.go{animation:none}
+
+/* Hero sitata kartasi — rasm/video slotи (user o'zi qo'yadi) */
+.hero{position:relative;border-radius:20px;overflow:hidden;margin:14px 0 2px;min-height:118px;
+  background:radial-gradient(120% 140% at 78% 12%,rgba(var(--neon-rgb),.22),transparent 55%),
+             linear-gradient(160deg,#0c1a12 0%,#081410 55%,#04100b 100%);
+  border:1px solid var(--line);display:flex;align-items:flex-end}
+.hero .hero-media{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
+.hero .hero-scrim{position:absolute;inset:0;z-index:1;
+  background:linear-gradient(90deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.38) 46%,rgba(0,0,0,.05) 100%)}
+.hero .hero-in{position:relative;z-index:2;padding:16px 17px 15px;max-width:82%}
+.hero .hero-q{font-size:13.5px;line-height:1.42;color:#EAFBF0;font-weight:500;text-shadow:0 1px 8px rgba(0,0,0,.6)}
+.hero .hero-mark{color:var(--neon);font-size:18px;font-weight:800;margin-right:4px;vertical-align:-2px;
+  text-shadow:0 0 12px rgba(var(--neon-rgb),.6)}
+.hero .hero-edit{position:absolute;z-index:3;right:10px;top:10px;width:28px;height:28px;border-radius:9px;
+  background:rgba(0,0,0,.42);border:1px solid rgba(255,255,255,.18);display:grid;place-items:center;font-size:13px}
+.hero .hero-edit:active{transform:scale(.9)}
+
+/* Bugungi progress kartasi — halqa + sparkline */
+.pcard{background:var(--elev);border:1px solid var(--line);border-radius:18px;padding:15px 16px;margin:14px 0 0}
+.pcard .pc-head{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:11px}
+.pcard .pc-row{display:flex;align-items:center;gap:16px}
+.pc-ring{width:96px;height:96px;flex:none;position:relative}
+.pc-ring svg{width:96px;height:96px;transform:rotate(-90deg)}
+.pc-ring .pr-track{fill:none;stroke:var(--elev2);stroke-width:9}
+.pc-ring .pr-arc{fill:none;stroke:var(--neon);stroke-width:9;stroke-linecap:round;transition:stroke-dashoffset .5s var(--ease)}
+.pc-ring .pr-val{position:absolute;inset:0;display:grid;place-items:center;font-family:'JetBrains Mono',monospace;
+  font-weight:700;font-size:22px;color:var(--text)}
+.pc-ring.pop{animation:pcPop .5s var(--spring)}
+@keyframes pcPop{0%{transform:scale(1)}40%{transform:scale(1.06)}100%{transform:scale(1)}}
+#device.reduce .pc-ring.pop{animation:none}
+.pc-spark{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.pc-spark svg{width:100%;height:52px;display:block;overflow:visible}
+.pc-spark .ps-line{fill:none;stroke:var(--neon);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.pc-spark .ps-dot{fill:var(--neon)}
+.pc-cap{font-size:12px;line-height:1.35;color:var(--neon);min-height:1.4em}
+.pc-empty{font-size:12px;color:var(--muted);align-self:center}
+
+/* 3 katta stat chip */
+.chips{display:flex;gap:10px;margin:14px 0 16px}
+.chip{flex:1;background:var(--elev);border:1px solid var(--line);border-radius:16px;padding:13px 8px 12px;
+  text-align:center;min-width:0}
+.chip .sc-ic{font-size:19px;line-height:1;margin-bottom:6px}
+.chip .sc-val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:18px;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .sc-lbl{font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:4px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .sc-sub{font-size:10.5px;color:var(--neon);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip .sc-val.bump{animation:scBump .5s var(--spring)}
+@keyframes scBump{0%{transform:scale(1)}40%{transform:scale(1.12)}100%{transform:scale(1)}}
+#device.reduce .chip .sc-val.bump{animation:none}
+
+/* Bugungi vazifalar header + "Statistika" */
+#v-home .sec-lbl .see-all{font-size:11px;letter-spacing:.02em;text-transform:none;color:var(--neon);
+  background:transparent;border:none;display:flex;align-items:center;gap:3px}
+#v-home .sec-lbl .see-all:active{opacity:.6}
+
+/* Vazifa qatorlari — mockup uslubi (DOM tuzilishi saqlanadi, faqat CSS) */
+#v-home .hcard{border-radius:16px;padding:12px 13px;gap:12px}
+#v-home .hc-icon{width:44px;height:44px;border-radius:12px}
+#v-home .hc-top{align-items:center}
+#v-home .hc-name{font-size:14.5px;font-weight:600}
+#v-home .hc-pct{font-size:12px;color:var(--neon);font-weight:600}
+#v-home .hc-bar{height:5px;margin-top:9px}
+#v-home .hc-sub{margin-top:6px;font-size:10.5px}
+#v-home .hc-play{width:42px;height:42px;border-radius:50%}
 </style>
 </head>
 <body>
@@ -921,19 +1008,41 @@ input{font-family:inherit}
 
   <div class="head">
     <div class="brand"><span class="dot"></span>FOCUS <b>AI</b></div>
-    <div class="clock mono" id="clock"></div>
+    <button class="hav" id="headAv" aria-label="Profil"><span class="hav-dot"></span></button>
   </div>
 
   <div class="views">
     <!-- DASHBOARD -->
     <section class="view active" id="v-home">
-      <div class="greet"><h1 id="greetTxt"></h1><p data-i18n="tagline"></p></div>
-      <div class="chips">
-        <div class="chip" data-help="streak"><div class="k" data-i18n="streak"></div><div class="v"><span class="fire">🔥</span> <span id="streakN">0</span></div></div>
-        <div class="chip" data-help="today"><div class="k" data-i18n="today_time"></div><div class="v" id="todayTime">0m</div></div>
-        <div class="chip" data-help="growth"><div class="k" data-i18n="growth"></div><div class="v" id="gPct">0%</div></div>
+      <div class="greet"><div class="g-hi" id="greetHi"></div><h1 class="g-name" id="greetName"></h1></div>
+      <div class="hero" id="hero">
+        <!-- RASM/VIDEO SLOTI: user o'z faylini shu yerga qo'yadi.
+             Rasm: hero'ni bosib yuklang (localStorage'da saqlanadi) — YOKI src'ni to'ldiring.
+             Video: <img> o'rniga <video class="hero-media" autoplay muted loop playsinline src="assets/hero.mp4"></video> qo'ying. -->
+        <img class="hero-media" id="heroImg" alt="" style="display:none">
+        <div class="hero-scrim"></div>
+        <button class="hero-edit" id="heroEdit" aria-label="Rasm">📷</button>
+        <div class="hero-in"><div class="hero-q"><span class="hero-mark">❝</span><span id="heroQ"></span></div></div>
       </div>
-      <div class="sec-lbl"><span data-i18n="my_habits"></span>
+      <div class="pcard">
+        <div class="pc-head" data-i18n="today_progress"></div>
+        <div class="pc-row">
+          <div class="pc-ring" id="pcRing">
+            <svg viewBox="0 0 100 100"><circle class="pr-track" cx="50" cy="50" r="43"/><circle class="pr-arc" id="pcArc" cx="50" cy="50" r="43"/></svg>
+            <div class="pr-val" id="gPct">0%</div>
+          </div>
+          <div class="pc-spark">
+            <svg id="pcSpark" viewBox="0 0 100 52" preserveAspectRatio="none"><polyline class="ps-line" id="pcLine" points=""/><circle class="ps-dot" id="pcDot" r="2.4" cx="0" cy="0" style="display:none"/></svg>
+            <div class="pc-cap" id="pcCap"></div>
+          </div>
+        </div>
+      </div>
+      <div class="chips">
+        <div class="chip" data-help="streak"><div class="sc-ic">🔥</div><div class="sc-val" id="streakN">0</div><div class="sc-lbl" data-i18n="streak"></div><div class="sc-sub" id="streakSub"></div></div>
+        <div class="chip" data-help="today"><div class="sc-ic">🕐</div><div class="sc-val" id="todayTime">0m</div><div class="sc-lbl" data-i18n="today_time"></div><div class="sc-sub" data-i18n="sc_today"></div></div>
+        <div class="chip" data-help="strength"><div class="sc-ic">⚡</div><div class="sc-val" id="scoreV">0%</div><div class="sc-lbl" data-i18n="score_lbl"></div><div class="sc-sub" id="scoreSub"></div></div>
+      </div>
+      <div class="sec-lbl"><span data-i18n="today_tasks"></span>
         <button class="add" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
       <div class="habits" id="habitList"></div>
@@ -1042,6 +1151,7 @@ input{font-family:inherit}
         <input type="file" id="importInput" accept=".json,application/json" style="display:none">
       </div>
       <input type="file" id="avatarInput" accept="image/*" style="display:none">
+      <input type="file" id="heroInput" accept="image/*" style="display:none">
       <button class="logout" id="logoutBtn" data-i18n="logout"></button>
     </section>
   </div>
@@ -1342,6 +1452,10 @@ var $=function(s){return document.querySelector(s);},
 /* ============ i18n ============ */
 var I18N={
 uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",today_time:"Bugun",my_habits:"Odatlarim",
+  today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",score_lbl:"Ball",sc_today:"Bugun",
+  sc_best:function(n){return "eng yaxshi: "+n;},
+  sc_w0:"boshlanish",sc_w1:"o'smoqda",sc_w2:"barqaror",sc_w3:"kuchli",sc_w4:"zo'r",
+  pc_empty:"ma'lumot yig'ilmoqda",pc_up:"o'sish sari 📈",pc_keep:"shu ruhda davom!",
   d_cal:"Kalendar",d_score:"Odat kuchi",d_streaks:"Eng uzun seriyalar",d_weekly:"Haftalik faollik",d_empty:"Ma'lumot hali yo'q — bir necha kun kuzating",
   new_habit:"Yangi odat",f_name:"Nomi",f_icon:"Belgi",f_color:"Rang",f_goal:"Umumiy maqsad",f_daily:"Kunlik norma",minutes:"daqiqa",f_photo:"Rasm (ixtiyoriy)",hours:"soat",add:"Odat qo'shish",
   edit_habit:"Odatni tahrirlash",save_habit:"Saqlash",edit_ok:"Yangilandi ✓",del_ok:"Odat o'chirildi",
@@ -1440,6 +1554,10 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   quotes:["Har kuni 1% — bir yilda 37 barobar kuchliroq.","Boshlash eng qiyini. Qolgani osonroq.","Fokus — bu «yo'q» deyish san'ati.","Kichik qadamlar — katta natija.","Diqqating — eng qimmatli boyliging.","Chalg'imaslik — zamonaviy superkuch."],
   prof:function(s){return "seriya: "+s+" kun";}},
 ru:{tagline:"Время — самая честная мера.",growth:"Рост",streak:"Серия",today_time:"Сегодня",my_habits:"Мои привычки",
+  today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",score_lbl:"Балл",sc_today:"Сегодня",
+  sc_best:function(n){return "рекорд: "+n;},
+  sc_w0:"старт",sc_w1:"растёт",sc_w2:"стабильно",sc_w3:"сильно",sc_w4:"отлично",
+  pc_empty:"собираем данные",pc_up:"идём в рост 📈",pc_keep:"так держать!",
   d_cal:"Календарь",d_score:"Сила привычки",d_streaks:"Лучшие серии",d_weekly:"Активность за неделю",d_empty:"Данных пока нет — отслеживайте несколько дней",
   new_habit:"Новая привычка",f_name:"Название",f_icon:"Значок",f_color:"Цвет",f_goal:"Общая цель",f_daily:"Дневная норма",minutes:"минут",f_photo:"Фото (необязательно)",hours:"часов",add:"Добавить",
   edit_habit:"Редактировать",save_habit:"Сохранить",edit_ok:"Обновлено ✓",del_ok:"Привычка удалена",
@@ -1538,6 +1656,10 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   quotes:["Каждый день на 1% — за год в 37 раз сильнее.","Начать — самое трудное. Дальше легче.","Фокус — это искусство говорить «нет».","Маленькие шаги — большой результат.","Твоё внимание — твой главный капитал.","Не отвлекаться — суперсила нашего времени."],
   prof:function(s){return "серия: "+s+" дн.";}},
 en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today_time:"Today",my_habits:"My habits",
+  today_progress:"Today's progress",today_tasks:"Today's tasks",score_lbl:"Score",sc_today:"Today",
+  sc_best:function(n){return "best: "+n;},
+  sc_w0:"start",sc_w1:"growing",sc_w2:"steady",sc_w3:"strong",sc_w4:"excellent",
+  pc_empty:"gathering data",pc_up:"trending up 📈",pc_keep:"keep going!",
   d_cal:"Calendar",d_score:"Habit strength",d_streaks:"Best streaks",d_weekly:"Weekly activity",d_empty:"No data yet — track for a few days",
   new_habit:"New habit",f_name:"Name",f_icon:"Icon",f_color:"Color",f_goal:"Total goal",f_daily:"Daily goal",minutes:"min",f_photo:"Photo (optional)",hours:"hours",add:"Add habit",
   edit_habit:"Edit habit",save_habit:"Save",edit_ok:"Updated ✓",del_ok:"Habit deleted",
@@ -2076,14 +2198,19 @@ $('#logoutBtn').addEventListener('click',function(){
 
 /* ============ clock ============ */
 function refreshGreet(){
-  var h=new Date().getHours(),n=store.user.name?', '+store.user.name:'';
-  $('#greetTxt').textContent=(h<12?T('gm'):h<18?T('ga'):T('ge'))+n;
+  var h=new Date().getHours();
+  var hi=$('#greetHi');if(hi)hi.textContent=(h<12?T('gm'):h<18?T('ga'):T('ge'));
+  var nm=$('#greetName');
+  if(nm){
+    nm.innerHTML=esc(store.user.name||'')+' <span class="g-wave">👋</span>';
+    if(!reduce){var w=nm.querySelector('.g-wave');if(w){w.classList.remove('go');void w.getBoundingClientRect();w.classList.add('go');}}
+  }
 }
 setInterval(function(){
-  $('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+  var ck=$('#clock');if(ck)ck.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
   var nd=dayKey();if(nd!==TODAY){TODAY=nd;refreshAll();}
 },15000);
-$('#clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});
+(function(){var ck=$('#clock');if(ck)ck.textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});})();
 
 /* ============ kunlik o'sish foizi ============ */
 function RNG(seed){var s=seed>>>0;return function(){s=(s*1664525+1013904223)>>>0;return s/4294967296;};}
@@ -2197,7 +2324,7 @@ function fmtHMS(ms){
 var _lastTodayMs=-1;
 function setTodayTime(ms){
   var el=$('#todayTime');if(!el)return;
-  var txt=fmtHM(ms);
+  var txt=(typeof fmtHMC==='function')?fmtHMC(ms):fmtHM(ms); /* chipga sig'adigan ixcham format */
   if(el.textContent!==txt){
     el.textContent=txt;
     if(!reduce&&_lastTodayMs>=0&&ms>_lastTodayMs){el.classList.remove('bump');void el.getBoundingClientRect();el.classList.add('bump');}
@@ -2230,7 +2357,97 @@ function refreshChips(){
   if(typeof renderAvatar==='function')renderAvatar();
   $('#profName').textContent=store.user.name||'';
   $('#profSub').textContent=T('prof')(globalStreak());
+  renderScoreChip();
+  renderStreakSub();
+  refreshHeadAvatar();
+  renderHero();
+  renderSparkline();
   pushWidget();
+}
+/* ixcham vaqt: "2h 35m" / "35m" / "0m" — chipга sig'adi, tilга bog'liq emas */
+function fmtHMC(ms){
+  var m=Math.floor((ms||0)/60000),h=Math.floor(m/60);m=m%60;
+  return h?(h+'h '+m+'m'):(m+'m');
+}
+/* SCORE = barcha (dam bo'lmagan) odatlar "kuch" (izchillik) indeksining o'rtachasi — HALOL.
+   Kesh: kun + har odatning bugungi daqiqasi o'zgarganda qayta hisoblanadi (500ms tsiklда emas). */
+var _scCache={},_scDay=-1;
+function habitStrengthC(h){
+  if(_scDay!==TODAY){_scCache={};_scDay=TODAY;}
+  var k=h.id+'|'+(h.dayMs&&h.dayMs[TODAY]||0)+'|'+((h.days&&h.days.length)||0);
+  if(_scCache[k]===undefined)_scCache[k]=habitStrength(h);
+  return _scCache[k];
+}
+function scoreNow(){
+  var hs=store.habits.filter(function(h){return !isSkip(h,TODAY);});
+  if(!hs.length)return 0;
+  var s=0;hs.forEach(function(h){s+=habitStrengthC(h);});
+  return s/hs.length*100;
+}
+/* so'z zinapoyasi EMA'ning REAL taqsimotiga kalibrlangan (91% ~47 mukammal kun talab qiladi) */
+function scoreWord(p){
+  if(p<12)return T('sc_w0');
+  if(p<28)return T('sc_w1');
+  if(p<45)return T('sc_w2');
+  if(p<62)return T('sc_w3');
+  return T('sc_w4');
+}
+var _scShownV=-1;
+function renderScoreChip(){
+  var el=$('#scoreV');if(!el)return;
+  var p=Math.round(scoreNow());
+  el.textContent=p+'%';
+  var sub=$('#scoreSub');if(sub)sub.textContent=scoreWord(p);
+  if(!reduce&&_scShownV>=0&&p>_scShownV){el.classList.remove('bump');void el.getBoundingClientRect();el.classList.add('bump');}
+  _scShownV=p;
+}
+function renderStreakSub(){
+  var sub=$('#streakSub');if(!sub)return;
+  var best=(typeof bestStreakEver==='function')?bestStreakEver():0;
+  sub.textContent=T('sc_best')(best);
+}
+/* header avatar — ism harfi yoki rasm + fokus ishlayotganда jonli nuqta */
+function anyRunning(){for(var i=0;i<store.habits.length;i++)if(store.habits[i].runningSince)return true;return false;}
+function refreshHeadAvatar(){
+  var b=$('#headAv');if(!b)return;
+  var img=store.user.avatar;
+  b.innerHTML=(img?'<img src="'+img+'" alt="">':esc((store.user.name||'?').charAt(0).toUpperCase()))+'<span class="hav-dot"></span>';
+  b.classList.toggle('live',anyRunning());
+}
+/* hero sitata — kunlik deterministik (Math.random EMAS); user rasmи bo'lsa ko'rsatiladi */
+function renderHero(){
+  var q=$('#heroQ');
+  if(q){var qs=T('quotes')||[];if(qs.length){var idx=((TODAY%qs.length)+qs.length)%qs.length;q.textContent=qs[idx];}}
+  var im=$('#heroImg');
+  if(im){if(store.user.hero){im.src=store.user.hero;im.style.display='';}else{im.removeAttribute('src');im.style.display='none';}}
+}
+/* sparkline — oxirgi 14 kunning HAQIQIY fokus vaqti (dayTotalMs). Ma'lumot yo'q bo'lsa soxta chiziq CHIZILMAYDI. */
+var _spSig='';
+function renderSparkline(){
+  var line=$('#pcLine'),dot=$('#pcDot'),cap=$('#pcCap');
+  if(!line||!cap)return;
+  if(!VIEWS||VIEWS[navIdx]!=='home')return; /* faqat bosh ekran ko'rinaotganда (init'dan oldin xavfsiz) */
+  var N=14,vals=[],i,mx=0,nonzero=0;
+  for(i=N-1;i>=0;i--){var v=dayTotalMs(TODAY-i);vals.push(v);if(v>mx)mx=v;if(v>0)nonzero++;}
+  var sig=vals.map(function(v){return Math.round(v/60000);}).join(',')+'|'+store.settings.lang;
+  if(sig===_spSig)return;_spSig=sig;
+  if(nonzero<2||mx<=0){
+    line.setAttribute('points','');if(dot)dot.style.display='none';
+    cap.textContent=T('pc_empty');cap.style.color='var(--muted)';
+    return;
+  }
+  var W=100,H=52,pad=4,pts=[],lastX=0,lastY=0;
+  for(i=0;i<N;i++){
+    var x=pad+(W-2*pad)*(i/(N-1));
+    var y=H-pad-(H-2*pad)*(vals[i]/mx);
+    pts.push(x.toFixed(1)+','+y.toFixed(1));lastX=x;lastY=y;
+  }
+  line.setAttribute('points',pts.join(' '));
+  if(dot){dot.setAttribute('cx',lastX.toFixed(1));dot.setAttribute('cy',lastY.toFixed(1));dot.style.display='';}
+  /* halol izoh: bugun kechaga nisbatan */
+  var t=vals[N-1],y1=vals[N-2];
+  cap.style.color='var(--neon)';
+  cap.textContent=(t>=y1)?T('pc_up'):T('pc_keep');
 }
 var cardRefs={};
 /* ============ karta holati O'RNIDA o'zgaradi ============
@@ -2416,7 +2633,7 @@ function refreshCards(){
     if(h.runningSince&&h.lastFlush)today+=Math.max(0,Date.now()-h.lastFlush);
     var norm=(h.dailyMin||30)*60000;
     var dayF=norm>0?Math.min(1,today/norm):0;
-    el.querySelector('.hc-pct').textContent='⚡'+Math.round(habitStrength(h)*100)+'%';
+    el.querySelector('.hc-pct').textContent=Math.round(dayF*100)+'%';
     el.querySelector('.hc-fill').style.width=(dayF*100)+'%';
     el.querySelector('.el').textContent=fmtHM(today)+' / '+fmtHM(norm);
   });
@@ -3843,9 +4060,25 @@ $('#avatarInput').addEventListener('change',function(){
   var f=this.files&&this.files[0];this.value='';if(!f)return;
   downscaleImage(f,512,function(data){
     if(!data)return;
-    store.user.avatar=data;save();renderAvatar();sGo();
+    store.user.avatar=data;save();renderAvatar();refreshHeadAvatar();sGo();
   });
 });
+/* header avatar -> profil tab */
+(function(){var b=$('#headAv');if(b)b.addEventListener('click',function(){goToView(VIEWS.indexOf('you'));});})();
+/* hero rasm yuklash (user o'z rasmini qo'yadi; localStorage'da saqlanadi) */
+(function(){
+  var edit=$('#heroEdit'),hero=$('#hero');
+  function pick(e){if(e){e.stopPropagation();}$('#heroInput').click();}
+  if(edit)edit.addEventListener('click',pick);
+  if(hero)hero.addEventListener('click',pick);
+  var hi=$('#heroInput');
+  if(hi)hi.addEventListener('change',function(){
+    var f=this.files&&this.files[0];this.value='';if(!f)return;
+    downscaleImage(f,1024,function(data){
+      if(!data)return;store.user.hero=data;save();renderHero();sGo();
+    });
+  });
+})();
 $('#onbReplay').addEventListener('click',function(){
   sTap();onbGo(0);$('#onb').classList.remove('gone');
 });
@@ -3997,15 +4230,22 @@ $('#pill').addEventListener('click',function(){
 
 /* odometr — foiz silliq aylanib o'sadi; 10 000 soatlik maqsadlarda mayda foizlar kasr bilan */
 function fmtPct(p){return (p>=100?'100':p<=0?'0':p<1?p.toFixed(2):p<10?p.toFixed(1):String(Math.round(p)))+'%';}
-var pctShown=0,pctTarget=0,pctRAF=null;
+var PC_C=270.18; /* 2*PI*43 — progress halqasi aylanasi */
+var pctShown=0,pctTarget=0,pctRAF=null,_elG=null,_elArc=null;
+function pctPaint(p){
+  if(!_elG)_elG=$('#gPct'); if(!_elArc)_elArc=$('#pcArc');
+  if(_elG)_elG.textContent=fmtPct(p);
+  if(_elArc){var c=Math.max(0,Math.min(100,p))/100;_elArc.setAttribute('stroke-dasharray',PC_C);_elArc.setAttribute('stroke-dashoffset',(PC_C*(1-c)).toFixed(2));}
+}
 function setPct(n){
   pctTarget=n;
+  if(reduce){pctShown=n;pctPaint(n);return;}          /* reduce: sakramasdan darhol */
+  if(Math.abs(n-pctShown)<0.05){pctShown=pctTarget=n;pctPaint(n);return;}
   if(pctRAF)return;
   (function step(){
     var d=pctTarget-pctShown;
-    if(Math.abs(d)<0.005){pctShown=pctTarget;$('#gPct').textContent=fmtPct(pctShown);pctRAF=null;return;}
-    pctShown+=d*0.14;
-    $('#gPct').textContent=fmtPct(pctShown);
+    if(Math.abs(d)<0.05){pctShown=pctTarget;pctPaint(pctShown);pctRAF=null;return;}
+    pctShown+=d*0.14;pctPaint(pctShown);
     pctRAF=requestAnimationFrame(step);
   })();
 }
@@ -4038,6 +4278,7 @@ function goToView(ni){
   if(!reduce){var dv=$('#v-'+v);dv.classList.remove('dolly');void dv.offsetWidth;dv.classList.add('dolly');}
   navIdx=ni;navInd();
   if(!reduce){var ni2=$('#navind');if(ni2){ni2.classList.remove('stretch');void ni2.getBoundingClientRect();ni2.classList.add('stretch');}}
+  if(v==='home'){renderSparkline();if(!reduce){var rg=$('#pcRing');if(rg){rg.classList.remove('pop');void rg.offsetWidth;rg.classList.add('pop');}}}
   if(v==='stats')drawStats(true); /* tab ochilganda raqamlar dekodlanadi (til almashuvida emas) */
   if(v==='league'){renderStreakRow();renderRewards();renderLeague();} /* Liga tab: streak + mukofot + reyting */
   if(v==='you'&&typeof refreshFriendsRowDot==='function')refreshFriendsRowDot(); /* profil: o'qilmagan nuqta */
