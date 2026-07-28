@@ -5051,15 +5051,22 @@ $('#pill').addEventListener('click',function(){
 })();
 
 /* odometr — foiz silliq aylanib o'sadi; 10 000 soatlik maqsadlarda mayda foizlar kasr bilan */
-function fmtPct(p){return (p>=100?'100':p<=0?'0':p<1?p.toFixed(2):p<10?p.toFixed(1):String(Math.round(p)))+'%';}
+function fmtPct(p){
+  if(isNaN(p) || p <= 0) return '0%';
+  if(p >= 100) return '100%';
+  if(p < 1) return p.toFixed(2) + '%';
+  if(p < 10) return p.toFixed(1) + '%';
+  return Math.round(p) + '%';
+}
 var PC_C=270.18; /* 2*PI*43 — progress halqasi aylanasi */
 var pctShown=0,pctTarget=0,pctRAF=null,_elG=null,_elArc=null;
 function pctPaint(p){
   if(!_elG)_elG=$('#gPct'); if(!_elArc)_elArc=$('#pcArc');
   if(_elG)_elG.textContent=fmtPct(p);
-  if(_elArc){var c=Math.max(0,Math.min(100,p))/100;_elArc.setAttribute('stroke-dasharray',PC_C);_elArc.setAttribute('stroke-dashoffset',(PC_C*(1-c)).toFixed(2));}
+  if(_elArc){var c=Math.max(0,Math.min(100,isNaN(p)?0:p))/100;_elArc.setAttribute('stroke-dasharray',PC_C);_elArc.setAttribute('stroke-dashoffset',(PC_C*(1-c)).toFixed(2));}
 }
 function setPct(n){
+  if(isNaN(n)) n = 0;
   pctTarget=n;
   if(reduce){pctShown=n;pctPaint(n);return;}          /* reduce: sakramasdan darhol */
   if(Math.abs(n-pctShown)<0.05){pctShown=pctTarget=n;pctPaint(n);return;}
