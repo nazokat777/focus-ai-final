@@ -322,42 +322,60 @@ input{font-family:inherit}
     letter-spacing:.22em;
     text-transform:uppercase;
     color:#3d6b50;
+    margin-bottom:2px;
   }
-  .df-tag{
-    display:flex;
-    align-items:flex-start;
-    gap:10px;
-    padding:11px 13px;
+  .df-card{
     background:rgba(255,255,255,.03);
-    border:1px solid rgba(57,255,140,.1);
-    border-radius:14px;
-    cursor:default;
-    transition:border-color .25s,background .25s,transform .2s;
+    border:1px solid rgba(57,255,140,.12);
+    border-radius:16px;
+    padding:14px 16px;
+    transition:border-color .25s,background .25s;
   }
-  .df-tag:hover{
-    background:rgba(57,255,140,.07);
+  .df-card:hover{
+    background:rgba(57,255,140,.06);
     border-color:rgba(57,255,140,.28);
-    transform:translateX(-3px);
   }
-  .df-tag .dt-ic{
+  .df-card-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    position:relative;
+  }
+  .df-ic{
     width:36px;height:36px;
     border-radius:10px;
     background:rgba(57,255,140,.13);
-    border:1px solid rgba(57,255,140,.22);
+    border:1px solid rgba(57,255,140,.25);
     display:grid;place-items:center;
     font-size:16px;
     flex:none;
   }
-  .df-tag .dt-body{flex:1;min-width:0}
-  .df-tag .dt-title{
-    font-size:12.5px;
-    font-weight:600;
+  .df-card-title{
+    font-size:13px;
+    font-weight:700;
     color:#EAFBF0;
-    line-height:1.3;
   }
-  .df-tag .dt-desc{
-    font-size:11px;
+  .df-card-sub{
+    font-size:10.5px;
     color:#5a7a65;
+    margin-top:1px;
+  }
+  .df-live-dot{
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--neon);
+    box-shadow:0 0 8px var(--neon);
+    margin-left:auto;
+  }
+  .df-badge-chip{
+    font-size:10px;
+    color:#98d6aa;
+    background:rgba(57,255,140,.08);
+    border:1px solid rgba(57,255,140,.18);
+    border-radius:999px;
+    padding:4px 10px;
+    font-weight:600;
+  }
     margin-top:2px;
     line-height:1.4;
   }
@@ -2003,40 +2021,70 @@ input{font-family:inherit}
 
 <!-- ===== DESKTOP RIGHT PANEL (only visible 901px+) ===== -->
 <aside class="desk-features" aria-hidden="true">
-  <div class="df-label">Xususiyatlar</div>
-  <div class="df-tag">
-    <div class="dt-ic">⏱</div>
-    <div class="dt-body">
-      <div class="dt-title">Fokus Taymer</div>
-      <div class="dt-desc">Pomodoro va maqsadga asoslangan taymer bilan real vaqtni o'lchang</div>
+  <div class="df-label">AI & TAHLILIY DASHBOARD</div>
+
+  <!-- AI Coach Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">🤖</span>
+      <div>
+        <div class="df-card-title">AI Murabbiy</div>
+        <div class="df-card-sub">Real vaqt tahlili</div>
+      </div>
+      <span class="df-live-dot"></span>
+    </div>
+    <div class="df-card-body" style="font-size:12px;color:#c0e0c8;line-height:1.45;margin-top:6px;font-style:italic">
+      "Har bir 25 daqiqalik chuqur fokus sizni maqsadingizga 10x yaqinlashtiradi. Bugungi seriyani saqlang!"
     </div>
   </div>
-  <div class="df-tag">
-    <div class="dt-ic">📊</div>
-    <div class="dt-body">
-      <div class="dt-title">Aqlli Statistika</div>
-      <div class="dt-desc">Heatmap, streak tahlili va haftalik progress grafiklar</div>
+
+  <!-- Haftalik Statistika Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">📊</span>
+      <div>
+        <div class="df-card-title">Haftalik Statistika</div>
+        <div class="df-card-sub">28.5 soat fokus vaqti</div>
+      </div>
+    </div>
+    <div class="df-chart-mini" style="display:flex;align-items:flex-end;gap:6px;height:36px;margin-top:10px;padding:0 4px">
+      <div style="flex:1;background:rgba(57,255,140,0.25);height:60%;border-radius:4px" title="Dush"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.5);height:80%;border-radius:4px" title="Sesh"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.3);height:45%;border-radius:4px" title="Chor"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.75);height:90%;border-radius:4px" title="Pay"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.6);height:70%;border-radius:4px" title="Jum"></div>
+      <div style="flex:1;background:var(--neon);height:100%;border-radius:4px;box-shadow:0 0 8px var(--neon)" title="Shan"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.8);height:85%;border-radius:4px" title="Yak"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:9.5px;color:#5a7a65;margin-top:4px">
+      <span>D</span><span>S</span><span>Ch</span><span>P</span><span>J</span><span>Sh</span><span>Y</span>
     </div>
   </div>
-  <div class="df-tag">
-    <div class="dt-ic">🤖</div>
-    <div class="dt-body">
-      <div class="dt-title">AI Murabbiy</div>
-      <div class="dt-desc">Shaxsiy maslahatlar va motivatsion kuchlanish</div>
+
+  <!-- Mukofotlar & Yutuqlar Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">🏆</span>
+      <div>
+        <div class="df-card-title">Mukofotlar & Liga</div>
+        <div class="df-card-sub">Oltin Liga · Top 1%</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+      <span class="df-badge-chip">🥇 Oltin Liga</span>
+      <span class="df-badge-chip">⚡️ Master Fokus</span>
+      <span class="df-badge-chip">🔥 21 Kun Streak</span>
     </div>
   </div>
-  <div class="df-tag">
-    <div class="dt-ic">🏆</div>
-    <div class="dt-body">
-      <div class="dt-title">Yutuqlar Tizimi</div>
-      <div class="dt-desc">Mukofotlar, medalllar va do'stlar bilan raqobat</div>
-    </div>
-  </div>
-  <div class="df-tag">
-    <div class="dt-ic">🌙</div>
-    <div class="dt-body">
-      <div class="dt-title">Zen Rejim</div>
-      <div class="dt-desc">Chuqur fokus uchun maxsus minimal interfeys</div>
+
+  <!-- Zen Rejim Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">🌙</span>
+      <div>
+        <div class="df-card-title">Zen Rejim & Audioshavqin</div>
+        <div class="df-card-sub">O'rmon yomg'iri · 432Hz</div>
+      </div>
     </div>
   </div>
 </aside>
