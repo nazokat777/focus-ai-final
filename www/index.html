@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Focus AI</title>
+<link rel="icon" type="image/png" href="assets/ikonka.png">
+<link rel="apple-touch-icon" href="assets/ikonka.png">
 <!-- Do'stlar buluti (ixtiyoriy). Kalitlar BO'SH bo'lsa -> ilova LOKAL, offline, o'zi-yetarli:
      hech qanday tashqi so'rov yuborilmaydi. IKKALASI to'ldirilsagina supabase-js yuklanadi.
      Yoqish: pastdagi ikki qatorni Project URL + anon public key bilan to'ldiring. -->
@@ -53,19 +55,353 @@ input{font-family:inherit}
    Mono (raqam/vaqt) elementlariga TEGILMAYDI — ular monoshirinlikni saqlaydi. */
 .greet h1,.profile h2,.auth h2,.onb-slide h2,.ach h2,.coach-card .cm-t,.sp-logo{letter-spacing:-.022em}
 
-.device{position:relative;width:440px;height:min(940px,100dvh);
+/* ===== DEVICE BASE ===== */
+.device{
+  position:relative;
+  width:440px;
+  height:min(940px,100dvh);
   background:radial-gradient(85% 55% at 50% 100%,rgba(20,80,45,.24) 0%,rgba(0,0,0,0) 60%),var(--bg);
-  border-radius:46px;overflow:hidden;border:1px solid rgba(var(--neon-br-rgb),.10);
+  border-radius:46px;
+  overflow:hidden;
+  border:1px solid rgba(var(--neon-br-rgb),.10);
   box-shadow:0 40px 120px rgba(20,160,90,.22),0 8px 40px rgba(0,0,0,.6);
-  display:flex;flex-direction:column;color:var(--text);transition:background .4s var(--ease)}
+  display:flex;
+  flex-direction:column;
+  color:var(--text);
+  transition:background .4s var(--ease)
+}
 .scanlines{position:absolute;inset:0;pointer-events:none;z-index:58;opacity:.05;
   background:repeating-linear-gradient(0deg,transparent 0 2px,rgba(var(--neon-br-rgb),.5) 2px 3px)}
 .device[data-theme="light"] .scanlines{opacity:.02}
-/* audit #8: yorug' rejimda kichik neon matn kontrasti (WCAG AA) — quyuqroq --neon-dp (#0a7a41 ~5.4:1) */
+/* audit #8: yorug' rejimda kichik neon matn kontrasti (WCAG AA) */
 .device[data-theme="light"] .hc-pct,.device[data-theme="light"] .compare b,.device[data-theme="light"] .rw-bal,.device[data-theme="light"] .shop-bal,.device[data-theme="light"] .pill .ptime{color:var(--neon-dp)}
-/* yorug'da neon ochroq — ikonka uchun quyuqroq variant (WCAG 1.4.11 grafik >=3:1) */
 .device[data-theme="light"] .sec-lbl .add svg{stroke:var(--neon-dp)}
-@media (max-width:480px){.device{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}}
+
+/* ===== RESPONSIVE: Mobile (≤480px) — to'liq ekran ===== */
+@media (max-width:480px){
+  body{background:#000;overflow:hidden}
+  .device{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}
+  /* Desktop-only elements */
+  .desk-panel,.desk-features{display:none!important}
+}
+
+/* ===== RESPONSIVE: Tablet (481px – 900px) ===== */
+@media (min-width:481px) and (max-width:900px){
+  html,body{height:100%}
+  body{
+    background:#000;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+  }
+  /* Ambient background layers */
+  body::before{
+    content:'';
+    position:fixed;inset:0;
+    background:
+      radial-gradient(ellipse 90% 60% at 50% 10%, rgba(57,255,140,.18) 0%,transparent 60%),
+      radial-gradient(ellipse 70% 50% at 20% 80%, rgba(10,70,30,.4) 0%,transparent 55%),
+      radial-gradient(ellipse 60% 45% at 80% 70%, rgba(5,50,20,.3) 0%,transparent 50%),
+      #000;
+    pointer-events:none;z-index:0;
+  }
+  body::after{
+    content:'';
+    position:fixed;inset:0;
+    background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(57,255,140,.014) 3px 4px);
+    pointer-events:none;z-index:0;
+  }
+  .device{
+    position:relative;z-index:1;
+    width:min(420px, calc(100vw - 32px));
+    height:min(870px,calc(100dvh - 32px));
+    border-radius:42px;
+    box-shadow:
+      0 0 0 1px rgba(57,255,140,.2),
+      0 0 0 6px rgba(57,255,140,.05),
+      0 0 60px 0 rgba(57,255,140,.12),
+      0 30px 90px rgba(10,90,40,.55),
+      0 8px 32px rgba(0,0,0,.8);
+  }
+  /* Floating glow orbs around the phone */
+  body::before{
+    animation:tabOrb 8s ease-in-out infinite;
+  }
+  @keyframes tabOrb{
+    0%,100%{background-position:50% 10%}
+    50%{background-position:50% 8%}
+  }
+  .desk-panel,.desk-features{display:none!important}
+}
+
+/* ===== RESPONSIVE: Desktop (901px+) — Showcase Layout ===== */
+@media (min-width:901px){
+  html,body{height:100%;width:100%;overflow-x:hidden}
+  body{
+    background:#000;
+    display:grid;
+    grid-template-columns: 1fr 400px 1fr;
+    justify-items:center;
+    align-items:center;
+    max-width:1440px;
+    margin:0 auto;
+    box-sizing:border-box;
+    padding:0 24px;
+  }
+  /* Rich ambient background */
+  body::before{
+    content:'';
+    position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(ellipse 55% 70% at 18% 50%, rgba(57,255,140,.13) 0%,transparent 60%),
+      radial-gradient(ellipse 45% 60% at 82% 45%, rgba(57,255,140,.10) 0%,transparent 55%),
+      radial-gradient(ellipse 70% 35% at 50% 100%, rgba(20,120,60,.22) 0%,transparent 50%),
+      radial-gradient(ellipse 30% 25% at 50% 0%, rgba(10,60,30,.18) 0%,transparent 45%),
+      #000;
+    pointer-events:none;
+  }
+  /* Subtle scanline overlay */
+  body::after{
+    content:'';
+    position:fixed;inset:0;z-index:0;
+    background:repeating-linear-gradient(0deg,transparent 0 3px,rgba(57,255,140,.016) 3px 4px);
+    pointer-events:none;
+  }
+  /* Phone device — centered column */
+  .device{
+    grid-column:2;
+    grid-row:1;
+    align-self:center;
+    position:relative;z-index:2;
+    width:400px;
+    height:min(830px, calc(100vh - 20px));
+    border-radius:46px;
+    box-shadow:
+      0 0 0 1px rgba(57,255,140,.22),
+      0 0 0 9px rgba(57,255,140,.04),
+      0 0 80px 0 rgba(57,255,140,.18),
+      0 40px 110px rgba(10,100,45,.55),
+      0 12px 40px rgba(0,0,0,.9),
+      inset 0 1px 0 rgba(255,255,255,.07);
+    /* Subtle float animation */
+    animation:deviceFloat 7s ease-in-out infinite;
+  }
+  @keyframes deviceFloat{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-8px)}
+  }
+}
+
+/* ===== DESKTOP SIDE PANELS ===== */
+.desk-panel{
+  display:none;
+}
+.desk-features{
+  display:none;
+}
+
+@media (min-width:901px){
+  /* LEFT INFO PANEL */
+  .desk-panel{
+    grid-column:1;
+    grid-row:1;
+    align-self:center;
+    display:flex;
+    flex-direction:column;
+    gap:20px;
+    justify-self:end;
+    max-width:320px;
+    width:100%;
+    padding:0 16px;
+    z-index:10;
+    position:relative;
+    animation:panelFadeIn .6s ease both;
+  }
+  .dp-badge{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:rgba(57,255,140,.1);
+    border:1px solid rgba(57,255,140,.3);
+    border-radius:999px;
+    padding:6px 14px;
+    font-size:11.5px;
+    font-weight:700;
+    color:var(--neon);
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    width:fit-content;
+  }
+  .dp-badge::before{
+    content:'';
+    width:7px;height:7px;
+    border-radius:50%;
+    background:var(--neon);
+    box-shadow:0 0 10px var(--neon);
+    animation:blink 2s steps(1) infinite;
+    flex:none;
+  }
+  .dp-title{
+    font-size:clamp(22px,2.2vw,34px);
+    font-weight:800;
+    letter-spacing:-.03em;
+    line-height:1.15;
+    color:#EAFBF0;
+    word-break:keep-all;
+  }
+  .dp-title span{
+    background:linear-gradient(135deg,var(--neon-br) 0%,var(--neon) 60%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+    display:inline;
+  }
+  .dp-sub{
+    font-size:13px;
+    color:#6b9175;
+    line-height:1.6;
+  }
+  .dp-stats{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .dp-stat{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(57,255,140,.1);
+    border-radius:14px;
+    padding:12px 16px;
+    transition:border-color .2s,background .2s;
+  }
+  .dp-stat:hover{
+    background:rgba(57,255,140,.06);
+    border-color:rgba(57,255,140,.25);
+  }
+  .dp-stat .ds-ic{
+    width:38px;height:38px;
+    border-radius:11px;
+    background:rgba(57,255,140,.12);
+    border:1px solid rgba(57,255,140,.25);
+    display:grid;place-items:center;
+    font-size:18px;
+    flex:none;
+  }
+  .dp-stat .ds-body{flex:1;min-width:0}
+  .dp-stat .ds-val{
+    font-family:'JetBrains Mono',monospace;
+    font-weight:700;
+    font-size:17px;
+    color:#EAFBF0;
+  }
+  .dp-stat .ds-lbl{
+    font-size:11px;
+    color:#5a7a65;
+    margin-top:2px;
+    letter-spacing:.04em;
+  }
+  /* RIGHT FEATURES PANEL */
+  .desk-features{
+    grid-column:3;
+    grid-row:1;
+    align-self:center;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    justify-self:start;
+    max-width:310px;
+    width:100%;
+    padding:0 16px;
+    z-index:10;
+    position:relative;
+    animation:panelFadeIn .6s ease .1s both;
+  }
+  @keyframes panelFadeIn{
+    from{opacity:0}
+    to{opacity:1}
+  }
+  .df-label{
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:.22em;
+    text-transform:uppercase;
+    color:#3d6b50;
+    margin-bottom:2px;
+  }
+  .df-card{
+    background:rgba(255,255,255,.03);
+    border:1px solid rgba(57,255,140,.12);
+    border-radius:16px;
+    padding:14px 16px;
+    transition:border-color .25s,background .25s;
+  }
+  .df-card:hover{
+    background:rgba(57,255,140,.06);
+    border-color:rgba(57,255,140,.28);
+  }
+  .df-card-head{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    position:relative;
+  }
+  .df-ic{
+    width:36px;height:36px;
+    border-radius:10px;
+    background:rgba(57,255,140,.13);
+    border:1px solid rgba(57,255,140,.25);
+    display:grid;place-items:center;
+    font-size:16px;
+    flex:none;
+  }
+  .df-card-title{
+    font-size:13px;
+    font-weight:700;
+    color:#EAFBF0;
+  }
+  .df-card-sub{
+    font-size:10.5px;
+    color:#5a7a65;
+    margin-top:1px;
+  }
+  .df-live-dot{
+    width:6px;height:6px;
+    border-radius:50%;
+    background:var(--neon);
+    box-shadow:0 0 8px var(--neon);
+    margin-left:auto;
+  }
+  .df-badge-chip{
+    font-size:10px;
+    color:#98d6aa;
+    background:rgba(57,255,140,.08);
+    border:1px solid rgba(57,255,140,.18);
+    border-radius:999px;
+    padding:4px 10px;
+    font-weight:600;
+  }
+    margin-top:2px;
+    line-height:1.4;
+  }
+  .df-platform{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    margin-top:8px;
+  }
+  .df-platform span{
+    font-size:10.5px;
+    color:#4a6a55;
+    background:rgba(57,255,140,.08);
+    border:1px solid rgba(57,255,140,.15);
+    border-radius:999px;
+    padding:4px 11px;
+    font-weight:600;
+    letter-spacing:.06em;
+  }
+}
 
 .head{padding:calc(env(safe-area-inset-top) + 24px) 24px 10px;flex:none;display:flex;align-items:center;justify-content:space-between;z-index:5;min-height:56px}
 .brand{display:flex;align-items:center;gap:9px;font-weight:600;letter-spacing:.15em;font-size:14px}
@@ -355,70 +691,71 @@ input{font-family:inherit}
 .sheet .save:active{transform:scale(.97)}
 
 /* session overlay */
-.session{position:absolute;inset:0;background:var(--bg);z-index:90;display:flex;flex-direction:column;
-  transform:translateY(100%);transition:transform .45s var(--ease)}
+.session{position:absolute;inset:0;background:#05070A;z-index:90;display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .45s var(--ease);
+  color:#EAFBF0;padding:calc(env(safe-area-inset-top) + 16px) 24px calc(env(safe-area-inset-bottom) + 16px);
+  overflow-y:auto;overflow-x:hidden;scrollbar-width:none;}
+.session::-webkit-scrollbar{display:none;}
 .session.open{transform:none}
-/* tortib-yopish tutqichi (iOS-uslub) + drag holati */
-.s-grab{position:absolute;top:calc(env(safe-area-inset-top) + 8px);left:50%;transform:translateX(-50%);width:40px;height:5px;border-radius:3px;background:rgba(var(--neon-rgb),.28);z-index:6;transition:background .25s var(--ease),width .25s var(--ease);touch-action:none;cursor:grab}
-.session.dragging .s-grab{background:rgba(var(--neon-rgb),.65);width:56px}
-.session.dragging{transition:none;will-change:transform}
-/* sessiya kirish koreografiyasi — panel kelgach ichki bloklar bosqichma-bosqich ochiladi (transform+opacity) */
-@keyframes sRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-@keyframes sRingIn{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:none}}
-.session.open .s-head{animation:sRise .5s var(--ease-out) both}
-.session.open .s-ring{animation:sRingIn .55s var(--ease-out) .09s both}
-.session.open .s-controls{animation:sRise .5s var(--ease-out) .2s both}
-.reduce .session.open .s-head,.reduce .session.open .s-ring,.reduce .session.open .s-controls{animation:none}
-.s-head{padding:calc(env(safe-area-inset-top) + 16px) 20px 4px;display:flex;align-items:center;justify-content:space-between}
-.s-close{width:38px;height:38px;border-radius:12px;background:var(--elev);border:1px solid var(--line);display:grid;place-items:center}
-.s-close svg{width:17px;height:17px;stroke:var(--text);stroke-width:2;fill:none}
-.s-title{font-weight:600;font-size:16px;display:flex;align-items:center;gap:9px}
-.s-title .ic{width:26px;height:26px;border-radius:8px;display:grid;place-items:center}
-.s-title .ic svg{width:14px;height:14px;stroke:#fff;stroke-width:2;fill:none}
-.s-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding-bottom:20px}
-.s-ring{position:relative;width:280px;height:280px}
-.s-ring .breathe{position:absolute;inset:46px;border-radius:50%;background:radial-gradient(circle,rgba(var(--neon-rgb),.28),rgba(var(--neon-rgb),0) 70%)}
-/* rotary dial: fokus halqasi tortiladigan (tayyor holatда) */
-#fRing{cursor:grab;touch-action:none}
-#fRing.dialing{cursor:grabbing}
-#fRing.dialing .head{filter:drop-shadow(0 0 6px var(--neon));stroke-width:3.4}
-.s-ring.run .breathe{animation:breathe 5s var(--ease) infinite}
+/* top bar */
+.s-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.s-btn-icon{width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);display:grid;place-items:center}
+.s-btn-icon svg{width:20px;height:20px;stroke:white;stroke-width:2;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.s-btn-settings svg{stroke:#39FF8C}
+.s-title-text{font-size:13px;font-weight:700;letter-spacing:0.1em;color:#fff}
+/* mode selector */
+.s-mode-selector{margin:0 auto 24px;display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.06);border:1px solid rgba(57,255,140,0.15);border-radius:999px;padding:8px 16px;font-size:14px;font-weight:500;cursor:pointer;align-self:center}
+.s-mode-selector svg{width:16px;height:16px;stroke:rgba(255,255,255,0.7);stroke-width:2;fill:none}
+/* timer ring */
+.s-ring-wrap{position:relative;width:100%;aspect-ratio:1;max-width:340px;margin:0 auto 30px;display:flex;justify-content:center;align-items:center}
+.s-ring{position:absolute;inset:0;border-radius:50%}
+@keyframes sRingSpin{to{transform:rotate(360deg)}}
+.s-ring-wrap::before{content:'';position:absolute;inset:-15px;border-radius:50%;background:conic-gradient(from 90deg,#02d5ff,#39ff8c,#02d5ff,#9d00ff,#ff007f,#02d5ff);filter:blur(25px);opacity:0.35;animation:sRingSpin 10s linear infinite;z-index:0;}
+.s-ring::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 180deg,#02d5ff,#39ff8c,#02d5ff,#9d00ff,#ff007f,#02d5ff);-webkit-mask:radial-gradient(circle,transparent 65%,black 65.5%,black 68%,transparent 68.5%);animation:sRingSpin 15s linear infinite reverse;opacity:0.8;z-index:1;}
+.s-ring::after{content:'';position:absolute;inset:16px;border-radius:50%;border:1.5px dashed rgba(255,255,255,0.2);animation:sRingSpin 25s linear infinite;z-index:2;pointer-events:none;}
+.s-ring .breathe{position:absolute;inset:26px;border-radius:50%;background:#030507;box-shadow:inset 0 20px 40px rgba(0,0,0,0.9),0 0 0 1px rgba(255,255,255,0.05);z-index:3;}
+.s-ring svg{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible;filter:drop-shadow(0 0 6px rgba(57,255,140,0.4));}
+.s-ring .seg{stroke:rgba(255,255,255,0.02);stroke-width:4px;fill:none;transition:stroke 0.3s ease;}
+.s-ring .seg.on{stroke:#39FF8C;}
+.s-ring .head{stroke:#fff;stroke-width:8px;stroke-linecap:round;filter:drop-shadow(0 0 12px #fff) drop-shadow(0 0 25px #39FF8C);fill:none;opacity:0;transition:transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);}
+.s-ring.run .head{opacity:1;}
+.s-center{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.s-elapsed{font-family:'JetBrains Mono',monospace;font-size:64px;font-weight:600;line-height:1;margin-bottom:4px;letter-spacing:-0.02em}
+.s-remain-lbl{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:16px}
+.s-pomodoro{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:500}
+.s-dot{width:6px;height:6px;border-radius:50%;background:#39FF8C;box-shadow:0 0 8px #39FF8C}
+.s-pomodoro svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+/* start button */
+.s-btn-start{width:100%;max-width:340px;margin:0 auto 30px;padding:18px;border-radius:999px;background:linear-gradient(90deg,rgba(10,30,20,1) 0%,rgba(10,50,40,1) 100%);border:1px solid rgba(57,255,140,0.2);box-shadow:0 10px 30px rgba(10,50,40,0.5);display:flex;align-items:center;justify-content:center;gap:12px;font-size:18px;font-weight:600;transition:transform 0.2s}
+.s-btn-start:active{transform:scale(0.96)}
+.s-btn-start svg{width:22px;height:22px;color:#39FF8C}
+/* actions */
+.s-chipbtn{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:999px;padding:7px 16px;font-size:13px;font-weight:600;color:var(--muted);transition:all .2s ease;cursor:pointer}
+.s-chipbtn.sel,.s-chipbtn:hover{background:rgba(57,255,140,0.15);border-color:rgba(57,255,140,0.4);color:var(--neon)}
+.s-actions-row{display:flex;justify-content:space-between;max-width:340px;margin:0 auto 30px;width:100%;padding:0 10px}
+.s-act-item{display:flex;flex-direction:column;align-items:center;gap:10px;font-size:11px;color:rgba(255,255,255,0.7)}
+.s-act-ic{width:56px;height:56px;border-radius:50%;border:1px solid rgba(255,255,255,0.1);background:rgba(255,255,255,0.03);display:grid;place-items:center;transition:0.2s}
+.s-act-ic svg{width:24px;height:24px}
+.s-act-ic:hover{background:rgba(255,255,255,0.08)}
+/* env section */
+.s-env-section{max-width:340px;width:100%;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.s-env-banner{position:relative;width:100%;height:90px;border-radius:18px;background-size:cover;background-position:center;display:flex;align-items:center;justify-content:space-between;padding:0 20px;border:1px solid rgba(255,255,255,0.1)}
+.s-env-banner::before{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(90deg,rgba(0,0,0,0.8) 0%,rgba(0,0,0,0.3) 50%,transparent 100%)}
+.s-env-info{position:relative;z-index:1}
+.s-env-title{font-size:14px;font-weight:600;margin-bottom:6px}
+.s-env-pill{font-size:12px;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:4px}
+.s-env-pill svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
+.s-env-play{position:relative;z-index:1;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(57,255,140,0.3);display:grid;place-items:center;color:#39FF8C}
+.s-env-play svg{width:20px;height:20px}
+.s-env-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.s-env-thumb{aspect-ratio:1;border-radius:14px;background-size:cover;background-position:center;border:2px solid transparent;opacity:0.6;transition:0.25s;cursor:pointer}
+.s-env-thumb:hover{opacity:0.8}
+.s-env-thumb.active{border-color:#39FF8C;opacity:1}
+/* JS overrides */
+.s-ring.run::before { animation-duration: 4s; }
+.s-ring.run .breathe { animation: breathe 5s var(--ease) infinite; }
 @keyframes breathe{0%,100%{transform:scale(.85);opacity:.5}50%{transform:scale(1.1);opacity:1}}
-.s-ring svg{position:absolute;inset:0}
-.s-ring .seg{stroke:var(--elev2);stroke-width:3;transition:stroke .3s var(--ease)}
-/* 60 ta alohida drop-shadow (= 60 offscreen bufer) OLIB TASHLANDI — o'rniga
-   bitta umumiy nur qatlami. Eski WebView'da kadr byudjeti sezilarli bo'shaydi. */
-.s-ring .seg.on{stroke:var(--neon)}
-.s-ring::after{content:"";position:absolute;inset:44px;border-radius:50%;pointer-events:none;
-  box-shadow:0 0 32px 7px rgba(var(--neon-rgb),.15);opacity:0;
-  transition:opacity .6s var(--ease)}
-/* nur faqat taymer ishlaganda; bazaviy yorug'lik + progressga qarab kuchayadi */
-.s-ring.run::after{opacity:calc(.3 + var(--f,0) * .7)}
-/* komet boshi: uzluksiz aylanadi — taymer TIRIK ekani bir qarashda ko'rinadi.
-   Faqat transform, bitta element, bitta filtr (60 emas). */
-.s-ring .head{stroke:var(--neon-br);stroke-width:4;stroke-linecap:round;opacity:0;
-  transform-origin:100px 100px;transition:transform .55s linear,opacity .3s var(--ease)}
-/* soxta glow: filtr O'RNIGA ostidagi qalinroq shaffof chiziq (offscreen bufer yo'q) */
-.s-ring .halo{stroke:var(--neon-br);stroke-width:10;stroke-linecap:round;opacity:0;
-  transform-origin:100px 100px;transition:transform .55s linear,opacity .3s var(--ease)}
-.s-ring.run .head{opacity:1}
-.s-ring.run .halo{opacity:.22}
-.reduce .s-ring .head,.reduce .s-ring .halo{transition:opacity .3s}
-.s-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.s-pct{font-family:'JetBrains Mono',monospace;font-weight:600;font-size:46px}
-.s-elapsed{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--neon)}
-.s-remain{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace}
-.deep{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);min-height:20px;transition:color .3s var(--ease)}
-.deep.on{color:var(--neon)}
-.s-controls{display:flex;gap:10px;padding:0 22px}
-.s-btn{padding:14px 0;border-radius:14px;font-weight:600;font-size:14px;transition:transform .2s var(--ease)}
-.s-btn:active{transform:scale(.95)}
-.s-main{flex:2;background:var(--neon);color:var(--onneon);box-shadow:0 8px 30px rgba(var(--neon-rgb),.35)}
-.s-fin{flex:1;background:var(--elev);border:1px solid var(--line)}
-.s-extra{display:flex;gap:10px;padding:12px 22px 0;justify-content:center}
-.s-chipbtn{display:flex;align-items:center;gap:7px;padding:9px 14px;border-radius:999px;background:var(--elev);border:1px solid var(--line);font-size:12px;color:var(--muted);transition:.25s var(--ease)}
-.s-chipbtn.on{color:var(--neon);border-color:rgba(var(--neon-rgb),.4)}
-.s-chipbtn svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.8}
+
 
 /* achievement overlay */
 .ach{position:absolute;inset:0;z-index:120;background:rgba(2,8,4,.88);backdrop-filter:blur(6px);
@@ -1085,14 +1422,134 @@ input{font-family:inherit}
 .auth-step{display:flex;flex-direction:column;gap:10px;margin-top:14px}
 .auth-step.gone{display:none}
 .auth-input{width:100%;padding:14px;border-radius:12px;background:var(--elev2);border:1px solid var(--line);color:var(--text);font-size:15px}
+.brand-img{width:22px;height:22px;border-radius:6px;object-fit:cover;vertical-align:middle;box-shadow:0 0 8px rgba(57,255,140,.4)}
+.sp-logo-img{max-width:180px;height:auto;object-fit:contain;display:block;margin:0 auto 8px;filter:drop-shadow(0 0 16px rgba(57,255,140,.4))}
+.auth-logo img{max-width:140px;height:auto;object-fit:contain;display:block;margin:0 auto;filter:drop-shadow(0 0 20px rgba(57,255,140,.35))}
+.profile-logo-wrap{margin-bottom:12px;text-align:center}
+.prof-logo-img{max-width:140px;height:auto;object-fit:contain;filter:drop-shadow(0 0 12px rgba(57,255,140,.25))}
+.sp-logo-top{display:flex;justify-content:center;align-items:center;margin-bottom:34px}
+.sp-logo-top-img{width:130px;height:auto;object-fit:contain;filter:drop-shadow(0 0 18px rgba(57,255,140,0.3));opacity:0;transform:translateY(-8px);animation:logoFadeIn 0.8s cubic-bezier(0.16,1,0.3,1) forwards}
+@keyframes logoFadeIn{to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
+
+<!-- ===== DESKTOP LEFT PANEL (only visible 901px+) ===== -->
+<aside class="desk-panel" aria-hidden="true">
+  <div class="dp-badge">Live · Focus AI</div>
+  <h1 class="dp-title">
+    Diqqatingizni<br>
+    <span>AI boshqarsin</span>
+  </h1>
+  <p class="dp-sub">
+    Har kuni maqsadlaringizga yaqinlashing — aqlli taymer, odatlar kuzatuvi va AI murabbiy bilan.
+  </p>
+  <div class="dp-stats">
+    <div class="dp-stat">
+      <div class="ds-ic">🔥</div>
+      <div class="ds-body">
+        <div class="ds-val">21 kun</div>
+        <div class="ds-lbl">Eng uzun streak rekord</div>
+      </div>
+    </div>
+    <div class="dp-stat">
+      <div class="ds-ic">⚡</div>
+      <div class="ds-body">
+        <div class="ds-val">4.2 soat</div>
+        <div class="ds-lbl">Bugungi fokus vaqti</div>
+      </div>
+    </div>
+    <div class="dp-stat">
+      <div class="ds-ic">🏆</div>
+      <div class="ds-body">
+        <div class="ds-val">94%</div>
+        <div class="ds-lbl">Haftalik muvaffaqiyat</div>
+      </div>
+    </div>
+  </div>
+  <div class="df-platform">
+    <span>📱 iOS</span>
+    <span>🤖 Android</span>
+    <span>🌐 Web</span>
+  </div>
+</aside>
+
+<!-- ===== DESKTOP RIGHT PANEL (only visible 901px+) ===== -->
+<aside class="desk-features" aria-hidden="true">
+  <div class="df-label">AI & TAHLILIY DASHBOARD</div>
+
+  <!-- AI Coach Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">🤖</span>
+      <div>
+        <div class="df-card-title">AI Murabbiy</div>
+        <div class="df-card-sub">Real vaqt tahlili</div>
+      </div>
+      <span class="df-live-dot"></span>
+    </div>
+    <div class="df-card-body" style="font-size:12px;color:#c0e0c8;line-height:1.45;margin-top:6px;font-style:italic">
+      "Har bir 25 daqiqalik chuqur fokus sizni maqsadingizga 10x yaqinlashtiradi. Bugungi seriyani saqlang!"
+    </div>
+  </div>
+
+  <!-- Haftalik Statistika Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">📊</span>
+      <div>
+        <div class="df-card-title">Haftalik Statistika</div>
+        <div class="df-card-sub">28.5 soat fokus vaqti</div>
+      </div>
+    </div>
+    <div class="df-chart-mini" style="display:flex;align-items:flex-end;gap:6px;height:36px;margin-top:10px;padding:0 4px">
+      <div style="flex:1;background:rgba(57,255,140,0.25);height:60%;border-radius:4px" title="Dush"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.5);height:80%;border-radius:4px" title="Sesh"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.3);height:45%;border-radius:4px" title="Chor"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.75);height:90%;border-radius:4px" title="Pay"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.6);height:70%;border-radius:4px" title="Jum"></div>
+      <div style="flex:1;background:var(--neon);height:100%;border-radius:4px;box-shadow:0 0 8px var(--neon)" title="Shan"></div>
+      <div style="flex:1;background:rgba(57,255,140,0.8);height:85%;border-radius:4px" title="Yak"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:9.5px;color:#5a7a65;margin-top:4px">
+      <span>D</span><span>S</span><span>Ch</span><span>P</span><span>J</span><span>Sh</span><span>Y</span>
+    </div>
+  </div>
+
+  <!-- Mukofotlar & Yutuqlar Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">🏆</span>
+      <div>
+        <div class="df-card-title">Mukofotlar & Liga</div>
+        <div class="df-card-sub">Oltin Liga · Top 1%</div>
+      </div>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:10px;flex-wrap:wrap">
+      <span class="df-badge-chip">🥇 Oltin Liga</span>
+      <span class="df-badge-chip">⚡️ Master Fokus</span>
+      <span class="df-badge-chip">🔥 21 Kun Streak</span>
+    </div>
+  </div>
+
+  <!-- Zen Rejim Card -->
+  <div class="df-card">
+    <div class="df-card-head">
+      <span class="df-ic">🌙</span>
+      <div>
+        <div class="df-card-title">Zen Rejim & Audioshavqin</div>
+        <div class="df-card-sub">O'rmon yomg'iri · 432Hz</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
 <div class="device" id="device" data-theme="dark">
   <div class="scanlines"></div>
 
   <!-- SPLASH -->
   <div class="flow splash" id="splash">
+    <div class="sp-logo-top"><img src="assets/dark_logo.png" alt="Focus AI" class="sp-logo-top-img"></div>
     <div class="boot" data-t="&gt; boot focus.engine ............ <span class='ok'>OK</span>"></div>
     <div class="boot" data-t="&gt; load timers.db ............... <span class='ok'>OK</span>"></div>
     <div class="boot" data-t="&gt; restore sessions ............. <span class='ok'>OK</span>"></div>
@@ -1114,7 +1571,7 @@ input{font-family:inherit}
   <!-- AUTH (guest) -->
   <div class="flow auth gone" id="auth">
     <div class="auth-hero">
-      <div class="auth-logo" id="authLogo"><img id="authLogoImg" alt=""><svg viewBox="0 0 24 24"><path d="M3 19l9-14 9 14M8 19l4-6 4 6"/></svg></div>
+      <div class="auth-logo" id="authLogo"><img id="authLogoImg" alt="Focus AI Logo"></div>
       <h2 class="auth-name">Focus <b>AI</b></h2>
       <div class="sub" data-i18n="auth_tag">Kelajak odatlar ustiga quriladi</div>
     </div>
@@ -1141,7 +1598,7 @@ input{font-family:inherit}
   </div>
 
   <div class="head">
-    <div class="brand"><span class="dot"></span>FOCUS <b>AI</b></div>
+    <div class="brand"><img src="assets/ikonka.png" alt="Focus AI Icon" class="brand-img"><span class="dot"></span>FOCUS <b>AI</b></div>
     <button class="hav" id="headAv" aria-label="Profil"><span class="hav-dot"></span></button>
   </div>
 
@@ -1179,28 +1636,60 @@ input{font-family:inherit}
       <div class="habits" id="habitList"></div>
     </section>
 
-    <!-- FOCUS TIMER -->
+    <!-- FOCUS TIMER (PRO GSAP ULTRA-CREATIVE HUD) -->
     <section class="view" id="v-focus">
-      <div class="greet" style="text-align:center"><h1 style="font-size:23px" data-i18n="focus_title"></h1><p data-i18n="focus_sub"></p></div>
-      <div class="ring-wrap" style="display:flex;justify-content:center;margin:18px 0 6px">
-        <div class="s-ring" id="fRing" style="width:262px;height:262px">
+      <div class="greet" style="text-align:center;margin-bottom:12px">
+        <h1 style="font-size:22px;letter-spacing:-.02em" data-i18n="focus_title">FOKUS REJIMI</h1>
+        <p style="font-size:12.5px;color:rgba(255,255,255,0.6)" data-i18n="focus_sub">Bitta chuqur blok. Nol shovqin.</p>
+      </div>
+
+      <!-- PRO GSAP Main Timer Ring -->
+      <div class="s-ring-wrap" style="margin:0 auto 20px;">
+        <div class="s-ring" id="fRing">
           <div class="breathe"></div>
-          <svg id="fRingSvg" viewBox="0 0 200 200"></svg>
+          <svg id="fRingSvg" viewBox="0 0 200 200" style="position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none"></svg>
           <div class="s-center">
-            <div class="s-pct mono" id="fTime" style="font-size:44px">25:00</div>
-            <div class="s-remain" id="fState"></div>
+            <div class="s-elapsed" id="fTime">25:00</div>
+            <div class="s-pomodoro" id="fStatePill" style="margin-top:6px;">
+              <span class="s-dot"></span><span id="fState">tayyor</span>
+            </div>
           </div>
         </div>
       </div>
-      <div class="s-extra" style="padding:4px 0 14px">
+
+      <!-- Presets (25, 50, 90 mins) -->
+      <div class="f-presets" style="display:flex;justify-content:center;gap:10px;margin-bottom:16px;">
         <button class="s-chipbtn preset sel" data-min="25">25:00</button>
         <button class="s-chipbtn preset" data-min="50">50:00</button>
         <button class="s-chipbtn preset" data-min="90">90:00</button>
       </div>
-      <div class="ambi" id="ambiF"></div>
-      <div class="s-controls" style="padding:0 2px">
-        <button class="s-btn s-fin" id="fReset" data-i18n="reset"></button>
-        <button class="s-btn s-main" id="fStart"></button>
+
+      <!-- Ambient Sound Selector -->
+      <div style="display:flex;justify-content:center;margin-bottom:16px;">
+        <div class="ambi" id="ambiF"></div>
+      </div>
+
+      <!-- Controls -->
+      <div class="s-controls" style="display:flex;gap:10px;justify-content:center;max-width:340px;margin:0 auto 20px;">
+        <button class="s-btn-start s-btn s-main" id="fStart" style="flex:2;margin:0">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> <span>Boshlash</span>
+        </button>
+        <button class="s-btn-start s-btn s-fin" id="fReset" style="flex:1;margin:0;background:#1a1c20;border-color:rgba(255,255,255,0.1)" data-i18n="reset">Qayta</button>
+      </div>
+
+      <!-- Fokus muhiti (Environments) -->
+      <div class="s-env-section" style="max-width:340px;">
+        <div class="s-env-banner" id="vEnvBanner" style="background-image:url('assets/forest_rain.png');height:75px;">
+          <div class="s-env-info">
+            <div class="s-env-title" id="vEnvTitle" style="font-size:13px;">O'rmon yomg'iri</div>
+          </div>
+        </div>
+        <div class="s-env-thumbs" style="gap:8px;">
+          <div class="s-env-thumb active" style="background-image:url('assets/forest_rain.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/forest_rain.png)';document.getElementById('vEnvTitle').innerText='O\'rmon yomg\'iri';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
+          <div class="s-env-thumb" style="background-image:url('assets/campfire.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/campfire.png)';document.getElementById('vEnvTitle').innerText='Gulxan';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
+          <div class="s-env-thumb" style="background-image:url('assets/night_sky.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/night_sky.png)';document.getElementById('vEnvTitle').innerText='Tungi osmon';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
+          <div class="s-env-thumb" style="background-image:url('assets/cozy_room.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/cozy_room.png)';document.getElementById('vEnvTitle').innerText='Qulay xona';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
+        </div>
       </div>
     </section>
 
@@ -1254,7 +1743,7 @@ input{font-family:inherit}
     <!-- PROFILE -->
     <section class="view" id="v-you">
       <div class="profile">
-        <div class="avatar" id="avatar">?</div><h2 id="profName"></h2><p id="profSub"></p>
+                <div class="avatar" id="avatar">?</div><h2 id="profName"></h2><p id="profSub"></p>
       </div>
       <div class="settings">
         <div class="setting link" id="friendsRow"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 20c0-3 2.5-4.7 5.5-4.7s5.5 1.7 5.5 4.7"/><circle cx="17.5" cy="9" r="2.6"/><path d="M15.8 15.5c2.5.2 4.7 1.8 4.7 4.5"/></svg><span data-i18n="friends"></span><span class="fr-unread" id="friendsRowDot" style="display:none"></span></div><span class="arrow">›</span></div>
@@ -1334,44 +1823,81 @@ input{font-family:inherit}
 
   <!-- SESSION -->
   <div class="session" id="session">
-    <canvas id="aurora"></canvas>
-    <i class="msweep" id="msweep"></i>
+    <canvas id="aurora" style="display:none"></canvas>
+    <i class="msweep" id="msweep" style="display:none"></i>
     <div class="s-grab" id="sGrab"></div>
     <div class="zen-hint" data-i18n="zen_hint"></div>
-    <div class="s-head">
-      <button class="s-close" id="sClose"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
-      <div class="s-title"><span class="ic" id="sIc"></span><span id="sName"></span></div>
-      <div style="width:38px"></div>
+    
+    <!-- Top Bar -->
+    <div class="s-top">
+      <button class="s-btn-icon s-close" id="sClose">
+        <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+      </button>
+      <div class="s-title-text">FOKUS REJIMI</div>
+      <div style="width:40px"></div>
     </div>
-    <div class="s-body">
+
+    <!-- Mode Selector Dropdown -->
+    <div class="s-mode-selector s-title">
+      <span class="ic" id="sIc" style="display:none"></span>
+      <span id="sName">Deep Work</span>
+    </div>
+
+    <!-- Main Timer Ring -->
+    <div class="s-ring-wrap">
       <div class="s-ring" id="sRing">
         <div class="breathe"></div>
-        <svg id="sRingSvg" viewBox="0 0 200 200"></svg>
+        <svg id="sRingSvg" viewBox="0 0 200 200" style="position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none"></svg>
         <div class="s-center">
-          <div class="s-pct mono" id="sPct">0%</div>
-          <div class="s-elapsed" id="sElapsed">00:00:00</div>
-          <div class="s-remain" id="sRemain"></div>
+          <div class="s-pct" id="sPct" style="display:none">0%</div>
+          <div class="s-elapsed" id="sElapsed">25:00</div>
+          <div class="deep s-pomodoro" id="deepInd">
+            <span class="s-dot"></span><span id="deepTxt">Fokus</span>
+          </div>
+          <div class="s-remain" id="sRemain" style="display:none"></div>
         </div>
       </div>
-      <div class="deep" id="deepInd"><span>🌙</span><span id="deepTxt"></span></div>
-      <div style="width:100%;padding:0 26px">
-        <div class="grid-lbl" style="margin:6px 0 8px;display:flex;justify-content:space-between;align-items:baseline">
-          <span data-i18n="cal_lbl"></span><span class="mono" id="sStreak" style="color:var(--neon);letter-spacing:0;text-transform:none"></span>
-        </div>
-        <div class="grid" id="sCal" style="grid-template-columns:repeat(14,1fr);gap:4px"></div>
-      </div>
-      <button class="s-micro" id="sMicro"></button>
-      <button class="s-skip" id="sSkip"></button>
-      <div class="u-check">
-        <button class="u-btn" id="uBtn"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></button>
-        <div class="u-lbl" id="uLbl"></div>
-      </div>
+    </div>
+
+    <!-- Hidden native elements for JS -->
+    <div style="display:none">
+      <span id="sStreak"></span>
+      <div id="sCal"></div>
+      <button id="sMicro"></button>
+      <button id="sSkip"></button>
+      <button id="uBtn"></button>
+      <div id="uLbl"></div>
+    </div>
+
+    <!-- Ambient Sound (Native functional) -->
+    <div style="display:flex;justify-content:center;margin-bottom:20px;">
       <div class="ambi" id="ambi"></div>
     </div>
-    <div class="s-controls" style="padding-bottom:calc(env(safe-area-inset-bottom) + 20px)">
-      <button class="s-btn s-fin" id="sFinish" data-i18n="finish"></button>
-      <button class="s-btn s-main" id="sMain"></button>
+
+    <!-- Controls -->
+    <div class="s-controls" style="display:flex;gap:10px;justify-content:center;margin:0 auto 30px;width:100%;max-width:340px;">
+      <button class="s-btn-start s-btn s-main" id="sMain" style="flex:2">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> <span>Boshlash</span>
+      </button>
+      <button class="s-btn-start s-btn s-fin" id="sFinish" style="flex:1;display:none;background:#1a1c20;border-color:rgba(255,255,255,0.1)" data-i18n="finish"></button>
     </div>
+
+    <!-- Fokus muhiti (Environments) -->
+    <div class="s-env-section">
+      <div class="s-env-banner" id="envBanner" style="background-image:url('assets/forest_rain.png')">
+        <div class="s-env-info">
+          <div class="s-env-title" id="envTitle">O'rmon yomg'iri</div>
+        </div>
+      </div>
+      <div class="s-env-thumbs">
+    <div class="deep" id="deepInd" style="display:none"><span>🌙</span><span id="deepTxt"></span></div>
+    <div class="ambi" id="ambi" style="display:none"></div>
+    <div class="u-check" style="display:none"><button class="u-btn" id="uBtn"></button><div class="u-lbl" id="uLbl"></div></div>
+    <button class="s-skip" id="sSkip" style="display:none"></button>
+    <button class="s-micro" id="sMicro" style="display:none"></button>
+    <span class="mono" id="sStreak" style="display:none"></span>
+    <div class="grid" id="sCal" style="display:none"></div>
+    <div class="s-grab" id="sGrab" style="display:none"></div>
   </div>
 
   <!-- ODAT DETAL / STATISTIKA -->
@@ -1565,7 +2091,6 @@ input{font-family:inherit}
     <div class="pin-dots" id="pinDots"><i></i><i></i><i></i><i></i></div>
     <div class="pad" id="pad"></div>
     <div class="pin-err" id="pinErr"></div>
-    <button id="pinAlt" style="display:none;background:none;border:none;color:var(--danger);font-size:13px;text-decoration:underline;margin-top:8px;padding:6px;cursor:pointer"></button>
   </div>
 </div>
 
@@ -2006,7 +2531,15 @@ function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,
 var soundOn=store.settings.sound!==false;
 var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 if(reduce)$('#device').classList.add('reduce');
+function updateAppLogos(){
+  var isLight = $('#device').getAttribute('data-theme') === 'light';
+  var authImg = $('#authLogoImg');
+  if(authImg) {
+    authImg.src = isLight ? 'assets/light_logo.png' : 'assets/dark_logo.png';
+  }
+}
 $('#device').setAttribute('data-theme',store.settings.theme||'dark');
+updateAppLogos();
 
 /* ============ audio + haptics ============ */
 var ac;
@@ -2369,7 +2902,7 @@ $('#authGo').addEventListener('click',function(){
     sb.disabled=true;$('#authEmailHint').textContent='…';
     Social.signInEmail(e).then(function(ok){sb.disabled=false;$('#authEmailHint').textContent=ok?T('auth_email_sent'):T('exp_bad');});
   });
-  var im=$('#authLogoImg');if(im){im.onerror=function(){im.removeAttribute('src');};im.src='assets/logo.png';}
+  var im=$('#authLogoImg');if(im){im.onerror=function(){im.removeAttribute('src');};}
 })();
 /* logout */
 $('#logoutBtn').addEventListener('click',function(){
@@ -2658,10 +3191,12 @@ function positionHomeFx(im){
     var c=document.createElement('canvas');c.width=W;c.height=H;
     var x=c.getContext('2d');x.drawImage(im,0,0,W,H);
     var d=x.getImageData(0,0,W,H).data;
-    var sx=0,sy=0,n=0,minX=W,maxX=0,minY=H,maxY=0,lim=Math.round(H*0.6);
+    /* faqat yuqori 42% (portal hududi — tog'dagi yashilga aldanmaslik) + teal-aware rang:
+       yashil KUCHLI, qizil past (oq bulut/osmon chiqarib tashlanadi), ko'k tealga ruxsat */
+    var sx=0,sy=0,n=0,minX=W,maxX=0,minY=H,maxY=0,lim=Math.round(H*0.42);
     for(var py=0;py<lim;py++)for(var px=0;px<W;px++){
       var o=(py*W+px)*4,r=d[o],g=d[o+1],b=d[o+2];
-      if(g>140&&g>r*1.4&&g>b*1.12){sx+=px;sy+=py;n++;
+      if(g>150&&r<g*0.72&&g>=b*0.92){sx+=px;sy+=py;n++;
         if(px<minX)minX=px;if(px>maxX)maxX=px;if(py<minY)minY=py;if(py>maxY)maxY=py;}
     }
     if(n<25)return; /* portal topilmadi — standart joy qoladi */
@@ -4517,15 +5052,22 @@ $('#pill').addEventListener('click',function(){
 })();
 
 /* odometr — foiz silliq aylanib o'sadi; 10 000 soatlik maqsadlarda mayda foizlar kasr bilan */
-function fmtPct(p){return (p>=100?'100':p<=0?'0':p<1?p.toFixed(2):p<10?p.toFixed(1):String(Math.round(p)))+'%';}
+function fmtPct(p){
+  if(isNaN(p) || p <= 0) return '0%';
+  if(p >= 100) return '100%';
+  if(p < 1) return p.toFixed(2) + '%';
+  if(p < 10) return p.toFixed(1) + '%';
+  return Math.round(p) + '%';
+}
 var PC_C=270.18; /* 2*PI*43 — progress halqasi aylanasi */
 var pctShown=0,pctTarget=0,pctRAF=null,_elG=null,_elArc=null;
 function pctPaint(p){
   if(!_elG)_elG=$('#gPct'); if(!_elArc)_elArc=$('#pcArc');
   if(_elG)_elG.textContent=fmtPct(p);
-  if(_elArc){var c=Math.max(0,Math.min(100,p))/100;_elArc.setAttribute('stroke-dasharray',PC_C);_elArc.setAttribute('stroke-dashoffset',(PC_C*(1-c)).toFixed(2));}
+  if(_elArc){var c=Math.max(0,Math.min(100,isNaN(p)?0:p))/100;_elArc.setAttribute('stroke-dasharray',PC_C);_elArc.setAttribute('stroke-dashoffset',(PC_C*(1-c)).toFixed(2));}
 }
 function setPct(n){
+  if(isNaN(n)) n = 0;
   pctTarget=n;
   if(reduce){pctShown=n;pctPaint(n);return;}          /* reduce: sakramasdan darhol */
   if(Math.abs(n-pctShown)<0.05){pctShown=pctTarget=n;pctPaint(n);return;}
@@ -4636,6 +5178,7 @@ $('#themeTog').addEventListener('click',function(){
   $('#themeTog').classList.toggle('on',!dark);
   store.settings.theme=dark?'light':'dark';save();sTap();buzz(8);
   _bgSet='';if(typeof renderHomeBg==='function')renderHomeBg(); /* mavzuga mos fon rasmi */
+  updateAppLogos();
 });
 $('#themeTog').classList.toggle('on',store.settings.theme!=='light');
 $('#soundTog').addEventListener('click',function(){
