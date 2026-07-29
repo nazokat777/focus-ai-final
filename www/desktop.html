@@ -30,20 +30,22 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--text);font-fam
 .showcase-wrap{
   position:relative;z-index:1;
   display:grid;
-  grid-template-columns:360px 420px 360px;
-  gap:44px;
-  width:100%;max-width:1380px;
+  grid-template-columns:340px 420px 340px;
+  gap:32px;
+  width:100%;max-width:1320px;
   height:100vh;
-  padding:24px 32px;
+  padding:24px;
   align-items:center;
   justify-content:center;
   margin:0 auto;
+  overflow:hidden;
 }
 
-/* ===== LEFT SHOWCASE PANEL ===== */
+/* ===== CHAP PANEL ===== */
 .lp{
   display:flex;flex-direction:column;gap:0;
   justify-content:center;
+  overflow:hidden;
 }
 .lp-tag{
   display:inline-flex;align-items:center;gap:7px;
@@ -60,7 +62,7 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--text);font-fam
 }
 
 .lp-title{
-  font-size:40px;font-weight:900;letter-spacing:-.03em;
+  font-size:38px;font-weight:900;letter-spacing:-.03em;
   line-height:1.12;margin-bottom:14px;
 }
 .lp-title b{
@@ -70,30 +72,30 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--text);font-fam
 }
 
 .lp-desc{
-  font-size:13.5px;color:var(--muted);line-height:1.6;
-  max-width:320px;margin-bottom:24px;
+  font-size:13px;color:var(--muted);line-height:1.6;
+  max-width:310px;margin-bottom:24px;
 }
 
 /* Left Stat Cards */
 .lp-cards{display:flex;flex-direction:column;gap:10px;margin-bottom:24px}
 .lp-card{
   display:flex;align-items:center;gap:14px;
-  padding:14px 16px;border-radius:14px;
-  background:rgba(9,20,11,.6);
+  padding:12px 14px;border-radius:14px;
+  background:rgba(9,20,11,.7);
   border:1px solid rgba(57,255,140,.12);
   backdrop-filter:blur(10px);
 }
 .lp-card .lc-icon{
-  width:36px;height:36px;border-radius:10px;
+  width:34px;height:34px;border-radius:10px;
   background:rgba(57,255,140,.1);
-  display:grid;place-items:center;font-size:18px;flex:none;
+  display:grid;place-items:center;font-size:17px;flex:none;
 }
 .lp-card .lc-body{display:flex;flex-direction:column}
 .lp-card .lc-val{
   font-family:'JetBrains Mono',monospace;font-weight:700;
-  font-size:17px;color:var(--text);line-height:1.2;
+  font-size:16px;color:var(--text);line-height:1.2;
 }
-.lp-card .lc-lbl{font-size:11px;color:var(--muted);margin-top:2px}
+.lp-card .lc-lbl{font-size:10.5px;color:var(--muted);margin-top:2px}
 
 /* Platform Chips */
 .lp-chips{display:flex;gap:8px}
@@ -107,11 +109,12 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--text);font-fam
 
 /* ===== CENTER APPLICATION FRAME ===== */
 .app-container{
-  width:420px;height:min(900px, calc(100dvh - 36px));
+  width:420px;height:min(880px, calc(100dvh - 36px));
   border-radius:40px;overflow:hidden;
   border:1.5px solid rgba(57,255,140,.35);
-  box-shadow:0 0 35px rgba(57,255,140,.18), 0 20px 60px rgba(0,0,0,.8);
-  position:relative;z-index:2;
+  box-shadow:0 0 35px rgba(57,255,140,.18), 0 20px 60px rgba(0,0,0,.9);
+  position:relative;z-index:10;
+  background:#000;
 }
 .app-container iframe{
   width:100%;height:100%;border:none;border-radius:38px;
@@ -122,68 +125,76 @@ html,body{height:100%;overflow:hidden;background:#000;color:var(--text);font-fam
 .rp{
   display:flex;flex-direction:column;gap:12px;
   justify-content:center;
+  overflow:hidden;
 }
 .rp-header{
-  font-size:10.5px;letter-spacing:.22em;text-transform:uppercase;
+  font-size:10px;letter-spacing:.22em;text-transform:uppercase;
   color:var(--muted);font-weight:700;margin-bottom:2px;padding-left:2px;
 }
 
 .rp-card{
-  background:rgba(9,20,11,.55);
+  background:rgba(9,20,11,.65);
   border:1px solid rgba(57,255,140,.12);
-  border-radius:16px;padding:16px;
+  border-radius:16px;padding:14px 16px;
   backdrop-filter:blur(10px);
 }
 .rp-card-top{
   display:flex;align-items:center;justify-content:space-between;
-  margin-bottom:10px;
+  margin-bottom:8px;
 }
 .rp-card-title{
   display:flex;align-items:center;gap:8px;
-  font-size:13px;font-weight:700;color:var(--text);
+  font-size:12.5px;font-weight:700;color:var(--text);
 }
-.rp-card-title .ic{font-size:16px}
+.rp-card-title .ic{font-size:15px}
 .rp-card-badge{
-  font-size:10px;color:var(--neon);
+  font-size:9.5px;color:var(--neon);
   background:rgba(57,255,140,.1);
-  padding:3px 8px;border-radius:999px;
+  padding:3px 7px;border-radius:999px;
   border:1px solid rgba(57,255,140,.2);
   font-weight:600;
 }
-.rp-card-sub{font-size:11px;color:var(--muted)}
+.rp-card-sub{font-size:10.5px;color:var(--muted)}
 
 /* AI Murabbiy Message */
 .rp-coach-msg{
-  font-size:12px;line-height:1.55;color:rgba(234,251,240,.8);
+  font-size:11.5px;line-height:1.55;color:rgba(234,251,240,.8);
   font-style:italic;margin-top:4px;
 }
 
 /* Haftalik Bars Chart */
-.rp-bars{display:flex;align-items:flex-end;gap:8px;height:52px;margin-top:12px}
-.rp-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end}
+.rp-bars{display:flex;align-items:flex-end;gap:7px;height:48px;margin-top:10px}
+.rp-bar-col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
 .rp-bar-fill{
-  width:100%;max-width:24px;border-radius:4px 4px 2px 2px;
+  width:100%;max-width:22px;border-radius:4px 4px 2px 2px;
   background:linear-gradient(180deg, var(--neon), var(--neon-dp));
   transition:height .6s ease;
 }
 .rp-bar-col.active .rp-bar-fill{background:linear-gradient(180deg, var(--neon-br), var(--neon))}
-.rp-bar-lbl{font-size:9.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.rp-bar-lbl{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace}
 
 /* Mukofot Chips */
-.rp-pills{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.rp-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:8px}
 .rp-pill{
-  display:inline-flex;align-items:center;gap:5px;
-  padding:6px 10px;border-radius:8px;
+  display:inline-flex;align-items:center;gap:4px;
+  padding:5px 9px;border-radius:8px;
   background:rgba(57,255,140,.08);
   border:1px solid rgba(57,255,140,.18);
-  font-size:11px;font-weight:600;color:var(--neon);
+  font-size:10.5px;font-weight:600;color:var(--neon);
 }
 
-/* Media Query for responsive fallback */
-@media(max-width:1150px){
-  .showcase-wrap{display:flex;justify-content:center;padding:0}
-  .lp,.rp,.bg-glow{display:none!important}
-  .app-container{width:100%;height:100dvh;border-radius:0;border:none;box-shadow:none}
+/* Responsive Rule — screen width < 1260px gets clean centered app without panel bleed */
+@media(max-width:1259px){
+  .showcase-wrap{
+    display:flex;justify-content:center;align-items:center;
+    padding:0;width:100%;height:100vh;
+  }
+  .lp, .rp{display:none!important}
+  .app-container{
+    width:440px;max-width:100%;height:100dvh;
+    border-radius:0;border:none;box-shadow:none;
+  }
+  .app-container iframe{border-radius:0}
 }
 </style>
 </head>
