@@ -25,6 +25,9 @@ public class FocusWidgetPlugin extends Plugin {
         Integer streak = call.getInt("streak", 0);
         String subtitle = call.getString("subtitle", "Focus");
         String streakLabel = call.getString("streakLabel", "kunlik seriya");
+        /* boy ma'lumot: odatlar ro'yxati (JSON) + hafta kunlari harflari */
+        String habits = call.getString("habits", "[]");
+        String dayLetters = call.getString("dayLetters", "D,S,C,P,J,S,Y");
 
         Context ctx = getContext().getApplicationContext();
         SharedPreferences sp = ctx.getSharedPreferences(FocusWidgetProvider.PREFS, Context.MODE_PRIVATE);
@@ -34,12 +37,18 @@ public class FocusWidgetPlugin extends Plugin {
                 .putInt("streak", streak == null ? 0 : streak)
                 .putString("subtitle", subtitle)
                 .putString("streakLabel", streakLabel)
+                .putString("habits", habits)
+                .putString("dayLetters", dayLetters)
                 .apply();
 
         AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);
-        ComponentName cn = new ComponentName(ctx, FocusWidgetProvider.class);
-        int[] ids = mgr.getAppWidgetIds(cn);
-        FocusWidgetProvider.updateAll(ctx, mgr, ids);
+        /* uchala widget turini ham yangilaymiz */
+        FocusWidgetProvider.updateAll(ctx, mgr,
+            mgr.getAppWidgetIds(new ComponentName(ctx, FocusWidgetProvider.class)));
+        HabitsWidgetProvider.render(ctx, mgr,
+            mgr.getAppWidgetIds(new ComponentName(ctx, HabitsWidgetProvider.class)));
+        ProgressWidgetProvider.render(ctx, mgr,
+            mgr.getAppWidgetIds(new ComponentName(ctx, ProgressWidgetProvider.class)));
 
         call.resolve();
     }

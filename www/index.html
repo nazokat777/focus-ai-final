@@ -3425,10 +3425,28 @@ function pushWidget(){
   var FW=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.FocusWidget)||null;
   if(!FW)return; /* faqat native Androidda mavjud */
   var today=fmtHM(dayTotalMs(TODAY)),pct=widgetPct(),streak=globalStreak(),sub=T('wid_sub'),slbl=T('wid_streak');
-  var sig=today+'|'+pct+'|'+streak+'|'+sub+'|'+slbl;
+  /* odatlar ro'yxati + oxirgi 7 kunlik holat (widget jadvali uchun) */
+  var hs=[],i,d,dayOk;
+  for(i=0;i<store.habits.length && i<8;i++){
+    var h=store.habits[i]; if(h.completed)continue;
+    var days=[];
+    for(d=6;d>=0;d--){ var k=TODAY-d; dayOk=(!isSkip(h,k) && dayRatio(h,k)>=1)?1:0; days.push(dayOk); }
+    hs.push({
+      name:h.name, color:h.color||'#39FF8C', days:days,
+      done:doneToday(h)?1:0,
+      today:(typeof habitActiveToday==='function'&&!habitActiveToday(h))?0:1
+    });
+  }
+  /* hafta kunlari harflari — oxirgisi bugun */
+  var DN={uz:['D','S','C','P','J','S','Y'],ru:['П','В','С','Ч','П','С','В'],en:['M','T','W','T','F','S','S']};
+  var nm=DN[store.settings.lang]||DN.uz, letters=[];
+  for(d=6;d>=0;d--) letters.push(nm[((TODAY-d)+3)%7]);
+  var hjson=JSON.stringify(hs);
+  var sig=today+'|'+pct+'|'+streak+'|'+sub+'|'+slbl+'|'+hjson;
   if(sig===_wLast)return;
   _wLast=sig;
-  try{FW.update({today:today,pct:pct,streak:streak,subtitle:sub,streakLabel:slbl});}catch(e){}
+  try{FW.update({today:today,pct:pct,streak:streak,subtitle:sub,streakLabel:slbl,
+    habits:hjson,dayLetters:letters.join(',')});}catch(e){}
 }
 function refreshChips(){
   $('#streakN').textContent=globalStreak();

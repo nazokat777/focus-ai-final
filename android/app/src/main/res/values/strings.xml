@@ -5,4 +5,6 @@
     <string name="package_name">uz.lumnaara.focusai</string>
     <string name="custom_url_scheme">uz.lumnaara.focusai</string>
     <string name="widget_desc">Bugungi fokus vaqti va streak</string>
+    <string name="widget_habits_desc">Odatlar ro'yxati va haftalik jadval</string>
+    <string name="widget_progress_desc">Bugungi progress va odatlar</string>
 </resources>

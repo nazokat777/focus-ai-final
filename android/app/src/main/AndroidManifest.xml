@@ -34,6 +34,30 @@
                 android:value="floating_focus_timer" />
         </service>
 
+        <!-- Odatlar widgeti: ro'yxat + haftalik nuqta jadvali -->
+        <receiver
+            android:name=".HabitsWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_habits_info" />
+        </receiver>
+
+        <!-- Progress widgeti: halqa + bugungi odatlar -->
+        <receiver
+            android:name=".ProgressWidgetProvider"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/widget_progress_info" />
+        </receiver>
+
         <!-- Bosh-ekran widgeti: bugungi fokus + streak -->
         <receiver
             android:name=".FocusWidgetProvider"
