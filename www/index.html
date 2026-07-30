@@ -2465,6 +2465,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   auth_ph:"Ismingiz",auth_hint:"Ma'lumotlar faqat shu qurilmada, offline saqlanadi.",
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
   week:"Shu hafta",weeks8:"Oxirgi 8 hafta",achievements:"Nishonlar",days:"kun",focus_need:"Diqqat kerak",fn_ok:"Hammasi izchil — zo'r ketyapsan! ✨",fn_none:"Hali odat yo'q — birinchisini qo'shing",fn_new:"Ma'lumot yig'ilmoqda — bir necha kundan keyin ko'rinadi",
+  gap_skip:function(n){return "«"+n+"» taymeri uzoq ochiq qolibdi — bu vaqt hisoblanmadi, taymer to'xtatildi";},
   cmp_more:function(h,p){return "Bu hafta <b>"+h+" soat</b> fokus qilding — o'tgan haftaga nisbatan <b>+"+p+"%</b> 💪";},
   cmp_less:function(h,p){return "Bu hafta <b>"+h+" soat</b> — o'tgan haftadan "+p+"% kam. Bugun bitta sessiya boshla!";},
   cmp_first:function(h){return "Bu hafta <b>"+h+" soat</b> fokus qilding. Ajoyib boshlanish!";},
@@ -2576,6 +2577,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   auth_ph:"Ваше имя",auth_hint:"Данные хранятся только на этом устройстве, офлайн.",
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
   week:"Эта неделя",weeks8:"Последние 8 недель",achievements:"Значки",days:"дн.",focus_need:"Нужно внимание",fn_ok:"Всё стабильно — отлично! ✨",fn_none:"Пока нет привычек — добавьте первую",fn_new:"Данные собираются — появятся через несколько дней",
+  gap_skip:function(n){return "Таймер «"+n+"» долго оставался включённым — это время не засчитано, таймер остановлен";},
   cmp_more:function(h,p){return "На этой неделе <b>"+h+" ч</b> фокуса — на <b>+"+p+"%</b> больше прошлой 💪";},
   cmp_less:function(h,p){return "На этой неделе <b>"+h+" ч</b> — на "+p+"% меньше прошлой. Начни сессию сегодня!";},
   cmp_first:function(h){return "На этой неделе <b>"+h+" ч</b> фокуса. Отличное начало!";},
@@ -2687,6 +2689,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   auth_ph:"Your name",auth_hint:"Data is stored only on this device, offline.",
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
   week:"This week",weeks8:"Last 8 weeks",achievements:"Badges",days:"days",focus_need:"Needs focus",fn_ok:"All on track — great job! ✨",fn_none:"No habits yet — add your first",fn_new:"Collecting data — visible in a few days",
+  gap_skip:function(n){return "«"+n+"» timer was left running for a long time — that time wasn't counted, timer stopped";},
   cmp_more:function(h,p){return "This week you focused <b>"+h+"h</b> — <b>+"+p+"%</b> vs last week 💪";},
   cmp_less:function(h,p){return "This week <b>"+h+"h</b> — "+p+"% less than last week. Start a session today!";},
   cmp_first:function(h){return "You focused <b>"+h+"h</b> this week. Great start!";},
@@ -3039,14 +3042,43 @@ function bucketHours(from,to){
   /* dayHour faqat oxirgi 60 kun (localStorage kvotasi) */
   for(var kd in store.dayHour){if(TODAY-(+kd)>60)delete store.dayHour[kd];}
 }
+/* HALOLLIK QOIDASI: taymer ochiq qolib uzoq uzilish bo'lsa (masalan tun bo'yi),
+   o'sha vaqt HISOBLANMAYDI. Aks holda 9 soat "bugungi fokus"ga yozilib, ilovaning
+   asosiy va'dasi — haqiqiy sarflangan vaqt — buzilardi. Uzilish aniqlangan taymer
+   oxirgi ishonchli nuqtada to'xtatiladi va foydalanuvchiga aytiladi. */
+var LONG_GAP_MS=3*3600000, _gapHits=[];
 function flushDay(h,now){
   now=now||Date.now();
   if(h.runningSince&&h.lastFlush){
     var delta=Math.max(0,now-h.lastFlush);
+    if(delta>LONG_GAP_MS){
+      h._gapEnd=h.lastFlush;                       /* oxirgi ishonchli nuqta */
+      h.lastFlush=now;                             /* uzilish tashlab yuboriladi */
+      if(_gapHits.indexOf(h)<0)_gapHits.push(h);
+      return;
+    }
     h.dayMs[TODAY]=(h.dayMs[TODAY]||0)+delta;
     bucketHours(h.lastFlush,now);
     h.lastFlush=now;
   }
+}
+/* uzilish aniqlangan taymerlarni to'xtatadi va BIR marta xabar beradi */
+function settleGaps(){
+  if(!_gapHits.length)return;
+  var names=[];
+  _gapHits.forEach(function(h){
+    if(!h.runningSince)return;
+    names.push(h.name);
+    var end=h._gapEnd||Date.now();
+    h.accMs=Math.min(goalMs(h),h.accMs+Math.max(0,end-h.runningSince));  /* faqat ishonchli qism */
+    h.runningSince=null;h.lastFlush=null;
+    delete h._gapEnd;
+  });
+  _gapHits=[];
+  if(!names.length)return;
+  save();
+  try{toast(T('gap_skip')(names.join(', ')));}catch(e){}
+  try{renderHabits();updatePill();}catch(e){}
 }
 function startH(h){
   if(h.completed)return;
@@ -3083,6 +3115,9 @@ store.habits.forEach(function(h){
   }
 });
 save();
+/* uzoq uzilishlar (tun bo'yi ochiq qolgan taymer) — hisoblanmaydi, to'xtatiladi.
+   Ilova hali to'liq yuklanmagan bo'lishi mumkin, shuning uchun kechiktiramiz. */
+setTimeout(function(){try{settleGaps();}catch(e){}},1200);
 
 /* markaziy tick — 500ms */
 setInterval(function(){
@@ -3096,6 +3131,7 @@ setInterval(function(){
     checkMilestone(h); /* blok G */
     if(elapsedOf(h,now)>=goalMs(h)&&!h.completed){completeH(h);changed=true;}
   });
+  if(_gapHits.length)settleGaps();     /* fon rejimida uzoq uzilish bo'lsa — hisoblamaymiz */
   store.habits.forEach(awardDayCoins); /* mukofot 1b: norma bajarilsa tanga/olmos (running/pauza farqisiz) */
   if(sessionOpen)renderSession();
   updatePill();
