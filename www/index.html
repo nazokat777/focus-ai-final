@@ -3214,21 +3214,22 @@ var _spSig='';
 function renderSparkline(){
   var line=$('#pcLine'),dot=$('#pcDot'),cap=$('#pcCap');
   if(!line||!cap)return;
-  if(!VIEWS||VIEWS[navIdx]!=='home')return; /* faqat bosh ekran ko'rinaotganда (init'dan oldin xavfsiz) */
-  var N=7,vals=[],i,mx=0,nonzero=0;
-  for(i=N-1;i>=0;i--){var v=dayTotalMs(TODAY-i);vals.push(v);if(v>mx)mx=v;if(v>0)nonzero++;}
-  var sig=vals.map(function(v){return Math.round(v/60000);}).join(',')+'|'+store.settings.lang;
-  if(sig===_spSig)return;_spSig=sig;
-  /* kun harflari (mockup: M T W T F S S) — bugungi kun yashil doirada */
+  var N=7,i;
+  /* kun harflari (M T W T F S S) — bugungi kun yashil doirada. GUARD'DAN OLDIN -> doim ko'rinadi */
   var hd=$('#hsDays');
   if(hd){
     var dn1={uz:['D','S','C','P','J','S','Y'],ru:['П','В','С','Ч','П','С','В'],en:['M','T','W','T','F','S','S']};
     var names=dn1[store.settings.lang]||dn1.en;
     /* TODAY ning hafta kuni: dayKey epoch-kun -> 1970-01-01 payshanba(4) edi -> (TODAY+3)%7 = 0..6 (Du..Ya) */
-    var h='';
-    for(i=N-1;i>=0;i--){var wd=((TODAY-i)+3)%7;h+='<span'+(i===0?' class="on"':'')+'>'+names[wd]+'</span>';}
-    hd.innerHTML=h;
+    var hh='';
+    for(i=N-1;i>=0;i--){var wd=((TODAY-i)+3)%7;hh+='<span'+(i===0?' class="on"':'')+'>'+names[wd]+'</span>';}
+    hd.innerHTML=hh;
   }
+  if(!$('#v-home'))return; /* bosh ekran DOM'da bo'lsa (arzon: 7 ta dayTotalMs) */
+  var vals=[],mx=0,nonzero=0;
+  for(i=N-1;i>=0;i--){var v=dayTotalMs(TODAY-i);vals.push(v);if(v>mx)mx=v;if(v>0)nonzero++;}
+  var sig=vals.map(function(v){return Math.round(v/60000);}).join(',')+'|'+store.settings.lang;
+  if(sig===_spSig)return;_spSig=sig;
   if(nonzero<2||mx<=0){
     line.setAttribute('points','');if(dot)dot.style.display='none';
     cap.textContent=T('pc_empty');cap.style.color='var(--muted)';
