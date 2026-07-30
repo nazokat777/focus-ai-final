@@ -498,7 +498,24 @@ input{font-family:inherit}
 .hcard.skipped{opacity:.62}
 .reduce .hc-skipbg,.reduce .hc-skipbg-in{transition:none}
 /* dam guruhi sarlavhasi (yig'iladigan) */
+/* Bosh ekran filtri — Bugun / Bajarilgan / Hammasi (sirpanuvchi neon indikator) */
+.habit-filter{position:relative;display:flex;gap:2px;background:var(--elev);border:1px solid var(--line);border-radius:999px;padding:3px;margin:0 4px 12px}
+.hf-btn{flex:1;position:relative;z-index:1;padding:7px 4px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--muted);background:none;transition:color .25s var(--ease)}
+.hf-btn.sel{color:var(--onneon)}
+.hf-ink{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;width:33%;border-radius:999px;background:var(--neon);
+  box-shadow:0 2px 10px rgba(var(--neon-rgb),.4);transition:transform .32s var(--spring),width .32s var(--spring)}
+.reduce .hf-ink{transition:none}
 .rest-group{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;margin-top:2px;background:var(--elev);border:1px solid var(--line);border-radius:var(--r);cursor:pointer;color:var(--muted);font-size:13px;transition:background .2s var(--ease)}
+/* bajarildi guruhi — neon ohangda (dam guruhidan farqlansin) */
+.rest-group.done-group{border-color:rgba(var(--neon-rgb),.3)}
+.rest-group.done-group .rg-moon{color:var(--neon);font-weight:700}
+.rest-group.done-group .rg-lbl{color:var(--neon)}
+/* hammasi bajarilgan — tabrik lahzasi */
+.all-done{display:flex;align-items:center;gap:10px;padding:16px 16px;background:linear-gradient(135deg,rgba(var(--neon-rgb),.12),var(--elev) 60%);
+  border:1px solid rgba(var(--neon-rgb),.28);border-radius:var(--r);font-size:14px;font-weight:600;color:var(--text)}
+.all-done .ad-badge{font-size:20px;animation:adPop .6s var(--spring)}
+@keyframes adPop{0%{transform:scale(0) rotate(-20deg)}70%{transform:scale(1.25)}100%{transform:scale(1)}}
+.reduce .all-done .ad-badge{animation:none}
 .rest-group:active{transform:scale(.99)}
 .rest-group .rg-moon{font-size:15px}
 .rest-group .rg-lbl{font-weight:600;letter-spacing:.02em;color:var(--text)}
@@ -1739,6 +1756,12 @@ input{font-family:inherit}
       <div class="sec-lbl"><span data-i18n="today_tasks"></span>
         <button class="add" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
       </div>
+      <div class="habit-filter" id="habitFilter" style="display:none">
+        <button class="hf-btn sel" data-f="today" data-i18n="hf_today"></button>
+        <button class="hf-btn" data-f="done" data-i18n="hf_done"></button>
+        <button class="hf-btn" data-f="all" data-i18n="hf_all"></button>
+        <span class="hf-ink" id="hfInk"></span>
+      </div>
       <div class="habits" id="habitList"></div>
     </section>
 
@@ -2224,6 +2247,7 @@ var $=function(s){return document.querySelector(s);},
 var I18N={
 uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",today_time:"Bugun",my_habits:"Odatlarim",
   today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",score_lbl:"Ball",sc_today:"Bugun",tasks_lbl:"Vazifalar",tasks_sub:"bajarildi",
+  hf_today:"Bugun",hf_done:"Bajarilgan",hf_all:"Hammasi",done_group:"Bajarildi",hf_done_empty:"Bugun hali hech narsa bajarilmadi — birinchi vazifani boshlang.",hf_all_rested:"Dam kunida",all_done:"Bugungi hammasi bajarildi 🔥",
   sc_best:function(n){return "eng yaxshi: "+n;},
   sc_w0:"boshlanish",sc_w1:"o'smoqda",sc_w2:"barqaror",sc_w3:"kuchli",sc_w4:"zo'r",
   pc_empty:"ma'lumot yig'ilmoqda",pc_up:"o'sish sari 📈",pc_keep:"shu ruhda davom!",hero_add:"Rasm qo'shish",
@@ -2334,6 +2358,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   prof:function(s){return "seriya: "+s+" kun";}},
 ru:{tagline:"Время — самая честная мера.",growth:"Рост",streak:"Серия",today_time:"Сегодня",my_habits:"Мои привычки",
   today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",score_lbl:"Балл",sc_today:"Сегодня",tasks_lbl:"Задачи",tasks_sub:"выполнено",
+  hf_today:"Сегодня",hf_done:"Выполнено",hf_all:"Все",done_group:"Выполнено",hf_done_empty:"Сегодня пока ничего не выполнено — начните первую задачу.",hf_all_rested:"На отдыхе",all_done:"Всё на сегодня выполнено 🔥",
   sc_best:function(n){return "рекорд: "+n;},
   sc_w0:"старт",sc_w1:"растёт",sc_w2:"стабильно",sc_w3:"сильно",sc_w4:"отлично",
   pc_empty:"собираем данные",pc_up:"идём в рост 📈",pc_keep:"так держать!",hero_add:"Добавить фото",
@@ -2444,6 +2469,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   prof:function(s){return "серия: "+s+" дн.";}},
 en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today_time:"Today",my_habits:"My habits",
   today_progress:"Today's progress",today_tasks:"Today's tasks",score_lbl:"Score",sc_today:"Today",tasks_lbl:"Tasks",tasks_sub:"completed",
+  hf_today:"Today",hf_done:"Done",hf_all:"All",done_group:"Done",hf_done_empty:"Nothing done yet today — start your first task.",hf_all_rested:"Resting",all_done:"All done for today 🔥",
   sc_best:function(n){return "best: "+n;},
   sc_w0:"start",sc_w1:"growing",sc_w2:"steady",sc_w3:"strong",sc_w4:"excellent",
   pc_empty:"gathering data",pc_up:"trending up 📈",pc_keep:"keep going!",hero_add:"Add photo",
@@ -3427,7 +3453,39 @@ function celebrate(el){
   }
   setTimeout(function(){for(var j=0;j<made.length;j++){if(made[j].parentNode)made[j].parentNode.removeChild(made[j]);}},1000);
 }
-var firstCardRender=true,restOpen=false;
+var firstCardRender=true,restOpen=false,doneOpen=false;
+/* bosh ekran filtri: 'today' (faqat qolgani + yig'ilgan guruhlar) / 'done' / 'all' */
+function habitFilterMode(){return (store.settings&&store.settings.habitFilter)||'today';}
+/* "bugun bajarildi" — check: kunlik belgi; vaqtli: kunlik norma yoki umumiy maqsad.
+   Streak/taymer mantiqiga TEGMAYDI — faqat ro'yxatni guruhlash uchun (halol vizual). */
+function doneToday(h){
+  if(h.type==='check')return !!(h.days&&h.days.indexOf(TODAY)!==-1);
+  if(h.completed)return true;
+  return (h.dayMs[TODAY]||0)>=(h.dailyMin||30)*60000;
+}
+function syncFilterUI(){
+  var mode=habitFilterMode(),btns=$$('#habitFilter .hf-btn'),ink=$('#hfInk'),sel=null;
+  btns.forEach(function(b){var on=b.getAttribute('data-f')===mode;b.classList.toggle('sel',on);if(on)sel=b;});
+  if(ink&&sel&&sel.offsetWidth){ink.style.width=sel.offsetWidth+'px';ink.style.transform='translateX('+(sel.offsetLeft-3)+'px)';}
+}
+/* odat "bajarildi"ga o'tganda ro'yxatni qayta guruhlaydi (kartani "Bajarildi"ga sirg'atadi).
+   Kechikish — tabrik animatsiyasi o'ynab bo'lgach. 'hammasi' rejimida guruhlash yo'q. */
+var _regroupTm=null;
+function scheduleRegroup(delay){
+  if(habitFilterMode()==='all')return;
+  clearTimeout(_regroupTm);
+  _regroupTm=setTimeout(function(){if($('#v-home'))renderHabits();},delay||0);
+}
+/* yig'iladigan guruh (bajarildi / dam) — rest-group tilida */
+function appendGroup(list,extraCls,moon,label,arr,open,onToggle,ciBox){
+  var gh=document.createElement('button');gh.className='rest-group'+(extraCls?' '+extraCls:'')+(open?' open':'');
+  gh.innerHTML='<span class="rg-moon">'+moon+'</span><span class="rg-lbl"></span><span class="rg-n">'+arr.length+'</span>'+
+    '<span class="rg-chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>';
+  gh.querySelector('.rg-lbl').textContent=label;
+  gh.addEventListener('click',onToggle);
+  list.appendChild(gh);
+  if(open)arr.forEach(function(h){list.appendChild(renderOneCard(h,ciBox.v++,false));});
+}
 /* bitta odat kartasini quradi (wrapper + swipe-skip fon bilan) va wrapper'ni qaytaradi */
 function renderOneCard(h,ci,stagger){
   var isCheck=h.type==='check';
@@ -3450,10 +3508,13 @@ function renderOneCard(h,ci,stagger){
     e.stopPropagation();
     if(isCheck){toggleCheck(h);return;}
     if(h.completed)return;
-    if(h.runningSince)pauseH(h);else startH(h);
+    var wasRunning=!!h.runningSince;
+    if(wasRunning)pauseH(h);else startH(h);
     /* ro'yxat QAYTA QURILMAYDI — faqat shu kartaning holati o'zgaradi */
     if(!updateCardState(h))renderHabits();
     refreshCards();
+    /* to'xtatildi va bugungi norma bajarilgan bo'lsa -> "Bajarildi" guruhiga */
+    if(wasRunning&&doneToday(h))scheduleRegroup(0);
   });
   el.querySelector('.hc-stat').addEventListener('click',function(e){e.stopPropagation();openDetail(h.id);});
   el.addEventListener('click',function(){if(el._swiped){el._swiped=false;return;}openSession(h.id);});
@@ -3469,25 +3530,48 @@ function renderOneCard(h,ci,stagger){
 function renderHabits(){
   var list=$('#habitList');list.innerHTML='';cardRefs={};
   var stagger=firstCardRender&&!reduce;firstCardRender=false;
+  var filter=$('#habitFilter');
   if(!store.habits.length){
+    if(filter)filter.style.display='none';
     var em=document.createElement('div');em.className='empty';
     em.innerHTML='<div class="big">⏱</div><p><b>'+T('empty1')+'</b></p><p>'+T('empty2')+'</p>';
     list.appendChild(em);return;
   }
-  /* bugun dam qo'yilgan odatlar pastdagi yig'ilgan guruhga — yuqorida faqat bugungilar */
-  var active=[],rested=[];
-  store.habits.forEach(function(h){(isSkip(h,TODAY)?rested:active).push(h);});
-  var ci=0;
-  active.forEach(function(h){list.appendChild(renderOneCard(h,ci++,stagger));});
-  if(rested.length){
-    var gh=document.createElement('button');gh.className='rest-group'+(restOpen?' open':'');
-    gh.innerHTML='<span class="rg-moon">🌙</span><span class="rg-lbl"></span><span class="rg-n">'+rested.length+'</span>'+
-      '<span class="rg-chev"><svg viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></span>';
-    gh.querySelector('.rg-lbl').textContent=T('rest_group');
-    gh.addEventListener('click',function(){restOpen=!restOpen;renderHabits();});
-    list.appendChild(gh);
-    if(restOpen){rested.forEach(function(h){list.appendChild(renderOneCard(h,ci++,false));});}
+  if(filter)filter.style.display='';
+  syncFilterUI();
+  var mode=habitFilterMode();
+  /* uch guruh: faol (qolgani) / bugun bajarilgan / dam. Ishlayotgan odat DOIM faol
+     bo'lib turadi — normani o'tsa ham (taymer ochiq ekan yuqorida ko'rinsin). */
+  var active=[],done=[],rested=[];
+  store.habits.forEach(function(h){
+    if(isSkip(h,TODAY))rested.push(h);
+    else if(doneToday(h)&&!h.runningSince)done.push(h);
+    else active.push(h);
+  });
+  var ciBox={v:0};
+  if(mode==='done'){                                   /* "faqat bajarilgani" ko'rinishi */
+    if(!done.length){
+      var em2=document.createElement('div');em2.className='empty';
+      em2.innerHTML='<div class="big">✓</div><p>'+T('hf_done_empty')+'</p>';
+      list.appendChild(em2);
+    }else done.forEach(function(h){list.appendChild(renderOneCard(h,ciBox.v++,stagger));});
+    refreshCards();return;
   }
+  if(mode==='all'){                                    /* hammasi tekis */
+    active.forEach(function(h){list.appendChild(renderOneCard(h,ciBox.v++,stagger));});
+    done.forEach(function(h){list.appendChild(renderOneCard(h,ciBox.v++,stagger));});
+    if(rested.length)appendGroup(list,'','🌙',T('rest_group'),rested,restOpen,function(){restOpen=!restOpen;renderHabits();},ciBox);
+    refreshCards();return;
+  }
+  /* mode==='today' (asosiy): tepada faqat qolgani, bajarilgan+dam pastda yig'iladi */
+  active.forEach(function(h){list.appendChild(renderOneCard(h,ciBox.v++,stagger));});
+  if(!active.length&&done.length){                     /* hammasi bajarildi — tabrik lahzasi */
+    var ad=document.createElement('div');ad.className='all-done';
+    ad.innerHTML='<span class="ad-badge">🎉</span><b>'+T('all_done')+'</b>';
+    list.appendChild(ad);
+  }
+  if(done.length)appendGroup(list,'done-group','✓',T('done_group'),done,doneOpen,function(){doneOpen=!doneOpen;renderHabits();},ciBox);
+  if(rested.length)appendGroup(list,'','🌙',T('rest_group'),rested,restOpen,function(){restOpen=!restOpen;renderHabits();},ciBox);
   refreshCards();
 }
 /* karta-swipe -> "bugun dam": surib chegaradan oshsa dam qo'yiladi va odat guruhga tushadi.
@@ -3554,6 +3638,7 @@ function toggleCheck(h){
   else{h.days.splice(i,1);sTap();}
   save();if(!updateCardState(h))renderHabits();computeTarget();refreshChips();refreshCards();
   if(justDone)celebrate(cardRefs[h.id]);
+  scheduleRegroup(justDone?820:0); /* bajarildi -> tabrikdan keyin guruhga; bekor -> darhol faolga */
 }
 function refreshCards(){
   store.habits.forEach(function(h){
@@ -3621,6 +3706,15 @@ function openSheet(o){$('#scrim').classList.toggle('open',o);$('#sheet').classLi
   $('#device').classList.toggle('modal',o); /* ostki qatlam chekinadi — chuqurlik hissi */
   if(o){$('#addErr').textContent='';setTimeout(function(){$('#hName').focus();},200);}}
 $('#addBtn').addEventListener('click',function(){sTap();resetSheet();openSheet(true);});
+$('#habitFilter').addEventListener('click',function(e){
+  var b=e.target.closest('.hf-btn');if(!b)return;
+  var f=b.getAttribute('data-f');
+  if(f===habitFilterMode())return;
+  store.settings.habitFilter=f;save();sTap();buzz(6);
+  firstCardRender=true;                 /* filtr almashganda ro'yxat stagger bilan qayta kirsin */
+  if(f!=='today'){doneOpen=true;restOpen=true;} /* 'hammasi'da guruhlar ochiq bo'lsin */
+  renderHabits();
+});
 /* topilma #5/#7: tushunchalar yordami — chip yoki ko'rsatkich bosilganda tushuntirish */
 $('#device').addEventListener('click',function(e){
   var el=e.target.closest('[data-help]');if(!el)return;
