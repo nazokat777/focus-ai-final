@@ -1865,7 +1865,7 @@ input{font-family:inherit}
       <button class="go" id="authEmailSend"><span data-i18n="auth_email_send">Kirish havolasini yuborish</span></button>
       <div class="hint" id="authEmailHint"></div>
     </div>
-    <div class="hint" data-i18n="auth_hint">Ma'lumotlar faqat shu qurilmada, offline saqlanadi.</div>
+    <div class="hint" data-i18n="auth_hint"></div>
   </div>
 
   <div class="head">
@@ -2486,7 +2486,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   fr_local:"Lokal",fr_cloud:"Bulut",
   fr_local_note:"Lokal rejim: do'stlar va reyting shu qurilmada saqlanadi. Qurilmalararo real reyting hamda ota-ona/ustoz nazorati Supabase ulangach ishlaydi.",
   auth_sub:"Mehmon sifatida kiring — hisob shart emas, hamma narsa qurilmangizda saqlanadi.",auth_go:"Mehmon sifatida kirish",
-  auth_ph:"Ismingiz",auth_hint:"Ma'lumotlar faqat shu qurilmada, offline saqlanadi.",
+  auth_ph:"Ismingiz",auth_hint:"Odatlaringiz shu qurilmada, offline saqlanadi. Do'stlar yoki Ligani ochsangiz — ismingiz va kunlik fokus vaqtingiz serverga yuboriladi.",
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
   week:"Shu hafta",weeks8:"Oxirgi 8 hafta",achievements:"Nishonlar",days:"kun",focus_need:"Diqqat kerak",fn_ok:"Hammasi izchil — zo'r ketyapsan! ✨",fn_none:"Hali odat yo'q — birinchisini qo'shing",fn_new:"Ma'lumot yig'ilmoqda — bir necha kundan keyin ko'rinadi",
   gap_skip:function(n){return "«"+n+"» taymeri uzoq ochiq qolibdi — bu vaqt hisoblanmadi, taymer to'xtatildi";},
@@ -2599,7 +2599,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   fr_local:"Локально",fr_cloud:"Облако",
   fr_local_note:"Локальный режим: друзья и рейтинг хранятся на этом устройстве. Рейтинг между устройствами и контроль родителя/наставника заработают после подключения Supabase.",
   auth_sub:"Войдите как гость — аккаунт не нужен, всё хранится на устройстве.",auth_go:"Войти как гость",
-  auth_ph:"Ваше имя",auth_hint:"Данные хранятся только на этом устройстве, офлайн.",
+  auth_ph:"Ваше имя",auth_hint:"Ваши привычки хранятся на этом устройстве, офлайн. Если откроете «Друзья» или «Лигу» — имя и дневное время фокуса отправятся на сервер.",
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
   week:"Эта неделя",weeks8:"Последние 8 недель",achievements:"Значки",days:"дн.",focus_need:"Нужно внимание",fn_ok:"Всё стабильно — отлично! ✨",fn_none:"Пока нет привычек — добавьте первую",fn_new:"Данные собираются — появятся через несколько дней",
   gap_skip:function(n){return "Таймер «"+n+"» долго оставался включённым — это время не засчитано, таймер остановлен";},
@@ -2712,7 +2712,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   fr_local:"Local",fr_cloud:"Cloud",
   fr_local_note:"Local mode: friends and ranking live on this device. Cross-device ranking and parent/mentor monitoring activate once Supabase is connected.",
   auth_sub:"Continue as guest — no account needed, everything stays on your device.",auth_go:"Continue as guest",
-  auth_ph:"Your name",auth_hint:"Data is stored only on this device, offline.",
+  auth_ph:"Your name",auth_hint:"Your habits are stored on this device, offline. If you open Friends or League, your name and daily focus time are sent to the server.",
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
   week:"This week",weeks8:"Last 8 weeks",achievements:"Badges",days:"days",focus_need:"Needs focus",fn_ok:"All on track — great job! ✨",fn_none:"No habits yet — add your first",fn_new:"Collecting data — visible in a few days",
   gap_skip:function(n){return "«"+n+"» timer was left running for a long time — that time wasn't counted, timer stopped";},
@@ -3280,7 +3280,11 @@ function finishOnb(){
    do'stlar panelini kutmasdan) */
 function syncMyName(){
   try{ if(store.user.name)localStorage.setItem('focusai.userName',store.user.name); }catch(e){}
-  try{ if(window.Social&&Social.cloud&&Social.cloud()&&Social.ensureProfile)Social.ensureProfile(); }catch(e){}
+  /* MAXFIYLIK: ism serverga SHU YERDA yuborilmaydi. Ilgari ilovaga kirish bilanoq
+     ensureProfile() ishlab, foydalanuvchi hech qanday ijtimoiy funksiyani ochmasdan
+     turib ismi Supabase'ga ketardi — bu "faqat shu qurilmada" va'dasiga zid edi.
+     Endi ism faqat Do'stlar/Liga ochilganda yuboriladi (leaderboard() va league()
+     o'zlari ensureProfile() ni chaqiradi). */
 }
 function enterApp(name){
   store.user.name=name;save();
