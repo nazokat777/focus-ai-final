@@ -5885,8 +5885,16 @@ $('#themeTog').addEventListener('click',function(){
   $('#themeTog').classList.toggle('on',!dark);
   store.settings.theme=dark?'light':'dark';save();sTap();buzz(8);
   _bgSet='';if(typeof renderHomeBg==='function')renderHomeBg(); /* mavzuga mos fon rasmi */
-  updateAppLogos();
+  updateAppLogos();updateRobotTheme();
 });
+/* AI Coach robot: dark tema -> qora robot, light tema -> oq robot */
+function updateRobotTheme(){
+  var light=$('#device').getAttribute('data-theme')==='light';
+  var src='assets/'+(light?'robot.webp':'robot_dark.webp');
+  var b=$('#aicBot');if(b)b.src=src;
+  $$('.ac-av').forEach(function(a){a.src=src;});
+}
+updateRobotTheme();
 $('#themeTog').classList.toggle('on',store.settings.theme!=='light');
 $('#soundTog').addEventListener('click',function(){
   soundOn=!soundOn;store.settings.sound=soundOn;save();
