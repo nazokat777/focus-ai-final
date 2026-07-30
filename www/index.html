@@ -577,6 +577,59 @@ input{font-family:inherit}
 /* stats */
 .stat-hero{display:flex;gap:10px;margin:12px 0 16px}
 .compare{background:var(--elev);border:1px solid var(--line);border-radius:15px;padding:13px 16px;margin-bottom:16px;font-size:13.5px;line-height:1.5}
+/* ═══ Statistika diagrammalari (mockup: hero + donut + trend + hex) ═══ */
+.wk-lbl{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.wk-val{font-family:'JetBrains Mono',monospace;font-size:30px;font-weight:700;letter-spacing:-.02em;line-height:1.1}
+.wk-delta{display:inline-flex;align-items:center;gap:5px;margin-top:8px;font-size:12px;font-weight:600;
+  padding:4px 10px;border-radius:999px;background:rgba(var(--neon-rgb),.1);color:var(--neon)}
+.wk-delta.down{background:rgba(255,122,122,.1);color:var(--danger)}
+.wk-delta .tr{font-size:10px}
+.donut-card{background:var(--elev);border:1px solid var(--line);border-radius:16px;padding:14px 16px;margin-bottom:16px}
+.donut-body{display:flex;align-items:center;gap:14px}
+.donut-hold{position:relative;width:128px;height:128px;flex:none}
+.donut-hold svg{width:100%;height:100%;transform:rotate(-90deg)} /* 12 dan boshlanadi */
+.donut-hold circle{fill:none;stroke-width:13;transition:stroke-dasharray .9s var(--ease-out)}
+.donut-c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px}
+.donut-c b{font-size:15px;font-weight:700}
+.donut-c span{font-size:9.5px;color:var(--muted)}
+.donut-leg{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
+.dl-row{display:flex;align-items:center;gap:8px;font-size:12.5px;min-width:0}
+.dl-dot{width:9px;height:9px;border-radius:3px;flex:none}
+.dl-name{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl-ms{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--muted);flex:none}
+/* Oltin soat: 24 soatlik trend-chizig'i (porlab turgan cho'qqi bilan) */
+.gh-win{font-family:'JetBrains Mono',monospace;font-size:24px;font-weight:700;letter-spacing:-.01em;margin:2px 0 8px}
+.gh-win small{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:0;margin-left:8px}
+.gh-chart{display:block;width:100%;height:74px;margin:4px 0 10px;overflow:visible}
+.gh-chart .ln{fill:none;stroke:var(--neon);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.gh-chart .ar{stroke:none;opacity:.9}
+.gh-chart .pk{fill:var(--neon-br)}
+.gh-chart .pk-halo{fill:rgba(var(--neon-rgb),.25);transform-origin:center;transform-box:fill-box;animation:pkPulse 2.4s var(--ease) infinite}
+@keyframes pkPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.9);opacity:.25}}
+.reduce .gh-chart .pk-halo{animation:none}
+/* Yutuqlar — olti burchakli nishonlar (eski WebView'da yumaloq karta bo'lib qoladi) */
+@supports (clip-path:polygon(0 0,100% 0,50% 100%)){
+  .badge{position:relative;border:none;border-radius:0;padding:13px 2px 12px;
+    clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+    background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04))}
+  .badge::before{content:'';position:absolute;inset:1.5px;z-index:0;
+    clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+    background:var(--elev)}
+  .badge .bn,.badge .bl{position:relative;z-index:1}
+  .badge.unlocked{background:linear-gradient(180deg,var(--neon),rgba(var(--neon-rgb),.25))}
+  .badge.unlocked::before{background:linear-gradient(180deg,rgba(var(--neon-rgb),.16),var(--elev) 72%)}
+  .device[data-theme="light"] .badge::before{background:var(--elev2)}
+  .device[data-theme="light"] .badge.unlocked::before{background:linear-gradient(180deg,rgba(var(--neon-rgb),.14),#fff 75%)}
+}
+/* Kunlik sitata */
+.quote-card{position:relative;background:linear-gradient(135deg,rgba(var(--neon-rgb),.08),var(--elev) 55%);
+  border:1px solid var(--line);border-left:3px solid var(--neon);border-radius:16px;
+  padding:16px 18px 15px 46px;margin-top:14px;font-size:14px;line-height:1.55;font-weight:500}
+.quote-card .q-mark{position:absolute;left:14px;top:10px;font-size:26px;color:var(--neon);opacity:.85;font-family:Georgia,serif}
+/* GSAP-uslub stagger kirish — statistika ochilganda kartalar birin-ketin ko'tariladi */
+@keyframes stRise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.st-rise{animation:stRise .55s var(--ease-out) both}
+.reduce .st-rise{animation:none}
 .focus-need{background:var(--elev);border:1px solid var(--line);border-radius:15px;padding:6px 14px;margin-bottom:16px}
 .fn-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--line)}
 .fn-row:last-child{border-bottom:none}
@@ -1748,6 +1801,17 @@ input{font-family:inherit}
         <div class="chip"><div class="k" data-i18n="done_goals"></div><div class="v mono" id="stDone">0</div></div>
       </div>
       <div class="compare" id="compare"></div>
+      <!-- Vaqt taqsimoti — donut (har odat o'z rangida, markazda haftalik jami) -->
+      <div class="donut-card" id="donutCard" style="display:none">
+        <div class="grid-lbl" style="margin-top:0" data-i18n="st_split"></div>
+        <div class="donut-body">
+          <div class="donut-hold">
+            <svg id="donutSvg" viewBox="0 0 120 120"></svg>
+            <div class="donut-c"><b class="mono" id="donutTot"></b><span data-i18n="st_cap"></span></div>
+          </div>
+          <div class="donut-leg" id="donutLeg"></div>
+        </div>
+      </div>
       <!-- Daraja (uzoq-muddatli progress) — xulosadan keyin, eng ko'zga tashlanadigan joyda -->
       <div class="grid-lbl" data-i18n="mastery"></div>
       <div class="mastery">
@@ -1768,6 +1832,8 @@ input{font-family:inherit}
       <!-- Yutuqlar -->
       <div class="grid-lbl" data-i18n="achievements"></div>
       <div class="badges" id="badges"></div>
+      <!-- Kunlik sitata -->
+      <div class="quote-card" id="quoteCard"><span class="q-mark">❝</span><div class="q-txt" id="quoteTxt"></div></div>
       <div class="coach">
         <div class="c-top">🤖 <span data-i18n="coach"></span></div>
         <div class="c-msg dim" id="coachMsg"></div>
@@ -2250,6 +2316,10 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",rem_msg_ph:"O'z eslatma so'zingiz (ixtiyoriy)…",
   al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
+  wk_total:"Umumiy fokus vaqti",wk_first:"Birinchi hafta — poydevor qo'yildi",
+  wk_up:function(x){return "+"+x+" o'tgan haftaga nisbatan";},
+  wk_down:function(x){return "−"+x+" o'tgan haftaga nisbatan";},
+  st_split:"Vaqt taqsimoti",st_cap:"bu hafta",st_other:"Boshqa",st_focus:"Fokus taymer",
   pin_set:"Yangi PIN o'rnating",pin_confirm:"PIN'ni tasdiqlang",pin_enter:"PIN kiriting",pin_wrong:"Noto'g'ri PIN",pin_mismatch:"Mos kelmadi, qaytadan",pin_cancel:"Bekor qilish",pin_forgot:"PINni unutdingizmi?",pin_warn:"PIN unutilsa ilovaga kira olmaysiz va uni tiklab bo'lmaydi. Avval Profil → Zaxira orqali nusxa oling. Davom etasizmi?",pin_reset_confirm:"Ma'lumotlar tozalanadi va ilova qaytadan boshlanadi. Zaxirangiz bo'lsa keyin tiklaysiz. Davom etasizmi?",
   lvls:["Boshlovchi","O'quvchi","Izlanuvchi","Usta","Ustoz","Afsona"],
   quotes:["Har kuni 1% — bir yilda 37 barobar kuchliroq.","Boshlash eng qiyini. Qolgani osonroq.","Fokus — bu «yo'q» deyish san'ati.","Kichik qadamlar — katta natija.","Diqqating — eng qimmatli boyliging.","Chalg'imaslik — zamonaviy superkuch."],
@@ -2355,6 +2425,10 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",rem_msg_ph:"Своё напоминание (необязательно)…",
   al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
+  wk_total:"Общее время фокуса",wk_first:"Первая неделя — фундамент заложен",
+  wk_up:function(x){return "+"+x+" к прошлой неделе";},
+  wk_down:function(x){return "−"+x+" к прошлой неделе";},
+  st_split:"Распределение времени",st_cap:"за неделю",st_other:"Прочее",st_focus:"Фокус-таймер",
   pin_set:"Задайте новый PIN",pin_confirm:"Подтвердите PIN",pin_enter:"Введите PIN",pin_wrong:"Неверный PIN",pin_mismatch:"Не совпало, заново",pin_cancel:"Отмена",pin_forgot:"Забыли PIN?",pin_warn:"Если забудете PIN, вы не сможете войти, и его нельзя восстановить. Сначала сделайте резервную копию: Профиль → Резервная копия. Продолжить?",pin_reset_confirm:"Данные будут очищены, приложение начнётся заново. Если есть резервная копия — восстановите позже. Продолжить?",
   lvls:["Новичок","Ученик","Искатель","Мастер","Наставник","Легенда"],
   quotes:["Каждый день на 1% — за год в 37 раз сильнее.","Начать — самое трудное. Дальше легче.","Фокус — это искусство говорить «нет».","Маленькие шаги — большой результат.","Твоё внимание — твой главный капитал.","Не отвлекаться — суперсила нашего времени."],
@@ -2460,6 +2534,10 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",rem_msg_ph:"Your own reminder (optional)…",
   al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
+  wk_total:"Total focus time",wk_first:"First week — foundation laid",
+  wk_up:function(x){return "+"+x+" vs last week";},
+  wk_down:function(x){return "−"+x+" vs last week";},
+  st_split:"Time split",st_cap:"this week",st_other:"Other",st_focus:"Focus timer",
   pin_set:"Set a new PIN",pin_confirm:"Confirm PIN",pin_enter:"Enter PIN",pin_wrong:"Wrong PIN",pin_mismatch:"Didn't match, again",pin_cancel:"Cancel",pin_forgot:"Forgot PIN?",pin_warn:"If you forget your PIN you'll be locked out and it can't be recovered. Back up first via Profile → Backup. Continue?",pin_reset_confirm:"Your data will be cleared and the app will restart. Restore from a backup later if you have one. Continue?",
   lvls:["Novice","Learner","Seeker","Adept","Mentor","Legend"],
   quotes:["1% better every day — 37× stronger in a year.","Starting is the hardest part. The rest is easier.","Focus is the art of saying no.","Small steps, big results.","Your attention is your greatest asset.","Not getting distracted is a modern superpower."],
@@ -4290,6 +4368,31 @@ function goldenStats(){
   return {hourTot:hourTot,tot:tot,mx:mx,bi:bi,wDays:wDays,z:z,lift:lift,
           pass:(tot>=10*3600000&&wDays>=7&&z>=1.2)};
 }
+/* 24 soatlik trend-chizig'i (silliq egri + porlab turgan cho'qqi) — goldenStats REAL binlaridan */
+function ghChartSvg(g){
+  var W=300,H=70,P=6,i,mx=1;
+  for(i=0;i<24;i++)mx=Math.max(mx,g.hourTot[i]);
+  function R(x){return Math.round(x*10)/10;}
+  var pts=[];
+  for(i=0;i<24;i++)pts.push([R(P+i*(W-2*P)/23),R(H-P-(g.hourTot[i]/mx)*(H-2*P))]);
+  var d='M'+pts[0][0]+' '+pts[0][1];
+  for(i=1;i<23;i++){
+    var mxp=R((pts[i][0]+pts[i+1][0])/2),myp=R((pts[i][1]+pts[i+1][1])/2);
+    d+=' Q'+pts[i][0]+' '+pts[i][1]+' '+mxp+' '+myp;
+  }
+  d+=' L'+pts[23][0]+' '+pts[23][1];
+  var area=d+' L'+pts[23][0]+' '+(H-2)+' L'+pts[0][0]+' '+(H-2)+' Z';
+  var pk=0;for(i=1;i<24;i++)if(g.hourTot[i]>g.hourTot[pk])pk=i;
+  return '<svg class="gh-chart" viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none">'+
+    '<defs><linearGradient id="ghGrad" x1="0" y1="0" x2="0" y2="1">'+
+    '<stop offset="0" style="stop-color:rgba(var(--neon-rgb),.32)"/>'+
+    '<stop offset="1" style="stop-color:rgba(var(--neon-rgb),0)"/></linearGradient></defs>'+
+    '<path class="ar" d="'+area+'" fill="url(#ghGrad)"/>'+
+    '<path class="ln" d="'+d+'"/>'+
+    '<circle class="pk-halo" cx="'+pts[pk][0]+'" cy="'+pts[pk][1]+'" r="5"/>'+
+    '<circle class="pk" cx="'+pts[pk][0]+'" cy="'+pts[pk][1]+'" r="2.6"/>'+
+    '</svg>';
+}
 function renderGolden(){
   var box=$('#golden');if(!box)return;
   var g=goldenStats(),hh=store.hh||{},hhN=store.hhN||{},i,dw;
@@ -4303,13 +4406,15 @@ function renderGolden(){
   if(g.pass){
     var w1=hhmm(g.bi),w2=hhmm((g.bi+2)%24);
     var remH=(g.bi*60-15+1440)%1440,rt=(Math.floor(remH/60)<10?'0':'')+Math.floor(remH/60)+':'+((remH%60)<10?'0':'')+(remH%60);
-    html+='<div class="gh-ins"><div class="t">'+T('gh_best')(w1+'–'+w2,Math.round(g.lift*10)/10)+'</div>'+
+    html+='<div class="gh-ins"><div class="gh-win">'+w1+'–'+w2+'</div>'+
+      ghChartSvg(g)+
+      '<div class="t">'+T('gh_best')(w1+'–'+w2,Math.round(g.lift*10)/10)+'</div>'+
       '<div class="s">'+T('gh_days')(g.wDays)+'</div>'+
       (store.settings.remTime===rt?'':'<button class="gh-act" id="ghAct" data-t="'+rt+'">'+T('gh_move')(rt)+'</button>')+
       '</div>';
   }else{
     var pct=Math.min(100,Math.round(g.tot/(10*3600000)*100));
-    html+='<div class="gh-ins"><div class="t">'+T('gh_wait')+'</div>'+
+    html+='<div class="gh-ins">'+ghChartSvg(g)+'<div class="t">'+T('gh_wait')+'</div>'+
       '<div class="s">'+T('gh_wait_sub')(Math.round(g.tot/360000)/10,10)+'</div>'+
       '<div class="gh-prog"><i style="width:'+pct+'%"></i></div></div>';
   }
@@ -4369,6 +4474,79 @@ function decode(el,final,dur){
   });
   setTimeout(fin,dur+200); /* kafolat: fon tabda rAF to'xtasa ham qiymat ko'rinadi */
 }
+/* ============ statistika diagrammalari (mockup: hero + donut + sitata) ============ */
+/* Haftalik jami — katta raqam + o'tgan haftaga delta (halol: weekMs REAL yig'indi) */
+function renderWkHero(anim){
+  var cmp=$('#compare');if(!cmp)return;
+  var thisW=weekMs(0),lastW=weekMs(1);
+  var html='<div class="wk-lbl">'+T('wk_total')+'</div><div class="wk-val" id="wkVal">'+fmtHM(thisW)+'</div>';
+  if(lastW<60000)html+='<div class="wk-delta"><span class="tr">●</span><span>'+T('wk_first')+'</span></div>';
+  else{
+    var d=thisW-lastW;
+    if(d>=0)html+='<div class="wk-delta"><span class="tr">▲</span><span>'+T('wk_up')(fmtHM(d))+'</span></div>';
+    else html+='<div class="wk-delta down"><span class="tr">▼</span><span>'+T('wk_down')(fmtHM(-d))+'</span></div>';
+  }
+  cmp.innerHTML=html;
+  if(anim)decode($('#wkVal'),fmtHM(thisW),700);
+}
+/* Haftalik vaqt taqsimoti: har odat o'z rangida, top-4 + "Boshqa" + Fokus taymer */
+function weekSplit(){
+  var arr=[],i,h,ms;
+  for(h=0;h<store.habits.length;h++){
+    ms=0;for(i=0;i<7;i++)ms+=store.habits[h].dayMs[TODAY-i]||0;
+    if(ms>0)arr.push({name:store.habits[h].name,color:store.habits[h].color,ms:ms});
+  }
+  var fMs=0;if(store.focusDayMs)for(i=0;i<7;i++)fMs+=store.focusDayMs[TODAY-i]||0;
+  if(fMs>0)arr.push({name:T('st_focus'),color:'',ms:fMs});
+  arr.sort(function(a,b){return b.ms-a.ms;});
+  if(arr.length>4){
+    var rest=arr.slice(4),o=0;for(i=0;i<rest.length;i++)o+=rest[i].ms;
+    arr=arr.slice(0,4);arr.push({name:T('st_other'),color:'',ms:o,other:true});
+  }
+  return arr;
+}
+function renderDonut(anim){
+  var card=$('#donutCard');if(!card)return;
+  var sl=weekSplit(),tot=0,i;
+  for(i=0;i<sl.length;i++)tot+=sl[i].ms;
+  if(tot<60000){card.style.display='none';return;}
+  card.style.display='';
+  var svg=$('#donutSvg');while(svg.firstChild)svg.removeChild(svg.firstChild);
+  var ns='http://www.w3.org/2000/svg',C=Math.PI*100,start=0,GAP=sl.length>1?3:0;
+  var doAnim=anim&&!reduce,leg='';
+  for(i=0;i<sl.length;i++){
+    var seg=Math.max(.5,sl[i].ms/tot*C-GAP);
+    var col=sl[i].color||(sl[i].other?'var(--muted)':'var(--neon)');
+    var c=document.createElementNS(ns,'circle');
+    c.setAttribute('cx','60');c.setAttribute('cy','60');c.setAttribute('r','50');
+    c.style.stroke=col;
+    c.style.strokeDashoffset=String(-start);
+    c.style.strokeDasharray=doAnim?('0 '+C):(seg+' '+(C-seg));
+    if(doAnim){c.style.transitionDelay=(i*110)+'ms';c.setAttribute('data-seg',seg+' '+(C-seg));}
+    svg.appendChild(c);
+    leg+='<div class="dl-row"><span class="dl-dot" style="background:'+col+'"></span>'+
+      '<span class="dl-name">'+esc(sl[i].name)+'</span>'+
+      '<span class="dl-ms">'+fmtHM(sl[i].ms)+' · '+Math.round(sl[i].ms/tot*100)+'%</span></div>';
+    start+=sl[i].ms/tot*C;
+  }
+  $('#donutLeg').innerHTML=leg;
+  $('#donutTot').textContent=fmtHM(tot);
+  if(anim)decode($('#donutTot'),fmtHM(tot),650);
+  if(doAnim)requestAnimationFrame(function(){requestAnimationFrame(function(){
+    $$('#donutSvg circle').forEach(function(el){el.style.strokeDasharray=el.getAttribute('data-seg');});
+  });});
+}
+/* Kunlik sitata — deterministik (TODAY), tildan xabardor */
+var QUOTES={
+  uz:["Chuqur ish — eng qattiq valyuta.","Diqqat qayerda bo'lsa, natija o'sha yerda.","Bugungi bir soat — ertangi ustunlik.","Shovqin o'tadi, fokus qoladi.","Kichik qadam — katta trayektoriya."],
+  ru:["Глубокая работа — самая твёрдая валюта.","Где внимание — там результат.","Час сегодня — преимущество завтра.","Шум проходит, фокус остаётся.","Маленький шаг — большая траектория."],
+  en:["Deep work is the hardest currency.","Result lives where attention goes.","One hour today is an edge tomorrow.","Noise fades. Focus stays.","Small step, long trajectory."]
+};
+function renderQuote(){
+  var el=$('#quoteTxt');if(!el)return;
+  var a=QUOTES[store.settings.lang]||QUOTES.en;
+  el.textContent=a[TODAY%a.length];
+}
 function drawStats(anim){
   var heroA=bestStreakEver();
   var tot=0,k,h;
@@ -4376,15 +4554,9 @@ function drawStats(anim){
   var heroB=(tot/3600000).toFixed(1),heroC=store.wins||0;
   if(anim){decode($('#stBest'),heroA);decode($('#stHrs'),heroB,620);decode($('#stDone'),heroC,440);}
   else{$('#stBest').textContent=heroA;$('#stHrs').textContent=heroB;$('#stDone').textContent=heroC;}
-  /* taqqoslash */
-  var thisW=weekMs(0),lastW=weekMs(1);
-  var hTh=(thisW/3600000).toFixed(1);
-  var cmp=$('#compare');
-  if(lastW<60000){cmp.innerHTML=T('cmp_first')(hTh);}
-  else{
-    var p=Math.round((thisW-lastW)/lastW*100);
-    cmp.innerHTML=p>=0?T('cmp_more')(hTh,p):T('cmp_less')(hTh,Math.abs(p));
-  }
+  renderWkHero(anim);
+  renderDonut(anim);
+  renderQuote();
   renderFocusNeeded();
   var dayNames={uz:['Du','Se','Ch','Pa','Ju','Sh','Ya'],ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],en:['Mo','Tu','We','Th','Fr','Sa','Su']};
   var names=dayNames[store.settings.lang]||dayNames.en;
@@ -4425,6 +4597,16 @@ function drawStats(anim){
   });
   save();
   renderMastery();renderGolden();
+  /* GSAP-uslub stagger: kartalar birin-ketin ko'tariladi (faqat tab ochilганда) */
+  if(anim&&!reduce){
+    var seq=[$('#compare'),$('#donutCard'),document.querySelector('#v-stats .mastery'),$('#bars'),$('#grid'),$('#golden'),$('#focusNeed'),$('#badges'),$('#quoteCard'),document.querySelector('#v-stats .coach')];
+    for(var q=0;q<seq.length;q++){
+      if(!seq[q])continue;
+      seq[q].classList.remove('st-rise');void seq[q].offsetWidth;
+      seq[q].style.animationDelay=(q*55)+'ms';
+      seq[q].classList.add('st-rise');
+    }
+  }
 }
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
