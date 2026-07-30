@@ -2071,6 +2071,11 @@ input{font-family:inherit}
     <div class="f-lbl" data-i18n="f_photo"></div>
     <button class="photo-btn" id="photoBtn"><span id="photoLbl"></span></button>
     <input type="file" id="photoInput" accept="image/*" style="display:none">
+    <div class="f-lbl" data-i18n="f_reminder"></div>
+    <div class="goalrow">
+      <input id="hRemTime" type="time" style="flex:1;background:transparent;border:0;color:inherit;font:inherit;text-align:center">
+      <button id="hRemClr" type="button" style="min-width:auto;padding:0 12px">✕</button>
+    </div>
     <div class="err" id="addErr"></div>
     <button class="save" id="saveHabit" data-i18n="add"></button>
   </div>
@@ -2398,7 +2403,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   sc_w0:"boshlanish",sc_w1:"o'smoqda",sc_w2:"barqaror",sc_w3:"kuchli",sc_w4:"zo'r",
   pc_empty:"ma'lumot yig'ilmoqda",pc_up:"o'sish sari 📈",pc_keep:"shu ruhda davom!",hero_add:"Rasm qo'shish",
   d_cal:"Kalendar",d_score:"Odat kuchi",d_streaks:"Eng uzun seriyalar",d_weekly:"Haftalik faollik",d_empty:"Ma'lumot hali yo'q — bir necha kun kuzating",
-  new_habit:"Yangi odat",f_name:"Nomi",f_icon:"Belgi",f_color:"Rang",f_goal:"Umumiy maqsad",f_daily:"Kunlik norma",minutes:"daqiqa",f_photo:"Rasm (ixtiyoriy)",hours:"soat",add:"Odat qo'shish",
+  new_habit:"Yangi odat",f_name:"Nomi",f_icon:"Belgi",f_color:"Rang",f_goal:"Umumiy maqsad",f_daily:"Kunlik norma",minutes:"daqiqa",f_photo:"Rasm (ixtiyoriy)",f_reminder:"Eslatma vaqti",rem_off:"O'chiq",hours:"soat",add:"Odat qo'shish",
   edit_habit:"Odatni tahrirlash",save_habit:"Saqlash",edit_ok:"Yangilandi ✓",del_ok:"Odat o'chirildi",
   del_confirm:function(n){return "«"+n+"» o'chirilsinmi?\n\nButun tarixi va yig'ilgan vaqti ham o'chadi — buni qaytarib bo'lmaydi.";},
   strength:"Kuch",strength_sub:"Izchillik indeksi",
@@ -2509,7 +2514,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   sc_w0:"старт",sc_w1:"растёт",sc_w2:"стабильно",sc_w3:"сильно",sc_w4:"отлично",
   pc_empty:"собираем данные",pc_up:"идём в рост 📈",pc_keep:"так держать!",hero_add:"Добавить фото",
   d_cal:"Календарь",d_score:"Сила привычки",d_streaks:"Лучшие серии",d_weekly:"Активность за неделю",d_empty:"Данных пока нет — отслеживайте несколько дней",
-  new_habit:"Новая привычка",f_name:"Название",f_icon:"Значок",f_color:"Цвет",f_goal:"Общая цель",f_daily:"Дневная норма",minutes:"минут",f_photo:"Фото (необязательно)",hours:"часов",add:"Добавить",
+  new_habit:"Новая привычка",f_name:"Название",f_icon:"Значок",f_color:"Цвет",f_goal:"Общая цель",f_daily:"Дневная норма",minutes:"минут",f_photo:"Фото (необязательно)",f_reminder:"Время напоминания",rem_off:"Выкл",hours:"часов",add:"Добавить",
   edit_habit:"Редактировать",save_habit:"Сохранить",edit_ok:"Обновлено ✓",del_ok:"Привычка удалена",
   del_confirm:function(n){return "Удалить «"+n+"»?\n\nВся история и накопленное время тоже удалятся — это необратимо.";},
   strength:"Сила",strength_sub:"Индекс постоянства",
@@ -2620,7 +2625,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   sc_w0:"start",sc_w1:"growing",sc_w2:"steady",sc_w3:"strong",sc_w4:"excellent",
   pc_empty:"gathering data",pc_up:"trending up 📈",pc_keep:"keep going!",hero_add:"Add photo",
   d_cal:"Calendar",d_score:"Habit strength",d_streaks:"Best streaks",d_weekly:"Weekly activity",d_empty:"No data yet — track for a few days",
-  new_habit:"New habit",f_name:"Name",f_icon:"Icon",f_color:"Color",f_goal:"Total goal",f_daily:"Daily goal",minutes:"min",f_photo:"Photo (optional)",hours:"hours",add:"Add habit",
+  new_habit:"New habit",f_name:"Name",f_icon:"Icon",f_color:"Color",f_goal:"Total goal",f_daily:"Daily goal",minutes:"min",f_photo:"Photo (optional)",f_reminder:"Reminder time",rem_off:"Off",hours:"hours",add:"Add habit",
   edit_habit:"Edit habit",save_habit:"Save",edit_ok:"Updated ✓",del_ok:"Habit deleted",
   del_confirm:function(n){return "Delete “"+n+"”?\n\nAll its history and accumulated time will be lost — this cannot be undone.";},
   strength:"Strength",strength_sub:"Consistency index",
@@ -3938,14 +3943,17 @@ function syncSheetUI(){
 function resetSheet(){
   /* yangi odatga navbatdagi rang standart (odatlar avtomatik farqlansin) */
   editingId=null;pickIconK='read';pickColor=COLORS[store.habits.length%COLORS.length];pickType='timed';goalH=10000;dailyMin=30;photoData=null;
+  $('#hRemTime').value='';
   $('#hName').value='';$('#sheet h3').textContent=T('new_habit');$('#saveHabit').textContent=T('add');syncSheetUI();
 }
 function openEditSheet(h){
   editingId=h.id;pickIconK=h.icon;pickColor=h.color;pickType=h.type;
   goalH=h.goalH||10000;dailyMin=h.dailyMin||30;photoData=h.image||null;
+  $('#hRemTime').value=h.remTime||'';
   $('#hName').value=h.name;$('#sheet h3').textContent=T('edit_habit');$('#saveHabit').textContent=T('save_habit');
   syncSheetUI();openSheet(true);
 }
+$('#hRemClr').addEventListener('click',function(){$('#hRemTime').value='';sTap();});
 $('#typeSeg').addEventListener('click',function(e){
   var b=e.target.closest('button');if(!b)return;
   pickType=b.getAttribute('data-type');sTap();
@@ -3957,18 +3965,18 @@ $('#saveHabit').addEventListener('click',function(){
   if(!v){$('#addErr').textContent=T('err_name');buzz(20);return;}
   if(editingId){ /* topilma #1: mavjud odatni yangilash */
     var h=getH(editingId);
-    if(h){h.name=v;h.icon=pickIconK;h.color=pickColor;h.type=pickType;h.goalH=goalH;h.dailyMin=dailyMin;h.image=photoData;}
-    editingId=null;save();openSheet(false);sGo();buzz(10);renderHabits();
+    if(h){h.name=v;h.icon=pickIconK;h.color=pickColor;h.type=pickType;h.goalH=goalH;h.dailyMin=dailyMin;h.image=photoData;h.remTime=($('#hRemTime').value||'')||null;}
+    editingId=null;save();openSheet(false);sGo();buzz(10);renderHabits();scheduleReminders();
     if(detailOpen&&h&&openDetailId===h.id){$('#dName').textContent=h.name;$('#dIc').style.background=h.color;$('#dIc').innerHTML=icon(h.icon);renderDetail();}
     toast(T('edit_ok'));
     return;
   }
   store.habits.push({id:store.nextId++,name:v,icon:pickIconK,color:pickColor,type:pickType,
-    goalH:goalH,dailyMin:dailyMin,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],weekdays:[],skips:[],msDone:[],coinDays:[],completed:false,image:photoData});
+    goalH:goalH,dailyMin:dailyMin,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],weekdays:[],skips:[],msDone:[],coinDays:[],completed:false,image:photoData,remTime:($('#hRemTime').value||'')||null});
   save();
   $('#hName').value='';photoData=null;$('#photoLbl').textContent=T('photo_none');
   openSheet(false);sGo();buzz(10);
-  renderHabits();
+  renderHabits();scheduleReminders();
 });
 
 /* ============ session screen ============ */
@@ -4327,10 +4335,10 @@ $('#dDelete').addEventListener('click',function(){
   for(i=0;i<store.habits.length;i++)if(store.habits[i].id===h.id){idx=i;break;}
   var snap=h;
   store.habits=store.habits.filter(function(x){return x.id!==h.id;});
-  save();closeDetail();renderHabits();refreshChips();buzz(14);
+  save();closeDetail();renderHabits();refreshChips();buzz(14);scheduleReminders();
   toast(T('del_ok'),T('undo'),function(){
     store.habits.splice(Math.min(idx,store.habits.length),0,snap);
-    save();renderHabits();refreshChips();sGo();buzz(10);toast(T('undo_ok'));
+    save();renderHabits();refreshChips();sGo();buzz(10);toast(T('undo_ok'));scheduleReminders();
   });
 });
 
@@ -5561,25 +5569,51 @@ function scheduleReminders(){
   if(!LN)return;
   try{
     if(LN.requestPermissions)LN.requestPermissions();
-    /* ovoz + vibratsiyali kanal (Android 8+ da ovoz/vibratsiya kanal darajasida) */
     if(LN.createChannel)LN.createChannel({id:'focusai_rem',name:'Focus AI',importance:5,visibility:1,vibration:true});
-    LN.cancel({notifications:[{id:1001}]});
-    if(!store.settings.remTime)return;
-    var p=store.settings.remTime.split(':');
-    LN.schedule({notifications:[{
-      id:1001,title:'Focus AI',body:remBody(),
-      schedule:{on:{hour:parseInt(p[0],10),minute:parseInt(p[1],10)},repeats:true},
-      channelId:'focusai_rem',actionTypeId:'FOCUS_START'
-    }]});
+    /* eski id'larni keng diapazonда tozalash (o'chirilgan/o'zgargan odatlar qolmasin) */
+    var cancels=[{id:1001}];
+    store.habits.forEach(function(h){cancels.push({id:2000+h.id});for(var d=0;d<7;d++)cancels.push({id:2000+h.id*10+d});});
+    LN.cancel({notifications:cancels});
+    /* app dow: 0=Du..6=Ya  ->  Capacitor weekday: 1=Ya..7=Sh */
+    function capWd(dow){return ((dow+1)%7)+1;}
+    var list=[];
+    store.habits.forEach(function(h){
+      if(h.completed||!h.remTime)return;
+      var p=(''+h.remTime).split(':'),hh=parseInt(p[0],10),mm=parseInt(p[1],10);
+      if(isNaN(hh)||isNaN(mm))return;
+      var days=(h.weekdays&&h.weekdays.length)?h.weekdays:null; /* null=har kuni */
+      if(!days){
+        list.push({id:2000+h.id,title:'Focus AI',body:h.name,
+          schedule:{on:{hour:hh,minute:mm},repeats:true,allowWhileIdle:true},
+          channelId:'focusai_rem',actionTypeId:'FOCUS_START',extra:{habitId:h.id}});
+      }else{
+        days.forEach(function(dow){
+          list.push({id:2000+h.id*10+dow,title:'Focus AI',body:h.name,
+            schedule:{on:{weekday:capWd(dow),hour:hh,minute:mm},repeats:true,allowWhileIdle:true},
+            channelId:'focusai_rem',actionTypeId:'FOCUS_START',extra:{habitId:h.id}});
+        });
+      }
+    });
+    /* global aqlli eslatma (sozlamalardagi umumiy vaqt) — saqlanadi */
+    if(store.settings.remTime){
+      var g=store.settings.remTime.split(':');
+      list.push({id:1001,title:'Focus AI',body:remBody(),
+        schedule:{on:{hour:parseInt(g[0],10),minute:parseInt(g[1],10)},repeats:true,allowWhileIdle:true},
+        channelId:'focusai_rem',actionTypeId:'FOCUS_START'});
+    }
+    if(list.length)LN.schedule({notifications:list});
   }catch(e){}
 }
 (function registerNotifActions(){
   if(!LN)return;
   try{
     if(LN.registerActionTypes)LN.registerActionTypes({types:[{id:'FOCUS_START',actions:[{id:'start',title:T('rem_action')}]}]});
-    if(LN.addListener)LN.addListener('localNotificationActionPerformed',function(){
-      /* eslatmadan kirilganda birinchi bajarilmagan odatning sessiyasini ochamiz */
-      var h=store.habits.filter(function(x){return !isSkip(x,TODAY)&&dayRatio(x,TODAY)<1&&x.type!=='check';})[0];
+    if(LN.addListener)LN.addListener('localNotificationActionPerformed',function(ev){
+      /* per-habit eslatma bo'lsa — o'sha odat; aks holda birinchi bajarilmagan */
+      var hid=ev&&ev.notification&&ev.notification.extra&&ev.notification.extra.habitId;
+      var h=hid?getH(hid):null;
+      /* per-habit taymerли odat bo'lsa — o'sha; aks holda birinchi bajarilmagan taymerли odat */
+      if(!h||h.type==='check')h=store.habits.filter(function(x){return !isSkip(x,TODAY)&&dayRatio(x,TODAY)<1&&x.type!=='check';})[0];
       if(h)openSession(h.id);
     });
     scheduleReminders();
@@ -5807,7 +5841,7 @@ $('#langBtn').addEventListener('click',function(){
   var order=['uz','ru','en'],i=order.indexOf(store.settings.lang);
   store.settings.lang=order[(i+1)%order.length];save();sTap();
   refreshAll(); /* applyI18N + renderHabits + refreshChips + computeTarget — birliklar ham yangilanadi */
-  updateLangBtn();navInd();
+  updateLangBtn();navInd();scheduleReminders();
   if($('#v-stats').classList.contains('active'))drawStats();
   if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();
 });
