@@ -5380,6 +5380,8 @@ $('#alEsc').addEventListener('click',function(){
   if(alEscCount>=3){alarmStop();sGo();return;}   /* 3 marta bosilса — majburiy chiqish */
   $('#alEsc').textContent=T('al_esc')+' ('+(3-alEscCount)+')';buzz(40);
 });
+/* alarm overlay to'g'ridan-to'g'ri #device bolasi bo'lsin (aks holda fokus-ekran ichida qolib to'liq ekran chiqmaydi) */
+(function(){var d=$('#device'),a=$('#alarmOv');if(d&&a&&a.parentNode!==d)d.appendChild(a);})();
 
 /* ============ PIN qulf ============ */
 function hashPin(p,cb){
