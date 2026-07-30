@@ -1437,17 +1437,23 @@ input{font-family:inherit}
 .reduce .msweep{display:none}
 
 /* jonli pill — ishlayotgan taymer indikatori */
-.pill{position:absolute;left:50%;bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 12px);transform:translate(-50%,80px);
-  display:flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:999px;z-index:45;
+/* Pill konteyneri: bir vaqtda nechta taymer ishlasa — shuncha pill ustma-ust turadi.
+   Joylashuv konteynerda, pillning o'zi oqimda (ko'rinishi o'zgarmagan). */
+.pills{position:absolute;left:50%;transform:translateX(-50%);z-index:45;
+  width:max-content;max-width:88%;   /* eng keng pill bo'yicha o'lchanadi, ekrandan oshmaydi */
+  bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 26px);  /* navdagi ko'tarilgan "+" ustidan o'tsin */
+  display:flex;flex-direction:column-reverse;align-items:center;gap:6px;pointer-events:none}
+.pill{transform:translateY(80px);
+  display:flex;align-items:center;gap:9px;padding:9px 16px 9px 12px;border-radius:999px;
   background:rgba(10,20,13,.78);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
   border:1px solid rgba(var(--neon-rgb),.3);box-shadow:0 10px 34px rgba(0,0,0,.5),0 0 22px rgba(var(--neon-rgb),.12);
-  transition:transform .55s var(--ease),opacity .4s var(--ease);opacity:0;pointer-events:none;cursor:pointer;max-width:78%}
+  transition:transform .55s var(--ease),opacity .4s var(--ease);opacity:0;pointer-events:none;cursor:pointer;max-width:100%}
 .device[data-theme="light"] .pill{background:rgba(255,255,255,.82)}
-.pill.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
-/* Pill suzib turganda sahifa oxiridagi kontentni yopmasin: pill nav+12dan boshlanib
-   ~28px balandlikda, shuning uchun ro'yxatga qo'shimcha pastki bo'shliq beramiz. */
-.device.has-pill .view{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 58px)}
-.pill:active{transform:translate(-50%,0) scale(.95)}
+.pill.show{transform:translateY(0);opacity:1;pointer-events:auto}
+/* Pill(lar) suzib turganda sahifa oxiridagi kontentni yopmasin — nechta pill bo'lsa
+   shuncha joy ajratamiz (har biri ~28px + 6px oraliq). */
+.device.has-pill .view{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 24px + var(--pill-n,1) * 34px)}
+.pill:active{transform:translateY(0) scale(.95)}
 .pill .pdot{width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);animation:pillPulse 1.6s var(--ease) infinite;flex:none}
 @keyframes pillPulse{50%{transform:scale(1.5);opacity:.6}}
 .pill .pname{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2059,9 +2065,8 @@ input{font-family:inherit}
     </section>
   </div>
 
-  <button class="pill" id="pill">
-    <span class="pdot"></span><span class="pname" id="pillName"></span><span class="ptime mono" id="pillTime"></span>
-  </button>
+  <!-- Bir vaqtda nechta taymer ishlasa — shuncha pill (JS quradi) -->
+  <div class="pills" id="pills"></div>
 
   <nav class="nav" id="nav">
     <i class="navind" id="navind"><i></i></i>
@@ -5894,29 +5899,50 @@ function zenArm(){
 $('#session').addEventListener('pointerdown',zenArm);
 
 /* jonli pill — boshqa ekranda ham taymer ko'rinib turadi */
-/* pill ko'rinsa ro'yxatga qo'shimcha pastki bo'shliq (kontent pill ostida qolmasin) */
-function setPillGap(on){var d=$('#device');if(d)d.classList.toggle('has-pill',!!on);}
-function updatePill(){
-  var run=null;
-  for(var i=0;i<store.habits.length;i++)if(store.habits[i].runningSince){run=store.habits[i];break;}
-  var pill=$('#pill');
-  if(run&&!sessionOpen){
-    $('#pillName').textContent=run.name;
-    $('#pillTime').textContent=fmtHMS(elapsedOf(run));
-    pill._id=run.id;pill._focus=false;pill.classList.add('show');setPillGap(true);return;
-  }
-  /* audit #6: odat taymeri yo'q — fokus sessiyasi ishlab tursa, uni fokus tabidan tashqarida pill'da ko'rsatamiz */
-  var onFocus=$('#v-focus')&&$('#v-focus').classList.contains('active');
-  if(fRunning&&!sessionOpen&&!onFocus){
-    $('#pillName').textContent=T('tab_focus');
-    $('#pillTime').textContent=fFmt(fRemain());
-    pill._id=null;pill._focus=true;pill.classList.add('show');setPillGap(true);return;
-  }
-  pill.classList.remove('show');setPillGap(false);
+/* pill(lar) ko'rinsa ro'yxatga qo'shimcha pastki bo'shliq (kontent ostida qolmasin) */
+function setPillGap(n){
+  var d=$('#device');if(!d)return;
+  d.classList.toggle('has-pill',n>0);
+  d.style.setProperty('--pill-n',n||0);
 }
-$('#pill').addEventListener('click',function(){
-  if(this._focus){var t=document.querySelector('.tab[data-view="focus"]');if(t)t.click();return;}
-  if(this._id)openSession(this._id);
+/* Bir vaqtda nechta taymer ishlasa — shuncha pill. 2 ta bo'lsa 2 ta, 3 ta bo'lsa 3 ta. */
+function updatePill(){
+  var box=$('#pills'); if(!box)return;
+  var items=[],i,h;
+  if(!sessionOpen){
+    for(i=0;i<store.habits.length;i++){
+      h=store.habits[i];
+      if(h.runningSince)items.push({id:h.id,focus:false,name:h.name,time:fmtHMS(elapsedOf(h))});
+    }
+    /* audit #6: fokus sessiyasi ham pill'da ko'rinadi (fokus tabidan tashqarida) */
+    var onFocus=$('#v-focus')&&$('#v-focus').classList.contains('active');
+    if(fRunning&&!onFocus)items.push({id:null,focus:true,name:T('tab_focus'),time:fFmt(fRemain())});
+  }
+  /* DOM'ni faqat ro'yxat o'zgarganda qayta quramiz (bu 500ms tickda chaqiriladi) */
+  var key=items.map(function(x){return x.focus?'F':x.id;}).join(',');
+  if(box._key!==key){
+    box.innerHTML='';
+    items.forEach(function(it){
+      var b=document.createElement('button');
+      b.className='pill';
+      b.innerHTML='<span class="pdot"></span><span class="pname"></span><span class="ptime mono"></span>';
+      b._id=it.id;b._focus=it.focus;
+      box.appendChild(b);
+      requestAnimationFrame(function(){b.classList.add('show');});
+    });
+    box._key=key;
+  }
+  /* matnlarni har tickda yangilaymiz */
+  for(i=0;i<items.length&&i<box.children.length;i++){
+    box.children[i].querySelector('.pname').textContent=items[i].name;
+    box.children[i].querySelector('.ptime').textContent=items[i].time;
+  }
+  setPillGap(items.length);
+}
+$('#pills').addEventListener('click',function(e){
+  var b=e.target.closest('.pill'); if(!b)return;
+  if(b._focus){var t=document.querySelector('.tab[data-view="focus"]');if(t)t.click();return;}
+  if(b._id)openSession(b._id);
 });
 /* audit #10: klaviatura akseleratorlari — Enter (yuborish) + Escape (ustki panelni yopish) */
 (function(){
