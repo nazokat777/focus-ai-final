@@ -17,6 +17,7 @@ import android.os.Looper;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.TextView;
@@ -43,6 +44,12 @@ public class FloatingTimerService extends Service {
     private View overlayView;
     private TextView label;
     private WindowManager.LayoutParams params;
+
+    /* ikki-barmoq bilan o'lcham (pinch-to-resize) */
+    private static final float BASE_SP = 16f;
+    private float scale = 1f;
+    private ScaleGestureDetector scaleDetector;
+    private GradientDrawable pillBg;
 
     @Override public IBinder onBind(Intent intent) { return null; }
 
@@ -98,18 +105,34 @@ public class FloatingTimerService extends Service {
     private void addOverlay() {
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
 
+        /* saqlangan o'lchamni tiklaymiz */
+        scale = getSharedPreferences(FocusWidgetProvider.PREFS, MODE_PRIVATE).getFloat("ft_scale", 1f);
+
         label = new TextView(this);
         label.setText("00:00");
         label.setTextColor(Color.parseColor("#39FF8C"));      /* ilova neoni */
-        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16f);
-        label.setPadding(dp(14), dp(8), dp(14), dp(8));
 
-        GradientDrawable bg = new GradientDrawable();
-        bg.setColor(Color.parseColor("#E6030806"));           /* yarim-shaffof qora */
-        bg.setCornerRadius(dp(24));
-        bg.setStroke(dp(1), Color.parseColor("#3339FF8C"));
-        label.setBackground(bg);
+        pillBg = new GradientDrawable();
+        pillBg.setColor(Color.parseColor("#E6030806"));       /* yarim-shaffof qora */
+        pillBg.setStroke(dp(1), Color.parseColor("#3339FF8C"));
+        label.setBackground(pillBg);
         overlayView = label;
+        applyScale();                                          /* matn/padding/burchakni o'lchamga moslaydi */
+
+        /* ikki barmoq bilan chimchilab kattalashtirish/kichraytirish */
+        scaleDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            @Override public boolean onScale(ScaleGestureDetector det) {
+                scale *= det.getScaleFactor();
+                if (scale < 0.7f) scale = 0.7f;
+                if (scale > 2.8f) scale = 2.8f;
+                applyScale();
+                return true;
+            }
+            @Override public void onScaleEnd(ScaleGestureDetector det) {
+                getSharedPreferences(FocusWidgetProvider.PREFS, MODE_PRIVATE)
+                    .edit().putFloat("ft_scale", scale).apply();
+            }
+        });
 
         int type = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
             ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
@@ -130,7 +153,12 @@ public class FloatingTimerService extends Service {
             float touchX, touchY;
             boolean moved;
             @Override public boolean onTouch(View v, MotionEvent e) {
-                switch (e.getAction()) {
+                scaleDetector.onTouchEvent(e);                 /* pinch'ni birinchi tekshiramiz */
+                if (scaleDetector.isInProgress() || e.getPointerCount() > 1) {
+                    moved = true;                              /* chimchilash = siljitish/ochish emas */
+                    return true;
+                }
+                switch (e.getActionMasked()) {
                     case MotionEvent.ACTION_DOWN:
                         initialX = params.x; initialY = params.y;
                         touchX = e.getRawX(); touchY = e.getRawY();
@@ -166,6 +194,18 @@ public class FloatingTimerService extends Service {
         UI.post(new Runnable() { @Override public void run() {
             if (s.label != null) s.label.setText(text);
         }});
+    }
+
+    /* matn o'lchami + padding + burchakni joriy scale'ga moslaydi */
+    private void applyScale() {
+        if (label == null) return;
+        label.setTextSize(TypedValue.COMPLEX_UNIT_SP, BASE_SP * scale);
+        int pH = (int) (dp(14) * scale), pV = (int) (dp(8) * scale);
+        label.setPadding(pH, pV, pH, pV);
+        if (pillBg != null) pillBg.setCornerRadius(dp(24) * scale);
+        if (overlayView != null && windowManager != null && params != null) {
+            try { windowManager.updateViewLayout(overlayView, params); } catch (Exception e) {}
+        }
     }
 
     private int dp(int v) {

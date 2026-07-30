@@ -12,6 +12,5 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:initialLayout="@layout/widget_habits"
-    android:previewImage="@mipmap/ic_launcher"
-    android:previewLayout="@layout/widget_habits"
+    android:previewImage="@drawable/preview_habits"
     android:description="@string/widget_habits_desc" />

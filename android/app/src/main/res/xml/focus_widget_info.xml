@@ -12,6 +12,5 @@
     android:resizeMode="horizontal|vertical"
     android:widgetCategory="home_screen"
     android:initialLayout="@layout/focus_widget"
-    android:previewImage="@mipmap/ic_launcher"
-    android:previewLayout="@layout/focus_widget"
+    android:previewImage="@drawable/preview_streak"
     android:description="@string/widget_desc" />
