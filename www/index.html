@@ -425,7 +425,8 @@ input{font-family:inherit}
 
 .views{flex:1;position:relative;overflow:hidden}
 .view{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:4px 20px calc(var(--nav-h) + 28px);
-  opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .4s var(--ease),transform .4s var(--ease);scrollbar-width:none}
+  opacity:0;transform:translateY(12px);pointer-events:none;transition:opacity .4s var(--ease),transform .4s var(--ease);scrollbar-width:none;
+  touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .view::-webkit-scrollbar{display:none}
 .view.active{opacity:1;transform:none;pointer-events:auto}
 
@@ -820,7 +821,7 @@ input{font-family:inherit}
   #v-focus .f-presets{margin-bottom:8px!important}
   #v-focus .s-controls{margin-bottom:8px!important}
   #v-focus .s-btn-start{padding:14px}
-  #v-focus .s-env-section{display:none} /* qisqa ekranда muhit tanlash yashiriladi (taymer muhimroq) */
+  #v-focus .s-env-section{gap:8px}
 }
 /* ═══ TOJ-60 IGNITION: halqa = mexanik neon toj (asbob). Kamalak yo'q — hamma rang mavzu varlaridan.
    Sheen JS'SIZ buriladi: ringSet() qo'yadigan --f (0..1) dan transform:rotate(calc()) —
@@ -913,10 +914,22 @@ input{font-family:inherit}
 .s-env-pill svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
 .s-env-play{position:relative;z-index:1;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,0.5);border:1px solid rgba(57,255,140,0.3);display:grid;place-items:center;color:#39FF8C}
 .s-env-play svg{width:20px;height:20px}
-.s-env-thumbs{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.s-env-thumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:9px}
 .s-env-thumb{aspect-ratio:1;border-radius:14px;background-size:cover;background-position:center;border:2px solid transparent;opacity:0.6;transition:0.25s;cursor:pointer}
 .s-env-thumb:hover{opacity:0.8}
 .s-env-thumb.active{border-color:#39FF8C;opacity:1}
+.fe-off{display:grid!important;place-items:center;background:var(--elev2)!important;color:var(--muted);font-size:15px}
+.fe-off.active{border-color:var(--neon)!important;color:var(--neon)}
+/* Taymer fon rasmi (tanlangan muhit — butun ekran) */
+#fBg{position:absolute;inset:0;z-index:0;background-size:cover;background-position:center;opacity:0;transition:opacity .5s var(--ease)}
+#fBg.on{opacity:1}
+#fBg::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(3,8,6,.86),rgba(3,8,6,.5) 42%,rgba(3,8,6,.93))}
+#v-focus>*:not(#fBg){position:relative;z-index:1}
+/* Shisha tugmalar — hamma taymer knopkasi (fon ustida ham o'qilsin) */
+#v-focus .s-btn-start{background:rgba(255,255,255,.07)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,.16)!important;box-shadow:0 8px 26px rgba(0,0,0,.35)!important}
+#v-focus .s-main{background:rgba(var(--neon-rgb),.15)!important;border-color:rgba(var(--neon-rgb),.42)!important}
+#v-focus .s-fin-ok{background:rgba(var(--neon-rgb),.17)!important;border-color:rgba(var(--neon-rgb),.5)!important;color:var(--neon)}
+#v-focus .preset{backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:rgba(255,255,255,.06)}
 /* run'da shisha yuz sezilar-sezilmas nafas oladi (eski .85→1.1 vahshiy edi; opacity YO'Q —
    ostidagi qatlamlar "miltillamasin") */
 .s-ring.run .breathe{animation:breathe 5s var(--ease) infinite}
@@ -1826,6 +1839,7 @@ input{font-family:inherit}
 
     <!-- FOCUS TIMER (PRO GSAP ULTRA-CREATIVE HUD) -->
     <section class="view" id="v-focus">
+      <div id="fBg"></div>
       <div class="greet" style="text-align:center;margin-bottom:12px">
         <h1 style="font-size:22px;letter-spacing:-.02em" data-i18n="focus_title">FOKUS REJIMI</h1>
         <p style="font-size:12.5px;color:var(--muted)" data-i18n="focus_sub">Bitta chuqur blok. Nol shovqin.</p>
@@ -1870,16 +1884,13 @@ input{font-family:inherit}
 
       <!-- Fokus muhiti (Environments) -->
       <div class="s-env-section" style="max-width:340px;">
-        <div class="s-env-banner" id="vEnvBanner" style="background-image:url('assets/forest_rain.png');height:75px;">
-          <div class="s-env-info">
-            <div class="s-env-title" id="vEnvTitle" style="font-size:13px;">O'rmon yomg'iri</div>
-          </div>
-        </div>
-        <div class="s-env-thumbs" style="gap:8px;">
-          <div class="s-env-thumb active" style="background-image:url('assets/forest_rain.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/forest_rain.png)';document.getElementById('vEnvTitle').innerText='O\'rmon yomg\'iri';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
-          <div class="s-env-thumb" style="background-image:url('assets/campfire.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/campfire.png)';document.getElementById('vEnvTitle').innerText='Gulxan';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
-          <div class="s-env-thumb" style="background-image:url('assets/night_sky.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/night_sky.png)';document.getElementById('vEnvTitle').innerText='Tungi osmon';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
-          <div class="s-env-thumb" style="background-image:url('assets/cozy_room.png')" onclick="document.getElementById('vEnvBanner').style.backgroundImage='url(assets/cozy_room.png)';document.getElementById('vEnvTitle').innerText='Qulay xona';document.querySelectorAll('#v-focus .s-env-thumb').forEach(e=>e.classList.remove('active'));this.classList.add('active');"></div>
+        <div class="s-env-title" id="vEnvTitle" style="font-size:12px;color:var(--muted);margin-bottom:2px"></div>
+        <div class="s-env-thumbs" id="fEnvThumbs" style="gap:8px;">
+          <div class="s-env-thumb fe-off active" data-img="" data-title=""><span>✕</span></div>
+          <div class="s-env-thumb" data-img="assets/forest_rain.png" data-title="O'rmon yomg'iri" style="background-image:url('assets/forest_rain.png')"></div>
+          <div class="s-env-thumb" data-img="assets/campfire.png" data-title="Gulxan" style="background-image:url('assets/campfire.png')"></div>
+          <div class="s-env-thumb" data-img="assets/night_sky.png" data-title="Tungi osmon" style="background-image:url('assets/night_sky.png')"></div>
+          <div class="s-env-thumb" data-img="assets/cozy_room.png" data-title="Qulay xona" style="background-image:url('assets/cozy_room.png')"></div>
         </div>
       </div>
     </section>
@@ -4992,6 +5003,29 @@ $('#fFinish').addEventListener('click',function(){
   fDraw();refreshChips();
 });
 fDraw();
+
+/* ============ Fokus muhiti — tanlangan rasm butun taymer foni ============ */
+(function(){
+  var thumbs=$('#fEnvThumbs'); if(!thumbs)return;
+  var bg=$('#fBg'), title=$('#vEnvTitle');
+  function apply(img,ttl,noSave){
+    if(img){bg.style.backgroundImage='url('+img+')';bg.classList.add('on');}
+    else bg.classList.remove('on');
+    if(title)title.textContent=ttl?('🌿 '+ttl):'';
+    if(!noSave){store.settings.focusEnv=img||'';save();}
+  }
+  thumbs.addEventListener('click',function(e){
+    var t=e.target.closest('.s-env-thumb');if(!t)return;sTap();
+    $$('#fEnvThumbs .s-env-thumb').forEach(function(x){x.classList.remove('active');});
+    t.classList.add('active');
+    apply(t.getAttribute('data-img'),t.getAttribute('data-title'));
+  });
+  var saved=(store.settings&&store.settings.focusEnv)||'';
+  if(saved){
+    var el=[].filter.call(thumbs.querySelectorAll('.s-env-thumb'),function(x){return x.getAttribute('data-img')===saved;})[0];
+    if(el){$$('#fEnvThumbs .s-env-thumb').forEach(function(x){x.classList.remove('active');});el.classList.add('active');apply(saved,el.getAttribute('data-title'),true);}
+  }
+})();
 
 /* ============ auth avatar live preview ============ */
 $('#authName').addEventListener('input',function(){
