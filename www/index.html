@@ -550,6 +550,8 @@ input{font-family:inherit}
 .habit-filter{position:relative;display:flex;gap:2px;background:var(--elev);border:1px solid var(--line);border-radius:999px;padding:3px;margin:0 4px 12px}
 .hf-btn{flex:1;position:relative;z-index:1;padding:7px 4px;border-radius:999px;font-size:12.5px;font-weight:600;color:var(--muted);background:none;transition:color .25s var(--ease)}
 .hf-btn.sel{color:var(--onneon)}
+/* Odatlar filtri: hf-ink yo'q -> tanlangan tabga to'g'ridan-to'g'ri neon-pill (ikki temada o'qilsin) */
+.od-filter .hf-btn.sel{background:var(--neon);color:var(--onneon)}
 .hf-ink{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;width:33%;border-radius:999px;background:var(--neon);
   box-shadow:0 2px 10px rgba(var(--neon-rgb),.4);transition:transform .32s var(--spring),width .32s var(--spring)}
 .reduce .hf-ink{transition:none}
@@ -2023,7 +2025,6 @@ input{font-family:inherit}
         </div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg><span data-i18n="theme"></span></div><button class="tog" id="themeTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/></svg><span data-i18n="sound"></span></div><button class="tog on" id="soundTog"></button></div>
-        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.2 9.5a3 3 0 0 1 5.6 1.2c0 2-2.8 2.5-2.8 4"/><path d="M12 17.5v.01"/></svg><span data-i18n="guess_ask"></span></div><button class="tog on" id="guessTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span data-i18n="reminder"></span></div>
           <input type="time" id="remTime" style="background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"></div>
         <input type="text" id="remMsg" maxlength="120" style="width:100%;box-sizing:border-box;background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin:-3px 0 3px;color:var(--text);font-size:13px;outline:none">
@@ -5276,8 +5277,8 @@ function showResult(h){
   lastResultMs=todayMs; /* QULFLANDI — taxmin bundan keyin hech narsani o'zgartira olmaydi */
   guessHid=h.id;
   $('#rDelta').innerHTML='';
-  /* so'rash sharti: taymerli odat, kamida 1 daqiqa, sozlamada o'chirilmagan */
-  var ask=!store.settings.guessOff&&h.type!=='check'&&todayMs>=60000;
+  /* idrok ko'zgusi (taxmin so'rash) — o'chirildi (foydalanuvchi so'rovi) */
+  var ask=false;
   $('#guessBox').style.display=ask?'':'none';
   $('#rTime').classList.toggle('hid',ask);
   if(ask){guessSet(h.dailyMin||30);$('#rTime').textContent='?';}
@@ -5942,11 +5943,7 @@ $('#soundTog').addEventListener('click',function(){
   if(soundOn)sTap();buzz(8);
 });
 $('#soundTog').classList.toggle('on',soundOn);
-$('#guessTog').addEventListener('click',function(){
-  store.settings.guessOff=!store.settings.guessOff;save();
-  this.classList.toggle('on',!store.settings.guessOff);sTap();
-});
-$('#guessTog').classList.toggle('on',!store.settings.guessOff);
+/* guessTog (idrok ko'zgusi) sozlamasi olib tashlandi */
 /* ============ blok E: zaxira (export) va tiklash (import) ============ */
 function exportData(){
   try{
