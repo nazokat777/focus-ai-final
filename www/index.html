@@ -41,7 +41,7 @@
   --bg:#f3faf5; --elev:#ffffff; --elev2:#e7f3ea; --line:rgba(14,120,70,.14);
   --neon:#0E9F55; --neon-br:#16c26c; --neon-dp:#0a7a41; --onneon:#ffffff;
   --neon-rgb:14,159,85; --neon-br-rgb:22,194,108;
-  --text:#0a1f12; --muted:#4c6858;
+  --text:#0a1f12; --muted:#4c6858; --danger:#c94343;
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none;touch-action:manipulation}
 html,body{height:100%}
@@ -604,23 +604,13 @@ input{font-family:inherit}
 .gh-chart .ln{fill:none;stroke:var(--neon);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .gh-chart .ar{stroke:none;opacity:.9}
 .gh-chart .pk{fill:var(--neon-br)}
-.gh-chart .pk-halo{fill:rgba(var(--neon-rgb),.25);transform-origin:center;transform-box:fill-box;animation:pkPulse 2.4s var(--ease) infinite}
+.gh-chart .pk-halo{fill:rgba(var(--neon-rgb),.25)}
+/* pulsatsiya faqat transform-box tushunadigan brauzerda — aks holda halo SVG burchagidan uchmasin */
+@supports (transform-box:fill-box){
+  .gh-chart .pk-halo{transform-origin:center;transform-box:fill-box;animation:pkPulse 2.4s var(--ease) infinite}
+}
 @keyframes pkPulse{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.9);opacity:.25}}
 .reduce .gh-chart .pk-halo{animation:none}
-/* Yutuqlar — olti burchakli nishonlar (eski WebView'da yumaloq karta bo'lib qoladi) */
-@supports (clip-path:polygon(0 0,100% 0,50% 100%)){
-  .badge{position:relative;border:none;border-radius:0;padding:13px 2px 12px;
-    clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
-    background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04))}
-  .badge::before{content:'';position:absolute;inset:1.5px;z-index:0;
-    clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
-    background:var(--elev)}
-  .badge .bn,.badge .bl{position:relative;z-index:1}
-  .badge.unlocked{background:linear-gradient(180deg,var(--neon),rgba(var(--neon-rgb),.25))}
-  .badge.unlocked::before{background:linear-gradient(180deg,rgba(var(--neon-rgb),.16),var(--elev) 72%)}
-  .device[data-theme="light"] .badge::before{background:var(--elev2)}
-  .device[data-theme="light"] .badge.unlocked::before{background:linear-gradient(180deg,rgba(var(--neon-rgb),.14),#fff 75%)}
-}
 /* Kunlik sitata */
 .quote-card{position:relative;background:linear-gradient(135deg,rgba(var(--neon-rgb),.08),var(--elev) 55%);
   border:1px solid var(--line);border-left:3px solid var(--neon);border-radius:16px;
@@ -949,6 +939,22 @@ input{font-family:inherit}
 .badge.locked{opacity:.45}
 .badge.locked .bn::after{content:" 🔒";font-size:9px}
 .badge.reveal{animation:bReveal .8s var(--ease)}
+/* Yutuqlar — olti burchakli nishonlar (eski WebView'da yumaloq karta bo'lib qoladi).
+   DIQQAT: bu blok BARCHA .badge qoidalaridan KEYIN turishi shart — teng spetsifiklikda
+   keyingisi yutadi (@supports spetsifiklik qo'shmaydi). */
+@supports (clip-path:polygon(0 0,100% 0,50% 100%)){
+  .badge{position:relative;border:none;border-radius:0;padding:13px 2px 12px;
+    clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+    background:linear-gradient(180deg,rgba(255,255,255,.10),rgba(255,255,255,.04))}
+  .badge::before{content:'';position:absolute;inset:1.5px;z-index:0;
+    clip-path:polygon(50% 0,100% 25%,100% 75%,50% 100%,0 75%,0 25%);
+    background:var(--elev)}
+  .badge .bn,.badge .bl{position:relative;z-index:1}
+  .badge.unlocked{background:linear-gradient(180deg,var(--neon),rgba(var(--neon-rgb),.25))}
+  .badge.unlocked::before{background:linear-gradient(180deg,rgba(var(--neon-rgb),.16),var(--elev) 72%)}
+  .device[data-theme="light"] .badge::before{background:var(--elev2)}
+  .device[data-theme="light"] .badge.unlocked::before{background:linear-gradient(180deg,rgba(var(--neon-rgb),.14),#fff 75%)}
+}
 @keyframes bReveal{0%{transform:scale(.4) rotate(-8deg);opacity:0}70%{transform:scale(1.12)}100%{transform:scale(1)}}
 
 .ambi{display:flex;gap:8px;padding:10px 22px 0;overflow-x:auto;scrollbar-width:none;justify-content:flex-start;width:100%}
@@ -2317,7 +2323,8 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",rem_msg_ph:"O'z eslatma so'zingiz (ixtiyoriy)…",
   al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
-  wk_total:"Umumiy fokus vaqti",wk_first:"Birinchi hafta — poydevor qo'yildi",
+  wk_total:"Umumiy fokus vaqti",wk_first:"Taqqoslash uchun o'tgan hafta ma'lumoti yo'q",
+  wk_same:"O'tgan hafta bilan deyarli teng",
   wk_up:function(x){return "+"+x+" o'tgan haftaga nisbatan";},
   wk_down:function(x){return "−"+x+" o'tgan haftaga nisbatan";},
   st_split:"Vaqt taqsimoti",st_cap:"bu hafta",st_other:"Boshqa",st_focus:"Fokus taymer",
@@ -2426,7 +2433,8 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",rem_msg_ph:"Своё напоминание (необязательно)…",
   al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
-  wk_total:"Общее время фокуса",wk_first:"Первая неделя — фундамент заложен",
+  wk_total:"Общее время фокуса",wk_first:"Нет данных за прошлую неделю для сравнения",
+  wk_same:"Почти как на прошлой неделе",
   wk_up:function(x){return "+"+x+" к прошлой неделе";},
   wk_down:function(x){return "−"+x+" к прошлой неделе";},
   st_split:"Распределение времени",st_cap:"за неделю",st_other:"Прочее",st_focus:"Фокус-таймер",
@@ -2535,7 +2543,8 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",rem_msg_ph:"Your own reminder (optional)…",
   al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
-  wk_total:"Total focus time",wk_first:"First week — foundation laid",
+  wk_total:"Total focus time",wk_first:"No last-week data to compare yet",
+  wk_same:"About the same as last week",
   wk_up:function(x){return "+"+x+" vs last week";},
   wk_down:function(x){return "−"+x+" vs last week";},
   st_split:"Time split",st_cap:"this week",st_other:"Other",st_focus:"Focus timer",
@@ -4481,12 +4490,13 @@ function decode(el,final,dur){
 function staggerRise(els,step,base){
   if(reduce)return;
   step=step||55;base=base||0;
-  var k=0,i,el;
-  for(i=0;i<els.length;i++){
-    el=els[i];if(!el)continue;
-    el.classList.remove('st-rise');void el.offsetWidth;
-    el.style.animationDelay=(base+k*step)+'ms';
-    el.classList.add('st-rise');k++;
+  var i,list=[];
+  for(i=0;i<els.length;i++)if(els[i]){els[i].classList.remove('st-rise');list.push(els[i]);}
+  if(!list.length)return;
+  void list[0].offsetWidth; /* BITTA umumiy reflow — animatsiya qayta boshlanadi, layout thrash yo'q */
+  for(i=0;i<list.length;i++){
+    list[i].style.animationDelay=(base+i*step)+'ms';
+    list[i].classList.add('st-rise');
   }
 }
 /* ============ statistika diagrammalari (mockup: hero + donut + sitata) ============ */
@@ -4498,7 +4508,8 @@ function renderWkHero(anim){
   if(lastW<60000)html+='<div class="wk-delta"><span class="tr">●</span><span>'+T('wk_first')+'</span></div>';
   else{
     var d=thisW-lastW;
-    if(d>=0)html+='<div class="wk-delta"><span class="tr">▲</span><span>'+T('wk_up')(fmtHM(d))+'</span></div>';
+    if(Math.abs(d)<60000)html+='<div class="wk-delta"><span class="tr">●</span><span>'+T('wk_same')+'</span></div>'; /* "+0 min" shovqini yo'q */
+    else if(d>0)html+='<div class="wk-delta"><span class="tr">▲</span><span>'+T('wk_up')(fmtHM(d))+'</span></div>';
     else html+='<div class="wk-delta down"><span class="tr">▼</span><span>'+T('wk_down')(fmtHM(-d))+'</span></div>';
   }
   cmp.innerHTML=html;
@@ -4531,7 +4542,8 @@ function renderDonut(anim){
   var doAnim=anim&&!reduce,leg='';
   for(i=0;i<sl.length;i++){
     var seg=Math.max(.5,sl[i].ms/tot*C-GAP);
-    var col=sl[i].color||(sl[i].other?'var(--muted)':'var(--neon)');
+    /* Fokus taymer bo'lagi --neon-dp: palitradagi #39FF8C odat rangi bilan adashmasin */
+    var col=sl[i].color||(sl[i].other?'var(--muted)':'var(--neon-dp)');
     var c=document.createElementNS(ns,'circle');
     c.setAttribute('cx','60');c.setAttribute('cy','60');c.setAttribute('r','50');
     c.style.stroke=col;
