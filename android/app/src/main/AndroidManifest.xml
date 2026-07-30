@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Google login: tizim brauzeri shu deep-link orqali ilovaga qaytaradi -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="uz.lumnaara.focusai" />
+            </intent-filter>
+
         </activity>
 
         <!-- Suzuvchi taymer servisi (boshqa ilovalar ustida) -->

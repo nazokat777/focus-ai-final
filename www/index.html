@@ -6552,7 +6552,12 @@ window.addEventListener('beforeunload',function(){
     if (sb) return sb;                                 // klient allaqachon yaratilgan
     if (!window.SB_URL || !window.SB_KEY) return null; // kalit yo'q -> lokal rejim
     if (!window.supabase) return null;                 // kutubxona hali yuklanmagan -> keshsiz, keyin qayta urinamiz
-    try { sb = window.supabase.createClient(window.SB_URL, window.SB_KEY); } catch (e) { sb = null; }
+    /* PKCE — deep-link bilan qaytgan `code`ni sessiyaga almashtirish uchun shart (APK) */
+    try {
+      sb = window.supabase.createClient(window.SB_URL, window.SB_KEY, {
+        auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
+      });
+    } catch (e) { sb = null; }
     return sb;
   }
   function cloud() { return !!client(); }
@@ -6825,12 +6830,69 @@ window.addEventListener('beforeunload',function(){
       c.auth.getSession().then(function (r) { _authUser = (r && r.data && r.data.session && r.data.session.user) || null; _emitAuth(); }, function () {});
       c.auth.onAuthStateChange(function (ev, session) { _authUser = (session && session.user) || null; _emitAuth(); });
     } catch (e) {}
+    /* APK: brauzerdan deep-link bilan qaytishni tinglaymiz */
+    try {
+      var P = (window.Capacitor && window.Capacitor.Plugins) || {};
+      if (P.App && P.App.addListener) {
+        P.App.addListener('appUrlOpen', function (ev) {
+          var u = ev && ev.url; if (u && u.indexOf('uz.lumnaara.focusai') === 0) _handleAuthDeepLink(u);
+        });
+      }
+    } catch (e) {}
   }
+  /* Native (APK) aniqlash: Google WebView ichida OAuth'ni bloklaydi (disallowed_useragent),
+     shuning uchun APK'da tizim brauzeri ochiladi va deep-link orqali qaytiladi. */
+  function isNativeApp() {
+    try { return !!(window.Capacitor && window.Capacitor.isNativePlatform && window.Capacitor.isNativePlatform()); }
+    catch (e) { return false; }
+  }
+  var NATIVE_REDIRECT = 'uz.lumnaara.focusai://auth';
+
   function signInGoogle() {
     var c = client(); if (!c || !c.auth) return Promise.resolve(false);
-    var redirect; try { redirect = location.origin + location.pathname; } catch (e) {}
-    return c.auth.signInWithOAuth({ provider: 'google', options: redirect ? { redirectTo: redirect } : {} })
-      .then(function (r) { return !(r && r.error); }, function () { return false; });
+
+    /* ── WEB: oddiy redirect ── */
+    if (!isNativeApp()) {
+      var redirect; try { redirect = location.origin + location.pathname; } catch (e) {}
+      return c.auth.signInWithOAuth({ provider: 'google', options: redirect ? { redirectTo: redirect } : {} })
+        .then(function (r) { return !(r && r.error); }, function () { return false; });
+    }
+
+    /* ── NATIVE: URL olamiz (avtomatik ochmaymiz) va tizim brauzerida ochamiz ── */
+    return c.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: NATIVE_REDIRECT, skipBrowserRedirect: true }
+    }).then(function (r) {
+      var url = r && r.data && r.data.url;
+      if (!url || (r && r.error)) return false;
+      var P = (window.Capacitor && window.Capacitor.Plugins) || {};
+      if (P.Browser && P.Browser.open) { try { P.Browser.open({ url: url }); return true; } catch (e) {} }
+      try { window.open(url, '_system'); return true; } catch (e) {}
+      return false;
+    }, function () { return false; });
+  }
+
+  /* Deep-link qaytishi: uz.lumnaara.focusai://auth?code=... -> sessiyaga almashtiramiz */
+  function _handleAuthDeepLink(url) {
+    var c = client(); if (!c || !c.auth || !url) return;
+    try {
+      var P = (window.Capacitor && window.Capacitor.Plugins) || {};
+      if (P.Browser && P.Browser.close) { try { P.Browser.close(); } catch (e) {} }
+
+      var code = (url.match(/[?&]code=([^&#]+)/) || [])[1];
+      if (code && c.auth.exchangeCodeForSession) {
+        c.auth.exchangeCodeForSession(decodeURIComponent(code))
+          .then(function (r) { if (r && r.data && r.data.session) { _authUser = r.data.session.user; _emitAuth(); } }, function () {});
+        return;
+      }
+      /* implicit oqim: #access_token=...&refresh_token=... */
+      var at = (url.match(/[#&]access_token=([^&]+)/) || [])[1];
+      var rt = (url.match(/[#&]refresh_token=([^&]+)/) || [])[1];
+      if (at && rt && c.auth.setSession) {
+        c.auth.setSession({ access_token: decodeURIComponent(at), refresh_token: decodeURIComponent(rt) })
+          .then(function (r) { if (r && r.data && r.data.session) { _authUser = r.data.session.user; _emitAuth(); } }, function () {});
+      }
+    } catch (e) {}
   }
   function signInEmail(email) {
     var c = client(); if (!c || !c.auth) return Promise.resolve(false);
