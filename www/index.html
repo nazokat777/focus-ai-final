@@ -553,6 +553,19 @@ input{font-family:inherit}
 .hf-ink{position:absolute;z-index:0;top:3px;bottom:3px;left:3px;width:33%;border-radius:999px;background:var(--neon);
   box-shadow:0 2px 10px rgba(var(--neon-rgb),.4);transition:transform .32s var(--spring),width .32s var(--spring)}
 .reduce .hf-ink{transition:none}
+/* GLOBAL "bugun dam" — hordiq kartasi + jimgina havola */
+.rest-today{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
+  padding:34px 22px;background:linear-gradient(160deg,rgba(180,140,255,.10),var(--elev));
+  border:1px solid rgba(180,140,255,.28);border-radius:20px;margin-top:4px}
+.rest-today .rt-ic{font-size:46px;line-height:1;animation:aicFloat 3.6s var(--ease) infinite}
+.rest-today .rt-t{font-size:19px;font-weight:800;color:var(--text)}
+.rest-today .rt-s{font-size:13.5px;line-height:1.55;color:var(--muted);max-width:30ch}
+.rest-today .rt-off{margin-top:8px;padding:11px 20px;border-radius:12px;font-size:13px;font-weight:600;
+  background:rgba(180,140,255,.16);border:1px solid rgba(180,140,255,.4);color:#c9aaff}
+.rest-today .rt-off:active{transform:scale(.97)}
+.rest-link{display:block;width:100%;margin-top:12px;padding:11px;background:transparent;border:1px dashed var(--line);
+  border-radius:12px;color:var(--muted);font-size:12.5px;font-weight:500;letter-spacing:.02em;transition:.2s var(--ease)}
+.rest-link:active{border-color:rgba(180,140,255,.5);color:#c9aaff}
 .rest-group{width:100%;display:flex;align-items:center;gap:10px;padding:12px 14px;margin-top:2px;background:var(--elev);border:1px solid var(--line);border-radius:var(--r);cursor:pointer;color:var(--muted);font-size:13px;transition:background .2s var(--ease)}
 /* bajarildi guruhi — neon ohangda (dam guruhidan farqlansin) */
 .rest-group.done-group{border-color:rgba(var(--neon-rgb),.3)}
@@ -2474,7 +2487,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   gh_none:"Hali o'lchangan vaqt yo'q. Taymerni ishga tushiring — xarita o'zi to'ladi.",
   gh_ndays:function(n){return n+" kun";},
   rain:"Yomg'ir",ach_t:"Maqsad bajarildi!",ach_ok:"OK",task_default:"Vazifa",ach_sub:function(n){return "«"+n+"» — 100%";},
-  empty1:"Hali odat yo'q",empty2:"Yuqoridagi + tugmasini bosib birinchi odatni qo'sh — vaqt hisobi boshlanadi.",
+  empty1:"Hali odat yo'q",rest_today:"Bugun dam olaman",rest_on_t:"Hordiqli dam oling",rest_on_s:"Bugun odatlar dam oladi. Ertaga yangi kuch bilan davom etamiz.",rest_off:"Dam rejimini bekor qilish",empty2:"Yuqoridagi + tugmasini bosib birinchi odatni qo'sh — vaqt hisobi boshlanadi.",
   auth_title:"Xush kelibsiz",tab_focus:"Fokus",focus_title:"Fokus sessiyasi",focus_sub:"Bitta chuqur blok. Nol shovqin.",
   ready:"tayyor",focusing:"fokusda",paused:"pauza",done:"tugadi ✓",reset:"Qayta",cal_lbl:"Faol kunlar",
   cal_streak:function(n,m){return "🔥 "+n+" kun · max "+m;},
@@ -2585,7 +2598,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   gh_none:"Пока нет измеренного времени. Запустите таймер — карта заполнится сама.",
   gh_ndays:function(n){return n+" дн.";},
   rain:"Дождь",ach_t:"Цель достигнута!",ach_ok:"ОК",task_default:"Задача",ach_sub:function(n){return "«"+n+"» — 100%";},
-  empty1:"Пока нет привычек",empty2:"Нажми + вверху и добавь первую привычку — начнётся честный счёт времени.",
+  empty1:"Пока нет привычек",rest_today:"Сегодня отдыхаю",rest_on_t:"Спокойного отдыха",rest_on_s:"Сегодня привычки отдыхают. Завтра продолжим с новыми силами.",rest_off:"Отменить режим отдыха",empty2:"Нажми + вверху и добавь первую привычку — начнётся честный счёт времени.",
   auth_title:"Добро пожаловать",tab_focus:"Фокус",focus_title:"Фокус-сессия",focus_sub:"Один глубокий блок. Ноль шума.",
   ready:"готов",focusing:"фокус",paused:"пауза",done:"готово ✓",reset:"Сброс",cal_lbl:"Активные дни",
   cal_streak:function(n,m){return "🔥 "+n+" дн. · макс "+m;},
@@ -2696,7 +2709,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   gh_none:"No measured time yet. Start the timer — the map fills itself.",
   gh_ndays:function(n){return n+" days";},
   rain:"Rain",ach_t:"Goal achieved!",ach_ok:"OK",task_default:"Task",ach_sub:function(n){return "“"+n+"” — 100%";},
-  empty1:"No habits yet",empty2:"Tap + above to add your first habit — honest time tracking begins.",
+  empty1:"No habits yet",rest_today:"Resting today",rest_on_t:"Enjoy your rest",rest_on_s:"Habits rest today. Tomorrow we continue fresh.",rest_off:"Cancel rest mode",empty2:"Tap + above to add your first habit — honest time tracking begins.",
   auth_title:"Welcome",tab_focus:"Focus",focus_title:"Focus session",focus_sub:"One deep block. Zero noise.",
   ready:"ready",focusing:"focusing",paused:"paused",done:"done ✓",reset:"Reset",cal_lbl:"Active days",
   cal_streak:function(n,m){return "🔥 "+n+" days · max "+m;},
@@ -3686,6 +3699,13 @@ function renderOneCard(h,ci,stagger){
   bindCardSwipe(el,h);
   return wrap;
 }
+/* GLOBAL "bugun dam" rejimi — butun kun odatlar dam oladi */
+function isRestDay(){return store.restDay===TODAY;}
+function setRestDay(on){
+  store.restDay=on?TODAY:null;save();buzz(on?[20,40,20]:10);
+  firstCardRender=true;renderHabits();refreshChips();scheduleReminders();
+  if(on)toast(T('rest_on_t'));
+}
 function renderHabits(){
   var list=$('#habitList');list.innerHTML='';cardRefs={};
   var stagger=firstCardRender&&!reduce;firstCardRender=false;
@@ -3695,6 +3715,15 @@ function renderHabits(){
     var em=document.createElement('div');em.className='empty';
     em.innerHTML='<div class="big">⏱</div><p><b>'+T('empty1')+'</b></p><p>'+T('empty2')+'</p>';
     list.appendChild(em);return;
+  }
+  if(isRestDay()){ /* odatlar ko'rinmaydi — hordiq kartasi */
+    var rc=document.createElement('div');rc.className='rest-today';
+    rc.innerHTML='<div class="rt-ic">🍵</div><b class="rt-t">'+T('rest_on_t')+'</b>'+
+      '<p class="rt-s">'+T('rest_on_s')+'</p>'+
+      '<button class="rt-off" id="restOff">'+T('rest_off')+'</button>';
+    list.appendChild(rc);
+    rc.querySelector('#restOff').addEventListener('click',function(){sTap();setRestDay(false);});
+    return;
   }
   var mode='today';  /* bosh ekran doim "bugungi" — filtrlar Odatlar ekranida */
   /* uch guruh: faol (qolgani) / bugun bajarilgan / dam. Ishlayotgan odat DOIM faol
@@ -3730,6 +3759,10 @@ function renderHabits(){
   }
   if(done.length)appendGroup(list,'done-group','✓',T('done_group'),done,doneOpen,function(){doneOpen=!doneOpen;renderHabits();},ciBox);
   if(rested.length)appendGroup(list,'','🌙',T('rest_group'),rested,restOpen,function(){restOpen=!restOpen;renderHabits();},ciBox);
+  /* jimgina "bugun dam olaman" havolasi */
+  var rl=document.createElement('button');rl.className='rest-link';rl.innerHTML='☕ '+T('rest_today');
+  rl.addEventListener('click',function(){sTap();setRestDay(true);});
+  list.appendChild(rl);
   refreshCards();
 }
 /* karta-swipe -> "bugun dam": surib chegaradan oshsa dam qo'yiladi va odat guruhga tushadi.
@@ -5574,6 +5607,7 @@ function scheduleReminders(){
     var cancels=[{id:1001}];
     store.habits.forEach(function(h){cancels.push({id:2000+h.id});for(var d=0;d<7;d++)cancels.push({id:2000+h.id*10+d});});
     LN.cancel({notifications:cancels});
+    if(isRestDay())return; /* bugun dam — hech qanday eslatma otilmaydi */
     /* app dow: 0=Du..6=Ya  ->  Capacitor weekday: 1=Ya..7=Sh */
     function capWd(dow){return ((dow+1)%7)+1;}
     var list=[];
@@ -5626,8 +5660,8 @@ setInterval(function(){
   var hm=('0'+now.getHours()).slice(-2)+':'+('0'+now.getMinutes()).slice(-2);
   if(store.settings.remTime===hm&&store.lastRemDay!==TODAY){
     store.lastRemDay=TODAY;save();
-    /* blok D: aqlli — bugun hamma norma bajarilgan bo'lsa bezovta qilmaymiz */
-    if(hasUnfinishedToday())notify('Focus AI',remBody());
+    /* blok D: aqlli — dam kuni EMAS va bugun norma bajarilmagan bo'lsa eslatamiz */
+    if(!isRestDay()&&hasUnfinishedToday())notify('Focus AI',remBody());
   }
   if(store.settings.alarmTime===hm&&store.lastAlarmDay!==TODAY&&!alarmActive){
     alarmFire();
