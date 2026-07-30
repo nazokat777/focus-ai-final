@@ -1803,12 +1803,7 @@ input{font-family:inherit}
           <button class="add" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
         </div>
       </div>
-      <div class="habit-filter" id="habitFilter" style="display:none">
-        <button class="hf-btn sel" data-f="today" data-i18n="hf_today"></button>
-        <button class="hf-btn" data-f="done" data-i18n="hf_done"></button>
-        <button class="hf-btn" data-f="all" data-i18n="hf_all"></button>
-        <span class="hf-ink" id="hfInk"></span>
-      </div>
+      <!-- Filtr tugmalari Odatlar ekraniga ko'chirildi — bosh ekran toza (faqat bugungi) -->
       <div class="habits" id="habitList"></div>
     </section>
 
@@ -3520,7 +3515,7 @@ function celebrate(el){
 }
 var firstCardRender=true,restOpen=false,doneOpen=false;
 /* bosh ekran filtri: 'today' (faqat qolgani + yig'ilgan guruhlar) / 'done' / 'all' */
-function habitFilterMode(){return (store.settings&&store.settings.habitFilter)||'today';}
+function habitFilterMode(){return 'today';} /* bosh ekran doim bugungi (filtr Odatlarga ko'chdi) */
 /* "bugun bajarildi" — check: kunlik belgi; vaqtli: kunlik norma yoki umumiy maqsad.
    Streak/taymer mantiqiga TEGMAYDI — faqat ro'yxatni guruhlash uchun (halol vizual). */
 function doneToday(h){
@@ -3602,9 +3597,7 @@ function renderHabits(){
     em.innerHTML='<div class="big">⏱</div><p><b>'+T('empty1')+'</b></p><p>'+T('empty2')+'</p>';
     list.appendChild(em);return;
   }
-  if(filter)filter.style.display='';
-  syncFilterUI();
-  var mode=habitFilterMode();
+  var mode='today';  /* bosh ekran doim "bugungi" — filtrlar Odatlar ekranida */
   /* uch guruh: faol (qolgani) / bugun bajarilgan / dam. Ishlayotgan odat DOIM faol
      bo'lib turadi — normani o'tsa ham (taymer ochiq ekan yuqorida ko'rinsin). */
   var active=[],done=[],rested=[];
@@ -3831,15 +3824,7 @@ if($('#odFilter'))$('#odFilter').addEventListener('click',function(e){
   var b=e.target.closest('.hf-btn');if(!b)return;
   odMode=b.getAttribute('data-f');sTap();buzz(6);renderOdatlar();
 });
-$('#habitFilter').addEventListener('click',function(e){
-  var b=e.target.closest('.hf-btn');if(!b)return;
-  var f=b.getAttribute('data-f');
-  if(f===habitFilterMode())return;
-  store.settings.habitFilter=f;save();sTap();buzz(6);
-  firstCardRender=true;                 /* filtr almashganda ro'yxat stagger bilan qayta kirsin */
-  if(f!=='today'){doneOpen=true;restOpen=true;} /* 'hammasi'da guruhlar ochiq bo'lsin */
-  renderHabits();
-});
+/* bosh-ekran filtri olib tashlandi (Odatlar ekraniga ko'chdi) */
 /* topilma #5/#7: tushunchalar yordami — chip yoki ko'rsatkich bosilganda tushuntirish */
 $('#device').addEventListener('click',function(e){
   var el=e.target.closest('[data-help]');if(!el)return;
