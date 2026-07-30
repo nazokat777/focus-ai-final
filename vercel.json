@@ -3,7 +3,6 @@
   "outputDirectory": "www",
   "headers": [
     {
-      "comment": "APK (bundled) ichidagi Service Worker saytdan eng oxirgi kodni o'qishi uchun CORS",
       "source": "/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Origin", "value": "*" }
