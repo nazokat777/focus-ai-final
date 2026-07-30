@@ -1,7 +1,7 @@
 /* Focus AI — Service Worker
    Maqsad: internet BO'LSA eng oxirgi versiyani ko'rsatish (auto-yangilanish),
    internet BO'LMASA keshdan ishlash (oflayn). Bridge server.url origin'da ishlaydi. */
-var CACHE = 'focusai-v1';
+var CACHE = 'focusai-v2';
 var CORE = [
   './',
   'index.html',
@@ -60,17 +60,19 @@ self.addEventListener('fetch', function(e){
     return;
   }
 
-  /* Boshqa resurslar (JS/CSS/shrift/rasm/video): avval kesh, bo'lmasa tarmoq + keshla */
+  /* Boshqa resurslar — STALE-WHILE-REVALIDATE: keshdan darhol ber (tez),
+     fonда tarmoqdan yangilab keshni yangila (keyingi safar yangi). Oflaynда kesh. */
   e.respondWith(
-    caches.match(req).then(function(m){
-      if(m) return m;
-      return fetch(req).then(function(res){
-        if(res && res.status === 200 && res.type === 'basic'){
-          var copy = res.clone();
-          caches.open(CACHE).then(function(c){ c.put(req, copy); });
-        }
-        return res;
-      }).catch(function(){ return m; });
+    caches.open(CACHE).then(function(cache){
+      return cache.match(req).then(function(cached){
+        var net = fetch(req).then(function(res){
+          if(res && res.status === 200 && (res.type === 'basic' || res.type === 'default')){
+            cache.put(req, res.clone());
+          }
+          return res;
+        }).catch(function(){ return cached; });
+        return cached || net;   /* kesh bo'lsa darhol, yo'q bo'lsa tarmoqni kut */
+      });
     })
   );
 });
