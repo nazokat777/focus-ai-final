@@ -1,0 +1,9 @@
+# Vercel deploy uchun — .vercelignore mavjud bo'lsa Vercel .gitignore'ni E'TIBORGA OLMAYDI.
+# Shuning uchun bu yerda apk'ni ATAYLAB istisno qilmaymiz (sayt uni yuklab berishi kerak).
+# Faqat kerakmas og'ir narsalarni chiqaramiz.
+node_modules
+.git
+android
+.vercel
+*.log
+ios
