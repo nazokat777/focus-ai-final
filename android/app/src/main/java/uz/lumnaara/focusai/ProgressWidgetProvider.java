@@ -57,11 +57,10 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
 
                     row.setTextViewText(R.id.wpr_name, h.optString("name", ""));
                     row.setTextColor(R.id.wpr_ic, color);
-                    row.setInt(R.id.wpr_state, "setTextColor", done ? color : 0x66EAF3EE);
+                    row.setTextColor(R.id.wpr_state, done ? color : 0x66EAF3EE);
                     row.setTextViewText(R.id.wpr_state, done ? "✓" : "○");
-                    /* pill foni — odat rangining juda xira varianti */
-                    row.setInt(R.id.wpr_name, "setBackgroundColor", Color.TRANSPARENT);
-                    row.setInt(R.id.wpr_ic, "setBackgroundColor", Color.TRANSPARENT);
+                    /* pill foni — odat rangining xira varianti (yumaloq burchak saqlanadi) */
+                    row.setInt(R.id.wpr_root, "setBackgroundResource", pillFor(h.optString("color", "")));
                     v.addView(R.id.wp_rows, row);
                     n++;
                 }
@@ -70,6 +69,21 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
             HabitsWidgetProvider.attachOpen(ctx, v, R.id.wp_root);
             mgr.updateAppWidget(id, v);
         }
+    }
+
+    /** Odat rangiga mos yumaloq pill foni (ilova palitrasi tartibida) */
+    private static final String[] PALETTE = {"#39FF8C","#4DA6FF","#FF6B9D","#FFB84D","#B08CFF","#FF7A5C"};
+    private static final int[] PILLS = {
+        R.drawable.w_pill_0, R.drawable.w_pill_1, R.drawable.w_pill_2,
+        R.drawable.w_pill_3, R.drawable.w_pill_4, R.drawable.w_pill_5
+    };
+    private static int pillFor(String color) {
+        if (color != null) {
+            for (int i = 0; i < PALETTE.length; i++) {
+                if (PALETTE[i].equalsIgnoreCase(color.trim())) return PILLS[i];
+            }
+        }
+        return R.drawable.w_pill;   /* palitradan tashqari rang — neytral */
     }
 
     /** Bugungi foiz halqasi — Canvas'da chiziladi */

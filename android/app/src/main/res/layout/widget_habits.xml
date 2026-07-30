@@ -55,7 +55,7 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:paddingTop="18dp"
-        android:text="Odat qo'shing"
+        android:text="Odat qo\'shing"
         android:textColor="@color/w_muted"
         android:textSize="12sp"
         android:visibility="gone" />
