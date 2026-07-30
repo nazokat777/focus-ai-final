@@ -447,7 +447,11 @@ body{
 .dl-logo img{width:100%;height:100%;display:block}
 .dl-h{max-width:16ch;margin-bottom:38px}
 .dl-h b{color:var(--neon)}
+.dl-actions{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;align-items:center}
 .dl-cta{height:64px;padding:0 46px;font-size:17px;border-radius:20px}
+.dl-apk{height:64px;padding:0 34px;font-size:16px;border-radius:20px}
+@media(max-width:520px){.dl-actions{flex-direction:column;width:100%}
+  .dl-cta,.dl-apk{width:100%;justify-content:center}}
 .dl-stores{display:flex;gap:14px;margin-top:26px;flex-wrap:wrap;justify-content:center}
 .store{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 20px;
   border-radius:14px;background:rgba(255,255,255,.04);
@@ -682,7 +686,10 @@ body{
         <img src="assets/logo_mark.webp" alt="Focus AI" width="380" height="380">
       </div>
       <h2 class="headline dl-h" data-i="d_h"></h2>
-      <a class="btn dl-cta" id="dlCta" href="index.html" data-i="open"></a>
+      <div class="dl-actions">
+        <a class="btn dl-cta" id="dlCta" href="index.html" data-i="open"></a>
+        <a class="btn btn-ghost dl-apk" href="focusai.apk" download="FocusAI.apk" data-i="d_apk"></a>
+      </div>
       <div class="dl-stores">
         <span class="store"><span>APP STORE&nbsp;↗</span><s data-i="d_soon"></s></span>
         <span class="store"><span>GOOGLE PLAY&nbsp;↗</span><s data-i="d_soon"></s></span>
@@ -1488,11 +1495,11 @@ if(reduced){
 var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 FAI_addStrings({
-  uz:{ d_h:"Sayohat <b>bugun</b> boshlanadi.", d_soon:"tez kunda",
+  uz:{ d_h:"Sayohat <b>bugun</b> boshlanadi.", d_soon:"tez kunda", d_apk:"Android APK ⤓",
        d_sig:"Focus • Adapt • Dominate — 10,000 soat kutmoqda" },
-  ru:{ d_h:"Путь начинается <b>сегодня</b>.", d_soon:"скоро",
+  ru:{ d_h:"Путь начинается <b>сегодня</b>.", d_soon:"скоро", d_apk:"Android APK ⤓",
        d_sig:"Focus • Adapt • Dominate — впереди 10 000 часов" },
-  en:{ d_h:"The journey begins <b>today</b>.", d_soon:"soon",
+  en:{ d_h:"The journey begins <b>today</b>.", d_soon:"soon", d_apk:"Android APK ⤓",
        d_sig:"Focus • Adapt • Dominate — 10,000 hours await" }
 });
 FAI_setText();
@@ -1504,8 +1511,9 @@ bg7.appendChild(v7);
 gsap.set(v7,{ scale:1.06, filter:'brightness(.24) saturate(.8)' });
 v7.addEventListener('loadedmetadata', function(){ v7.playbackRate = .5; });
 
-/* magnetic final CTA */
+/* magnetic tugmalar */
 FAI_magnetize(document.getElementById('dlCta'));
+var _apk=document.querySelector('.dl-apk'); if(_apk) FAI_magnetize(_apk);
 
 /* kirish: sukunatda birma-bir */
 var tl = gsap.timeline({
