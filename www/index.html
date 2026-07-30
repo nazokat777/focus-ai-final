@@ -810,6 +810,18 @@ input{font-family:inherit}
 .s-mode-selector svg{width:16px;height:16px;stroke:rgba(255,255,255,0.7);stroke-width:2;fill:none}
 /* timer ring */
 .s-ring-wrap{position:relative;width:100%;aspect-ratio:1;max-width:340px;margin:0 auto 30px;display:flex;justify-content:center;align-items:center}
+/* Fokus ekrani: barcha boshqaruv (Boshlash/Pauza/Yakunlash/Qayta) nav ustida ko'rinsin */
+#v-focus .s-ring-wrap{margin-bottom:16px}
+#v-focus .s-controls{margin-bottom:12px!important}
+@media(max-height:760px){
+  #v-focus .greet{margin-bottom:4px!important}
+  #v-focus .s-ring-wrap{max-width:238px;margin-bottom:10px}
+  #v-focus .s-elapsed{font-size:52px}
+  #v-focus .f-presets{margin-bottom:8px!important}
+  #v-focus .s-controls{margin-bottom:8px!important}
+  #v-focus .s-btn-start{padding:14px}
+  #v-focus .s-env-section{display:none} /* qisqa ekranда muhit tanlash yashiriladi (taymer muhimroq) */
+}
 /* ═══ TOJ-60 IGNITION: halqa = mexanik neon toj (asbob). Kamalak yo'q — hamma rang mavzu varlaridan.
    Sheen JS'SIZ buriladi: ringSet() qo'yadigan --f (0..1) dan transform:rotate(calc()) —
    conic REPAINT bo'lmaydi, faqat kompozitor. Ready=qotgan asbob, dialing=prujinali detent,
@@ -3018,6 +3030,14 @@ var ICONS={
 };
 var ICON_KEYS=['read','workout','code','meditate','lang','music','draw','run','water','focus'];
 var COLORS=['#39FF8C','#4DA6FF','#FF6B9D','#FFB84D','#B08CFF','#FF7A5C'];
+/* Migratsiya: agar barcha odat bir xil DEFOLT yashil bo'lsa (rang tanlanmagan) —
+   palitrani tarqatib, diagrammada farqlansin. Rang tanlangan bo'lsa tegmaydi. */
+(function(){
+  if(store.habits&&store.habits.length>1&&store.habits.every(function(h){return h.color===COLORS[0];})){
+    store.habits.forEach(function(h,i){h.color=COLORS[i%COLORS.length];});
+    save();
+  }
+})();
 function icon(k){return '<svg viewBox="0 0 24 24">'+(ICONS[k]||ICONS.focus)+'</svg>';}
 
 /* ============ i18n apply ============ */
@@ -3850,7 +3870,8 @@ function syncSheetUI(){
   $('#goalWrap').style.display=pickType==='check'?'none':'';
 }
 function resetSheet(){
-  editingId=null;pickIconK='read';pickColor=COLORS[0];pickType='timed';goalH=10000;dailyMin=30;photoData=null;
+  /* yangi odatga navbatdagi rang standart (odatlar avtomatik farqlansin) */
+  editingId=null;pickIconK='read';pickColor=COLORS[store.habits.length%COLORS.length];pickType='timed';goalH=10000;dailyMin=30;photoData=null;
   $('#hName').value='';$('#sheet h3').textContent=T('new_habit');$('#saveHabit').textContent=T('add');syncSheetUI();
 }
 function openEditSheet(h){
