@@ -1444,6 +1444,9 @@ input{font-family:inherit}
   transition:transform .55s var(--ease),opacity .4s var(--ease);opacity:0;pointer-events:none;cursor:pointer;max-width:78%}
 .device[data-theme="light"] .pill{background:rgba(255,255,255,.82)}
 .pill.show{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+/* Pill suzib turganda sahifa oxiridagi kontentni yopmasin: pill nav+12dan boshlanib
+   ~28px balandlikda, shuning uchun ro'yxatga qo'shimcha pastki bo'shliq beramiz. */
+.device.has-pill .view{padding-bottom:calc(var(--nav-h) + env(safe-area-inset-bottom) + 58px)}
 .pill:active{transform:translate(-50%,0) scale(.95)}
 .pill .pdot{width:8px;height:8px;border-radius:50%;background:var(--neon);box-shadow:0 0 10px var(--neon);animation:pillPulse 1.6s var(--ease) infinite;flex:none}
 @keyframes pillPulse{50%{transform:scale(1.5);opacity:.6}}
@@ -5855,6 +5858,8 @@ function zenArm(){
 $('#session').addEventListener('pointerdown',zenArm);
 
 /* jonli pill — boshqa ekranda ham taymer ko'rinib turadi */
+/* pill ko'rinsa ro'yxatga qo'shimcha pastki bo'shliq (kontent pill ostida qolmasin) */
+function setPillGap(on){var d=$('#device');if(d)d.classList.toggle('has-pill',!!on);}
 function updatePill(){
   var run=null;
   for(var i=0;i<store.habits.length;i++)if(store.habits[i].runningSince){run=store.habits[i];break;}
@@ -5862,16 +5867,16 @@ function updatePill(){
   if(run&&!sessionOpen){
     $('#pillName').textContent=run.name;
     $('#pillTime').textContent=fmtHMS(elapsedOf(run));
-    pill._id=run.id;pill._focus=false;pill.classList.add('show');return;
+    pill._id=run.id;pill._focus=false;pill.classList.add('show');setPillGap(true);return;
   }
   /* audit #6: odat taymeri yo'q — fokus sessiyasi ishlab tursa, uni fokus tabidan tashqarida pill'da ko'rsatamiz */
   var onFocus=$('#v-focus')&&$('#v-focus').classList.contains('active');
   if(fRunning&&!sessionOpen&&!onFocus){
     $('#pillName').textContent=T('tab_focus');
     $('#pillTime').textContent=fFmt(fRemain());
-    pill._id=null;pill._focus=true;pill.classList.add('show');return;
+    pill._id=null;pill._focus=true;pill.classList.add('show');setPillGap(true);return;
   }
-  pill.classList.remove('show');
+  pill.classList.remove('show');setPillGap(false);
 }
 $('#pill').addEventListener('click',function(){
   if(this._focus){var t=document.querySelector('.tab[data-view="focus"]');if(t)t.click();return;}
