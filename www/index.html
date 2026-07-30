@@ -2029,6 +2029,11 @@ input{font-family:inherit}
         <input type="text" id="remMsg" maxlength="120" style="width:100%;box-sizing:border-box;background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:9px 11px;margin:-3px 0 3px;color:var(--text);font-size:13px;outline:none">
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2M5 3 3 5M19 3l2 2"/></svg><span data-i18n="alarm"></span></div>
           <input type="time" id="alarmTime" style="background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none"></div>
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M4 5h16M4 12h16M4 19h10"/></svg><span data-i18n="alarm_mode"></span></div>
+          <div class="typeseg" id="alModeSeg" style="width:auto">
+            <button data-m="simple" data-i18n="al_simple"></button>
+            <button data-m="math" class="sel" data-i18n="al_math"></button>
+          </div></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 1.5"/></svg><span data-i18n="dayoffset"></span></div>
           <select id="dayOffsetSel" style="background:var(--elev2);border:1px solid var(--line);border-radius:9px;padding:7px 9px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;outline:none">
             <option value="0">00:00</option><option value="2">02:00</option><option value="3">03:00</option><option value="4">04:00</option></select></div>
@@ -2514,7 +2519,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   backup:"Zaxira nusxa",restore:"Tiklash",bak_save:"Faylga saqlash",bak_load:"Fayldan tiklash",onb_watch:"Ko'rish",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",rem_msg_ph:"O'z eslatma so'zingiz (ixtiyoriy)…",
-  al_title:"Uyg'onish vaqti!",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
+  al_title:"Uyg'onish vaqti!",alarm_mode:"Budilnik rejimi",al_simple:"Oddiy",al_math:"Matematik",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
   wk_total:"Umumiy fokus vaqti",wk_first:"Taqqoslash uchun o'tgan hafta ma'lumoti yo'q",
   wk_same:"O'tgan hafta bilan deyarli teng",
   wk_up:function(x){return "+"+x+" o'tgan haftaga nisbatan";},
@@ -2625,7 +2630,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   backup:"Резервная копия",restore:"Восстановить",bak_save:"Сохранить в файл",bak_load:"Загрузить файл",onb_watch:"Смотреть",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",rem_msg_ph:"Своё напоминание (необязательно)…",
-  al_title:"Пора вставать!",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
+  al_title:"Пора вставать!",alarm_mode:"Режим будильника",al_simple:"Простой",al_math:"Математика",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
   wk_total:"Общее время фокуса",wk_first:"Нет данных за прошлую неделю для сравнения",
   wk_same:"Почти как на прошлой неделе",
   wk_up:function(x){return "+"+x+" к прошлой неделе";},
@@ -2736,7 +2741,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   backup:"Backup",restore:"Restore",bak_save:"Save to file",bak_load:"Load file",onb_watch:"Watch",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",rem_msg_ph:"Your own reminder (optional)…",
-  al_title:"Time to wake up!",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
+  al_title:"Time to wake up!",alarm_mode:"Alarm mode",al_simple:"Simple",al_math:"Math",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
   wk_total:"Total focus time",wk_first:"No last-week data to compare yet",
   wk_same:"About the same as last week",
   wk_up:function(x){return "+"+x+" vs last week";},
@@ -5339,16 +5344,24 @@ function sirenStart(){
     alSiren={stop:function(){try{o.stop();l.stop();g.disconnect();}catch(e){}}};
   }catch(e){}
 }
+var alEscCount=0;
+function alarmModeIs(){return store.settings.alarmMode||'math';}
+function newProb(){alA=10+Math.floor(Math.random()*40);alB=10+Math.floor(Math.random()*40);$('#alProb').textContent=alA+' + '+alB+' = ?';$('#alAns').value='';}
 function alarmFire(){
   if(alarmActive)return;
-  alarmActive=true;
-  alA=10+Math.floor(Math.random()*40);alB=10+Math.floor(Math.random()*40);
-  $('#alProb').textContent=alA+' + '+alB+' = ?';
-  $('#alAns').value='';$('#alErr').textContent='';
+  alarmActive=true;alEscCount=0;
+  var math=alarmModeIs()==='math';
+  $('#alProb').style.display=math?'':'none';
+  $('#alAns').style.display=math?'':'none';
+  if(math)newProb();
+  $('#alErr').textContent='';
+  $('#alEsc').textContent=T('al_esc');
   $('#alEsc').classList.remove('show');
   $('#alarmOv').classList.add('open');
   sirenStart();buzz([300,150,300,150,300]);
-  alEscTm=setTimeout(function(){$('#alEsc').classList.add('show');},120000);
+  clearTimeout(alEscTm);
+  /* matematik rejim: yecholmasa — 15s dan keyin "Chiqish" tugmasi (3 marta bosilса chiqadi) */
+  if(math)alEscTm=setTimeout(function(){if(alarmActive)$('#alEsc').classList.add('show');},15000);
 }
 function alarmStop(){
   alarmActive=false;
@@ -5358,12 +5371,15 @@ function alarmStop(){
   store.lastAlarmDay=TODAY;save();
 }
 $('#alOk').addEventListener('click',function(){
+  if(alarmModeIs()!=='math'){alarmStop();sGo();return;}  /* oddiy rejim: darhol to'xtaydi */
   if(parseInt($('#alAns').value,10)===alA+alB){alarmStop();sGo();}
-  else{$('#alErr').textContent=T('al_err');buzz([60,40,60]);
-    alA=10+Math.floor(Math.random()*40);alB=10+Math.floor(Math.random()*40);
-    $('#alProb').textContent=alA+' + '+alB+' = ?';$('#alAns').value='';}
+  else{$('#alErr').textContent=T('al_err');buzz([60,40,60]);newProb();}
 });
-$('#alEsc').addEventListener('click',alarmStop);
+$('#alEsc').addEventListener('click',function(){
+  alEscCount++;
+  if(alEscCount>=3){alarmStop();sGo();return;}   /* 3 marta bosilса — majburiy chiqish */
+  $('#alEsc').textContent=T('al_esc')+' ('+(3-alEscCount)+')';buzz(40);
+});
 
 /* ============ PIN qulf ============ */
 function hashPin(p,cb){
@@ -5592,7 +5608,14 @@ $('#alarmTime').value=store.settings.alarmTime||'';
 $('#remMsg').value=store.settings.remMsg||'';
 $('#remMsg').addEventListener('change',function(){store.settings.remMsg=(this.value||'').trim().slice(0,120)||null;save();scheduleReminders();sTap();}); /* o'z eslatma so'zi */
 $('#remTime').addEventListener('change',function(){store.settings.remTime=this.value||null;save();askNotify();scheduleReminders();sTap();});
-$('#alarmTime').addEventListener('change',function(){store.settings.alarmTime=this.value||null;save();sTap();});
+$('#alarmTime').addEventListener('change',function(){store.settings.alarmTime=this.value||null;save();sTap();scheduleReminders();});
+/* budilnik rejimi: oddiy / matematik */
+(function(){
+  var seg=$('#alModeSeg');if(!seg)return;
+  function sync(){[].forEach.call(seg.children,function(b){b.classList.toggle('sel',b.getAttribute('data-m')===(store.settings.alarmMode||'math'));});}
+  seg.addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;store.settings.alarmMode=b.getAttribute('data-m');save();sync();sTap();buzz(6);});
+  sync();
+})();
 /* ============ blok D: aqlli eslatma ============ */
 /* bugun norma bajarilmagan odat bormi (dam kunlarni hisobga olmasdan) */
 function hasUnfinishedToday(){
@@ -5608,7 +5631,7 @@ function scheduleReminders(){
     if(LN.requestPermissions)LN.requestPermissions();
     if(LN.createChannel)LN.createChannel({id:'focusai_rem',name:'Focus AI',importance:5,visibility:1,vibration:true});
     /* eski id'larni keng diapazonда tozalash (o'chirilgan/o'zgargan odatlar qolmasin) */
-    var cancels=[{id:1001}];
+    var cancels=[{id:1001},{id:1002}];
     store.habits.forEach(function(h){cancels.push({id:2000+h.id});for(var d=0;d<7;d++)cancels.push({id:2000+h.id*10+d});});
     LN.cancel({notifications:cancels});
     if(isRestDay())return; /* bugun dam — hech qanday eslatma otilmaydi */
@@ -5639,6 +5662,13 @@ function scheduleReminders(){
         schedule:{on:{hour:parseInt(g[0],10),minute:parseInt(g[1],10)},repeats:true,allowWhileIdle:true},
         channelId:'focusai_rem',actionTypeId:'FOCUS_START'});
     }
+    /* BUDILNIK — ilova yopiq bo'lsa ham otiladi (bosilса ilova ochilib alarm ekrani chiqadi) */
+    if(store.settings.alarmTime){
+      var a=store.settings.alarmTime.split(':');
+      list.push({id:1002,title:'⏰ '+T('al_title'),body:T('alarm'),
+        schedule:{on:{hour:parseInt(a[0],10),minute:parseInt(a[1],10)},repeats:true,allowWhileIdle:true},
+        channelId:'focusai_rem',actionTypeId:'FOCUS_START',extra:{alarm:true}});
+    }
     if(list.length)LN.schedule({notifications:list});
   }catch(e){}
 }
@@ -5648,7 +5678,9 @@ function scheduleReminders(){
     if(LN.registerActionTypes)LN.registerActionTypes({types:[{id:'FOCUS_START',actions:[{id:'start',title:T('rem_action')}]}]});
     if(LN.addListener)LN.addListener('localNotificationActionPerformed',function(ev){
       /* per-habit eslatma bo'lsa — o'sha odat; aks holda birinchi bajarilmagan */
-      var hid=ev&&ev.notification&&ev.notification.extra&&ev.notification.extra.habitId;
+      var ex=ev&&ev.notification&&ev.notification.extra;
+      if(ex&&ex.alarm){alarmFire();return;} /* budilnik bosildi — alarm ekrani */
+      var hid=ex&&ex.habitId;
       var h=hid?getH(hid):null;
       /* per-habit taymerли odat bo'lsa — o'sha; aks holda birinchi bajarilmagan taymerли odat */
       if(!h||h.type==='check')h=store.habits.filter(function(x){return !isSkip(x,TODAY)&&dayRatio(x,TODAY)<1&&x.type!=='check';})[0];
