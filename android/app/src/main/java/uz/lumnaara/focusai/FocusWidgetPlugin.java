@@ -24,6 +24,7 @@ public class FocusWidgetPlugin extends Plugin {
         Integer pct = call.getInt("pct", 0);
         Integer streak = call.getInt("streak", 0);
         String subtitle = call.getString("subtitle", "Focus");
+        String streakLabel = call.getString("streakLabel", "kunlik seriya");
 
         Context ctx = getContext().getApplicationContext();
         SharedPreferences sp = ctx.getSharedPreferences(FocusWidgetProvider.PREFS, Context.MODE_PRIVATE);
@@ -32,6 +33,7 @@ public class FocusWidgetPlugin extends Plugin {
                 .putInt("pct", pct == null ? 0 : pct)
                 .putInt("streak", streak == null ? 0 : streak)
                 .putString("subtitle", subtitle)
+                .putString("streakLabel", streakLabel)
                 .apply();
 
         AppWidgetManager mgr = AppWidgetManager.getInstance(ctx);

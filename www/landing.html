@@ -7,6 +7,12 @@
 <title>Focus AI — Focus • Adapt • Dominate</title>
 <meta name="description" content="Diqqatingni qaytar. Intizom qur. O'z hayotingning qahramoniga aylan.">
 <link href="assets/fonts/fonts.css" rel="stylesheet">
+<script>
+/* Service Worker: oflayn kesh + onlaynda auto-yangilanish */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){ navigator.serviceWorker.register('sw.js').catch(function(){}); });
+}
+</script>
 <style>
 /* ============================================================
    FOCUS AI · CINEMATIC LANDING · DESIGN TOKENS

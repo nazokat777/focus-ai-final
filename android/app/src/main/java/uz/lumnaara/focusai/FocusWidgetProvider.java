@@ -33,10 +33,13 @@ public class FocusWidgetProvider extends AppWidgetProvider {
         String subtitle = sp.getString("subtitle", "Focus");
 
         for (int id : ids) {
+            String streakLbl = sp.getString("streakLabel", "kunlik seriya");
             RemoteViews v = new RemoteViews(ctx.getPackageName(), R.layout.focus_widget);
             v.setTextViewText(R.id.w_today, today);
             v.setTextViewText(R.id.w_sub, subtitle);
             v.setTextViewText(R.id.w_streak, "🔥 " + streak);
+            v.setTextViewText(R.id.w_streak_lbl, streakLbl);
+            v.setTextViewText(R.id.w_pct, pct + "%");
             v.setProgressBar(R.id.w_prog, 100, pct, false);
 
             Intent open = ctx.getPackageManager().getLaunchIntentForPackage(ctx.getPackageName());

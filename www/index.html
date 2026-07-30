@@ -11,6 +11,12 @@
     location.replace('landing.html');
   }
 }catch(e){}})();
+/* Service Worker: oflayn kesh + onlaynda auto-yangilanish */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', function(){
+    navigator.serviceWorker.register('sw.js').catch(function(){});
+  });
+}
 </script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Focus AI</title>
@@ -2267,7 +2273,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   strength:"Kuch",strength_sub:"Izchillik indeksi",
   photo_none:"Rasm tanlash…",photo_ok:"Rasm tanlandi ✓",
   save_full:"Saqlab bo'lmadi: xotira to'ldi. Rasmlarni kamaytiring yoki eski odatlarni o'chiring.",
-  u_h:" soat",u_m:" min",wid_sub:"Bugungi fokus",
+  u_h:" soat",u_m:" min",wid_sub:"Bugungi fokus",wid_streak:"kunlik seriya",
   err_name:"Odat nomini kiriting",err_name_auth:"Iltimos, ismingizni kiriting",
   ob1t:"Vaqtingni <b>o'lcha</b>",ob1p:"Boshqa ilovalar «qildingmi?» deb so'raydi. Focus AI haqiqiy sarflangan vaqtni hisoblaydi.",
   ob2t:"Natijang <b>ko'z oldingda</b>",ob2p:"Har bir fokus daqiqasi statistikangga yoziladi. Barqarorlik — eng katta kuch.",
@@ -2378,7 +2384,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   strength:"Сила",strength_sub:"Индекс постоянства",
   photo_none:"Выбрать фото…",photo_ok:"Фото выбрано ✓",
   save_full:"Не удалось сохранить: память заполнена. Уменьшите фото или удалите старые привычки.",
-  u_h:" ч",u_m:" мин",wid_sub:"Сегодняшний фокус",
+  u_h:" ч",u_m:" мин",wid_sub:"Сегодняшний фокус",wid_streak:"дней подряд",
   err_name:"Введите название привычки",err_name_auth:"Пожалуйста, введите имя",
   ob1t:"<b>Измеряй</b> время",ob1p:"Другие приложения спрашивают «сделал?». Focus AI считает реально потраченное время.",
   ob2t:"Прогресс <b>на виду</b>",ob2p:"Каждая минута фокуса записывается в статистику. Постоянство — главная сила.",
@@ -2489,7 +2495,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   strength:"Strength",strength_sub:"Consistency index",
   photo_none:"Choose photo…",photo_ok:"Photo selected ✓",
   save_full:"Couldn't save: storage full. Reduce photos or delete old habits.",
-  u_h:" h",u_m:" min",wid_sub:"Today's focus",
+  u_h:" h",u_m:" min",wid_sub:"Today's focus",wid_streak:"day streak",
   err_name:"Please enter a habit name",err_name_auth:"Please enter your name",
   ob1t:"<b>Measure</b> your time",ob1p:"Other apps ask “did you do it?”. Focus AI counts the time you actually spend.",
   ob2t:"Progress <b>you can see</b>",ob2p:"Every focused minute lands in your stats. Consistency is the superpower.",
@@ -3250,11 +3256,11 @@ function widgetPct(){
 function pushWidget(){
   var FW=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.FocusWidget)||null;
   if(!FW)return; /* faqat native Androidda mavjud */
-  var today=fmtHM(dayTotalMs(TODAY)),pct=widgetPct(),streak=globalStreak(),sub=T('wid_sub');
-  var sig=today+'|'+pct+'|'+streak+'|'+sub;
+  var today=fmtHM(dayTotalMs(TODAY)),pct=widgetPct(),streak=globalStreak(),sub=T('wid_sub'),slbl=T('wid_streak');
+  var sig=today+'|'+pct+'|'+streak+'|'+sub+'|'+slbl;
   if(sig===_wLast)return;
   _wLast=sig;
-  try{FW.update({today:today,pct:pct,streak:streak,subtitle:sub});}catch(e){}
+  try{FW.update({today:today,pct:pct,streak:streak,subtitle:sub,streakLabel:slbl});}catch(e){}
 }
 function refreshChips(){
   $('#streakN').textContent=globalStreak();
