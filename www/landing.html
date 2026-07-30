@@ -75,6 +75,12 @@ body{
 .scene-inner{position:relative;z-index:5;width:min(1200px,92vw);margin:0 auto}
 .bgvideo{position:absolute;inset:0;overflow:hidden;z-index:0}
 .bgvideo video,.bgvideo img{width:100%;height:100%;object-fit:cover;display:block}
+/* Faqat 2-sahna (s3.mp4): video vertikal, keng ekranda markaziy kesim qahramonning
+   boshini kesib tashlaydi (bosh 33% balandlikda). Kesimni sal yuqoriga suramiz.
+   Qolgan sahnalar tegilmagan — ular markaziy kesimda to'g'ri ko'rinadi. */
+@media (min-aspect-ratio:1/1){
+  #bg2 video,#bg2 img{object-position:center 32%}
+}
 .bgvideo::after{content:"";position:absolute;inset:0;
   background:linear-gradient(180deg,rgba(0,0,0,.75),rgba(0,0,0,.25) 30%,rgba(0,0,0,.25) 65%,#000 100%)}
 
