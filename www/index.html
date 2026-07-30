@@ -876,6 +876,11 @@ input{font-family:inherit}
 .s-pomodoro svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
 /* start button */
 .s-btn-start{width:100%;max-width:340px;margin:0 auto 30px;padding:18px;border-radius:999px;background:linear-gradient(90deg,rgba(10,30,20,1) 0%,rgba(10,50,40,1) 100%);border:1px solid rgba(57,255,140,0.2);box-shadow:0 10px 30px rgba(10,50,40,0.5);display:flex;align-items:center;justify-content:center;gap:12px;font-size:18px;font-weight:600;transition:transform 0.2s}
+.s-btn-start:active{transform:scale(.97)}
+/* Yakunlash — neon "tugat & saqla" ko'rinishi */
+.s-fin-ok{padding:15px!important;font-size:15px;background:rgba(var(--neon-rgb),.14)!important;border-color:rgba(var(--neon-rgb),.45)!important;color:var(--neon);box-shadow:none!important}
+.s-fin{padding:15px!important;font-size:15px;box-shadow:none!important;color:var(--muted)}
+#fCtl2 .s-btn-start{margin:0}
 .s-btn-start:active{transform:scale(0.96)}
 .s-btn-start svg{width:22px;height:22px;color:#39FF8C}
 /* actions */
@@ -1840,12 +1845,15 @@ input{font-family:inherit}
         <div class="ambi" id="ambiF"></div>
       </div>
 
-      <!-- Controls -->
-      <div class="s-controls" style="display:flex;gap:10px;justify-content:center;max-width:340px;margin:0 auto 20px;">
-        <button class="s-btn-start s-btn s-main" id="fStart" style="flex:2;margin:0">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> <span>Boshlash</span>
+      <!-- Controls: Boshlash/Pauza/Davom (asosiy) + Yakunlash/Qayta (sessiya davomida) -->
+      <div class="s-controls" style="display:flex;flex-direction:column;gap:10px;max-width:340px;margin:0 auto 20px;">
+        <button class="s-btn-start s-btn s-main" id="fStart" style="margin:0">
+          <svg id="fStartIco" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg> <span id="fStartLbl">Boshlash</span>
         </button>
-        <button class="s-btn-start s-btn s-fin" id="fReset" style="flex:1;margin:0;background:#1a1c20;border-color:rgba(255,255,255,0.1)" data-i18n="reset">Qayta</button>
+        <div id="fCtl2" style="display:none;gap:10px">
+          <button class="s-btn-start s-btn s-fin-ok" id="fFinish" style="flex:1;margin:0" data-i18n="finish">Yakunlash</button>
+          <button class="s-btn-start s-btn s-fin" id="fReset" style="flex:1;margin:0;background:#1a1c20;border-color:rgba(255,255,255,0.1)" data-i18n="reset">Qayta</button>
+        </div>
       </div>
 
       <!-- Fokus muhiti (Environments) -->
@@ -4862,7 +4870,13 @@ function fDraw(){
   ringSet($('#fRing'),fHead,ff);
   $('#fRing').classList.toggle('run',fRunning);
   $('#fState').textContent=T(fStateK);
-  $('#fStart').textContent=fRunning?T('pause'):(fPausedRemain<fDur&&fStateK==='paused'?T('resume'):T('start'));
+  /* asosiy tugma: fokusda->Pauza, pauzada->Davom, aks holda->Boshlash (ikonka bilan) */
+  var lbl=fRunning?T('pause'):(fStateK==='paused'?T('resume'):T('start'));
+  var sl=$('#fStartLbl'); if(sl)sl.textContent=lbl;
+  var si=$('#fStartIco'); if(si)si.innerHTML=fRunning?'<path d="M6 5h4v14H6zM14 5h4v14h-4z"/>':'<path d="M8 5v14l11-7z"/>';
+  /* Yakunlash/Qayta faqat sessiya boshlangач ko'rinadi (ready holatда yashirin) */
+  var c2=$('#fCtl2'); if(c2)c2.style.display=(fStateK==='ready')?'none':'flex';
+  var ff=$('#fFinish'); if(ff)ff.style.display=(fStateK==='focusing'||fStateK==='paused')?'':'none';
 }
 function fLog(ms){ /* fokus daqiqalari umumiy statistikaga */
   store.focusDayMs[TODAY]=(store.focusDayMs[TODAY]||0)+ms;save();
@@ -4946,6 +4960,15 @@ $('#fReset').addEventListener('click',function(){
   sTap();
   if(fRunning){var spent=fStartRemain-fRemain();if(spent>=60000)fLog(spent);}
   fRunning=false;fPausedRemain=fDur;fStateK='ready';fDraw();refreshChips();
+});
+/* Yakunlash: sessiyani hozir tugatib, fokus vaqtini 10 000 soat hisobiga banklaydi */
+$('#fFinish').addEventListener('click',function(){
+  if(fStateK!=='focusing'&&fStateK!=='paused')return;
+  tone(587,.06);
+  if(fRunning){var spent=fStartRemain-fRemain();if(spent>=60000)fLog(spent);}
+  fRunning=false;fPausedRemain=fDur;fStateK='done';
+  sWin();buzz([20,60,20]);notify('Focus AI',T('done'));
+  fDraw();refreshChips();
 });
 fDraw();
 
