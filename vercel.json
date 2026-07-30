@@ -3,6 +3,13 @@
   "outputDirectory": "www",
   "headers": [
     {
+      "comment": "APK (bundled) ichidagi Service Worker saytdan eng oxirgi kodni o'qishi uchun CORS",
+      "source": "/(.*)",
+      "headers": [
+        { "key": "Access-Control-Allow-Origin", "value": "*" }
+      ]
+    },
+    {
       "source": "/focusai.apk",
       "headers": [
         { "key": "Content-Type", "value": "application/vnd.android.package-archive" },

@@ -11,9 +11,9 @@
     location.replace('landing.html');
   }
 }catch(e){}})();
-/* Service Worker: faqat WEB uchun (oflayn kesh).
-   Native ilovada fayllar APK ichida — SW kesh eski nusxa bermasligi uchun o'chirilgan. */
-if('serviceWorker' in navigator && !window.Capacitor){
+/* Service Worker (gibrid): oflayn = APK ichidagi fayllar, onlayn = saytdan eng oxirgi kod.
+   Native'da ham yoqiladi — shunda web-o'zgarishlar APK'ga avtomat tushadi. */
+if('serviceWorker' in navigator){
   window.addEventListener('load', function(){
     navigator.serviceWorker.register('sw.js').catch(function(){});
   });

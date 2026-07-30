@@ -1,36 +1,43 @@
-/* Focus AI — Service Worker
-   Maqsad: internet BO'LSA eng oxirgi versiyani ko'rsatish (auto-yangilanish),
-   internet BO'LMASA keshdan ishlash (oflayn). Bridge server.url origin'da ishlaydi. */
-var CACHE = 'focusai-v2';
+/* Focus AI — Service Worker (GIBRID)
+   Maqsad:
+     • OFLAYN KAFOLAT — APK ichidagi (bundled) fayllar doim mavjud, internetsiz to'liq ishlaydi.
+     • AVTO-YANGILANISH — internet bo'lsa saytdan (Vercel) eng oxirgi kod olinadi va keshlanadi.
+   Native APK'da origin = https://localhost (bundled), web'da = vercel origin. */
+var CACHE  = 'focusai-v3';
+var REMOTE = 'https://focus-ai-final.vercel.app';
+var NET_TIMEOUT = 4000;          /* sekin internet ilovani ushlab qolmasin */
+
 var CORE = [
-  './',
-  'index.html',
-  'landing.html',
-  'assets/vendor/gsap.min.js',
-  'assets/vendor/ScrollTrigger.min.js',
-  'assets/vendor/MotionPathPlugin.min.js',
-  'assets/vendor/lenis.min.js',
+  './','index.html','landing.html',
+  'assets/vendor/gsap.min.js','assets/vendor/ScrollTrigger.min.js',
+  'assets/vendor/MotionPathPlugin.min.js','assets/vendor/lenis.min.js',
   'assets/fonts/fonts.css'
 ];
 
+function isNative(){ return self.location.origin !== REMOTE; }
+function shellKey(path){ return self.location.origin + '/__shell__/' + path; }
+
+/* vaqt chegarali fetch — javob kelmasa keshga tushamiz */
+function fetchTimeout(req, ms){
+  return new Promise(function(resolve, reject){
+    var done = false;
+    var t = setTimeout(function(){ if(!done){ done = true; reject(new Error('timeout')); } }, ms);
+    fetch(req).then(function(r){ if(!done){ done = true; clearTimeout(t); resolve(r); } },
+                    function(e){ if(!done){ done = true; clearTimeout(t); reject(e); } });
+  });
+}
+
 self.addEventListener('install', function(e){
   self.skipWaiting();
-  e.waitUntil(
-    caches.open(CACHE).then(function(c){
-      /* yadroni oldindan keshlaymiz; xato bo'lsa ham install to'xtamasin */
-      return Promise.all(CORE.map(function(u){
-        return c.add(u).catch(function(){});
-      }));
-    })
-  );
+  e.waitUntil(caches.open(CACHE).then(function(c){
+    return Promise.all(CORE.map(function(u){ return c.add(u).catch(function(){}); }));
+  }));
 });
 
 self.addEventListener('activate', function(e){
   e.waitUntil(
     caches.keys().then(function(keys){
-      return Promise.all(keys.map(function(k){
-        if(k !== CACHE) return caches.delete(k); /* eski keshlarni tozalash */
-      }));
+      return Promise.all(keys.map(function(k){ if(k !== CACHE) return caches.delete(k); }));
     }).then(function(){ return self.clients.claim(); })
   );
 });
@@ -39,39 +46,50 @@ self.addEventListener('fetch', function(e){
   var req = e.request;
   if(req.method !== 'GET') return;
   var url = new URL(req.url);
-  if(url.origin !== self.location.origin) return; /* faqat o'z origin */
+  if(url.origin !== self.location.origin) return;   /* faqat o'z origin */
 
   var isHTML = req.mode === 'navigate' ||
                (req.headers.get('accept') || '').indexOf('text/html') !== -1;
 
+  /* ---------- HTML (ilova qobig'i): SAYTDAN yangi kod -> kesh -> APK ichidagi nusxa ---------- */
   if(isHTML){
-    /* HTML: avval tarmoq (yangilanish uchun), bo'lmasa kesh (oflayn) */
+    var path = url.pathname.replace(/^\//,'') || 'index.html';
+    var remoteReq = isNative()
+      ? new Request(REMOTE + '/' + path, { mode:'cors', credentials:'omit', cache:'no-store' })
+      : req;
     e.respondWith(
-      fetch(req).then(function(res){
+      fetchTimeout(remoteReq, NET_TIMEOUT).then(function(res){
+        if(!res || !res.ok) throw new Error('bad');
         var copy = res.clone();
-        caches.open(CACHE).then(function(c){ c.put(req, copy); });
+        caches.open(CACHE).then(function(c){ c.put(shellKey(path), copy); });
         return res;
       }).catch(function(){
-        return caches.match(req).then(function(m){
-          return m || caches.match('index.html');
+        /* internet yo'q / sekin -> oxirgi keshlangan yangi kod */
+        return caches.match(shellKey(path)).then(function(m){
+          if(m) return m;
+          /* u ham yo'q -> APK ichidagi original (OFLAYN KAFOLAT) */
+          return fetch(req).catch(function(){
+            return caches.match(path).then(function(k){ return k || caches.match('index.html'); });
+          });
         });
       })
     );
     return;
   }
 
-  /* Boshqa resurslar — STALE-WHILE-REVALIDATE: keshdan darhol ber (tez),
-     fonда tarmoqdan yangilab keshni yangila (keyingi safar yangi). Oflaynда kesh. */
+  /* ---------- Resurslar: kesh -> lokal (APK ichi) -> saytdan (yangi fayllar uchun) ---------- */
   e.respondWith(
     caches.open(CACHE).then(function(cache){
       return cache.match(req).then(function(cached){
         var net = fetch(req).then(function(res){
-          if(res && res.status === 200 && (res.type === 'basic' || res.type === 'default')){
-            cache.put(req, res.clone());
+          if(res && res.ok){ cache.put(req, res.clone()); return res; }
+          if(isNative()){                     /* APK ichida yo'q -> saytdan olib kelamiz */
+            return fetch(REMOTE + url.pathname, { mode:'cors', credentials:'omit' })
+              .then(function(r2){ if(r2 && r2.ok) cache.put(req, r2.clone()); return r2; });
           }
           return res;
         }).catch(function(){ return cached; });
-        return cached || net;   /* kesh bo'lsa darhol, yo'q bo'lsa tarmoqni kut */
+        return cached || net;                 /* kesh bo'lsa darhol, fonda yangilanadi */
       });
     })
   );
