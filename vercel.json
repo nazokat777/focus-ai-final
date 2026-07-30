@@ -12,7 +12,7 @@
         { "key": "Permissions-Policy", "value": "geolocation=(), microphone=(), camera=(), payment=(), usb=()" },
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://ursuqwotkpczjrqnvoad.supabase.co wss://ursuqwotkpczjrqnvoad.supabase.co https://cdn.jsdelivr.net; frame-ancestors 'none'; base-uri 'none'; object-src 'none'; form-action 'none'"
+          "value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; media-src 'self' blob:; connect-src 'self' https://ursuqwotkpczjrqnvoad.supabase.co wss://ursuqwotkpczjrqnvoad.supabase.co;  frame-ancestors 'none'; base-uri 'none'; object-src 'none'; form-action 'none'"
         }
       ]
     },

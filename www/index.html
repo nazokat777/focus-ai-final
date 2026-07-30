@@ -33,7 +33,7 @@ if('serviceWorker' in navigator){
      Ilova /api/coach ko'prigiga murojaat qiladi; kalit bo'lmasa shablon maslahat ishlaydi. */
   if(window.SB_URL && window.SB_KEY){
     var _sbs=document.createElement('script');
-    _sbs.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+    _sbs.src='assets/vendor/supabase.min.js';   /* CDN emas — lokal (ta'minot zanjiri xavfi yo'q, oflayn ham yuklanadi) */
     _sbs.onload=function(){try{if(window.onSupabaseReady)window.onSupabaseReady();}catch(e){}};
     document.head.appendChild(_sbs);
   }
@@ -6290,6 +6290,39 @@ function exportData(){
     toast(T('exp_ok'));sTap();
   }catch(e){toast(T('exp_bad'));}
 }
+/* XAVFSIZLIK — ildiz himoyasi: tashqaridan kelgan holat (fayl importi yoki bulutdan
+   tiklash) xom holda saqlanardi. Sinklarni esc()/safeImg() bilan yopdik, lekin
+   manbani ham tozalash kerak (chuqurlikda himoya). Noma'lum maydonlar saqlanadi —
+   faqat XAVFLI joylar normallashtiriladi. */
+function sanitizeStore(d){
+  if(!d||Object.prototype.toString.call(d.habits)!=='[object Array]')return null;
+  var HEX=/^#[0-9a-fA-F]{3,8}$/;
+  function str(v,n){return String(v==null?'':v).slice(0,n||60);}
+  d.habits.forEach(function(h){
+    if(!h||typeof h!=='object')return;
+    if(!HEX.test(String(h.color||'')))h.color='#39FF8C';
+    h.name=str(h.name,40);
+    h.icon=String(h.icon||'focus').replace(/[^a-zA-Z0-9_-]/g,'').slice(0,24)||'focus';
+    h.id=+h.id||0;
+    if(h.image)h.image=safeImg(h.image)||null;
+  });
+  if(d.user&&typeof d.user==='object'){
+    d.user.name=d.user.name==null?null:str(d.user.name,24);
+    if(d.user.avatar)d.user.avatar=safeImg(d.user.avatar)||null;
+    if(d.user.hero)d.user.hero=safeImg(d.user.hero)||null;
+    if(d.user.heroLight)d.user.heroLight=safeImg(d.user.heroLight)||null;
+  }
+  if(Object.prototype.toString.call(d.rewards)==='[object Array]'){
+    d.rewards.forEach(function(r){ if(!r||typeof r!=='object')return;
+      r.id=+r.id||0; r.price=+r.price||0; r.name=str(r.name,40);
+      r.cur=(r.cur==='diamond'?'diamond':'coin'); });
+  }
+  return d;
+}
+/* tashqi JSON satrini tozalab qaytaradi (null = yaroqsiz) */
+function sanitizeRaw(txt){
+  try{ var d=sanitizeStore(JSON.parse(txt)); return d?JSON.stringify(d):null; }catch(e){ return null; }
+}
 function importData(file){
   var rd=new FileReader();
   rd.onload=function(){
@@ -6298,8 +6331,9 @@ function importData(file){
       if(!data||!data.habits||!Object.prototype.toString.call(data.habits).match(/Array/)){toast(T('imp_bad'));return;}
       if(data.schemaVersion&&data.schemaVersion>SCHEMA_VERSION){toast(T('imp_newer'));return;}
       if(!confirm(T('imp_confirm')(data.habits.length)))return;
+      var clean=sanitizeStore(data); if(!clean){toast(T('imp_bad'));return;}
       window._skipUnloadSave=true; /* reload'da eski store qayta yozilmasin */
-      localStorage.setItem(KEY,JSON.stringify(data));
+      localStorage.setItem(KEY,JSON.stringify(clean));
       location.reload();
     }catch(e){toast(T('imp_bad'));}
   };
@@ -6351,7 +6385,7 @@ function renderAuthUI(){
       return;
     }
     if(armTm)clearTimeout(armTm);
-    try{localStorage.setItem(KEY,pend);window._skipUnloadSave=true;toast(T('cloud_done'));setTimeout(function(){location.reload();},350);}catch(e){reset();toast(T('exp_bad'));}
+    try{var _c=sanitizeRaw(pend); if(!_c){reset();toast(T('imp_bad'));return;} localStorage.setItem(KEY,_c);window._skipUnloadSave=true;toast(T('cloud_done'));setTimeout(function(){location.reload();},350);}catch(e){reset();toast(T('exp_bad'));}
   });
 })();
 /* blok B: kun almashish ofseti sozlamasi */
@@ -6506,7 +6540,7 @@ function refreshUnread(codes){
   if(typeof Social==='undefined'||!Social.cloud())return;
   (codes||[]).forEach(function(code){
     chatUnread(code).then(function(n){
-      setUnreadBadge(document.querySelector('.fr-unread[data-unread-for="'+code+'"]'),n);
+      setUnreadBadge((function(){var _e=document.querySelectorAll('.fr-unread'),_i;for(_i=0;_i<_e.length;_i++)if(_e[_i].getAttribute('data-unread-for')===code)return _e[_i];return null;})(),n);
     });
   });
 }
@@ -6540,7 +6574,7 @@ window.onSupabaseReady=function(){try{syncMyName();}catch(e){}try{if($('#friends
       var setName=function(){ if(!store.user.name){ var gn=(u.user_metadata&&(u.user_metadata.full_name||u.user_metadata.name))||(u.email?u.email.split('@')[0]:''); if(gn&&typeof enterApp==='function')enterApp((''+gn).slice(0,20)); } };
       if((!store.habits||!store.habits.length)&&Social.pullBackupAuth){ /* yangi qurilma: bulutda zaxira bo'lsa avto-tikla */
         Social.pullBackupAuth().then(function(row){
-          if(row&&row.data){try{localStorage.setItem(KEY,row.data);window._skipUnloadSave=true;location.reload();}catch(e){setName();}}
+          if(row&&row.data){try{var _c2=sanitizeRaw(row.data); if(!_c2){setName();return;} localStorage.setItem(KEY,_c2);window._skipUnloadSave=true;location.reload();}catch(e){setName();}}
           else setName();
         },setName);
       } else { setName(); if(store.user.name)cloudBackupSoon(); }
