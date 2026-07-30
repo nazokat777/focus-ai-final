@@ -2891,6 +2891,16 @@ function downscaleImage(file,maxDim,cb){
 }
 function esc(s){return String(s).replace(/[<>&"']/g,'');} /* XSS-toza kiritish (belgilarni o'chiradi — qisqa yorliqlar uchun) */
 function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');} /* XSS-toza HTML-kodlash — chat matni yaxlit qoladi ("don't", "5<10") */
+/* XAVFSIZLIK: rasm manzili faqat data:image/... yoki loyiha ichidagi nisbiy yo'l
+   bo'lishi mumkin. Aks holda IMPORT QILINGAN zaxira orqali
+   {"user":{"avatar":"x\" onerror=\"..."}} ko'rinishida JS kiritib bo'lardi
+   (avatar/odat rasmi innerHTML ichida src="..." ga qo'yiladi). */
+function safeImg(u){
+  u=String(u==null?'':u);
+  if(!/^data:image\/(png|jpe?g|gif|webp|avif);base64,[A-Za-z0-9+/=]+$/i.test(u)
+     && !/^assets\/[\w.\-\/]+$/.test(u)) return '';
+  return u;
+}
 /* blok E: avto-backup — har 24 soatda oldingi holat nusxasi (buzilishdan himoya) */
 (function(){try{
   var last=store.settings.lastBackup||0,now=Date.now();
@@ -3105,7 +3115,9 @@ function settleGaps(){
   _gapHits=[];
   if(!names.length)return;
   save();
-  try{toast(T('gap_skip')(names.join(', ')));}catch(e){}
+  /* esc(): odat nomi foydalanuvchi (yoki import qilingan zaxira) kiritgan matn,
+     toast esa innerHTML ishlatadi — belgilar tozalanmasa injection bo'lardi. */
+  try{toast(T('gap_skip')(esc(names.join(', '))));}catch(e){}
   try{renderHabits();updatePill();}catch(e){}
 }
 function startH(h){
@@ -3622,7 +3634,8 @@ function anyRunning(){for(var i=0;i<store.habits.length;i++)if(store.habits[i].r
 function refreshHeadAvatar(){
   var b=$('#headAv');if(!b)return;
   var img=store.user.avatar;
-  b.innerHTML=(img?'<img src="'+img+'" alt="">':esc((store.user.name||'?').charAt(0).toUpperCase()))+'<span class="hav-dot"></span>';
+  var _si=safeImg(img);
+  b.innerHTML=(_si?'<img src="'+_si+'" alt="">':esc((store.user.name||'?').charAt(0).toUpperCase()))+'<span class="hav-dot"></span>';
   b.classList.toggle('live',anyRunning());
 }
 /* hero sitata — kunlik deterministik (Math.random EMAS); user rasmи bo'lsa ko'rsatiladi */
@@ -3802,7 +3815,8 @@ function renderOneCard(h,ci,stagger){
   var btnSvg;
   if(isCheck)btnSvg='<svg viewBox="0 0 24 24" style="fill:none;stroke:'+(doneToday?'var(--onneon)':'var(--neon)')+';stroke-width:2.6"><path d="M5 13l4 4L19 7"/></svg>';
   else btnSvg=h.runningSince?'<svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>':'<svg viewBox="0 0 24 24"><path d="M8 5l12 7-12 7z"/></svg>';
-  el.innerHTML='<div class="hc-icon" style="background:'+h.color+'">'+(h.image?'<img src="'+h.image+'">':'')+icon(h.icon)+'</div>'+
+  var _hi=safeImg(h.image);
+  el.innerHTML='<div class="hc-icon" style="background:'+esc(h.color)+'">'+(_hi?'<img src="'+_hi+'">':'')+icon(h.icon)+'</div>'+
     '<div class="hc-body"><div class="hc-top"><div class="hc-name"></div><div class="hc-pct mono"></div></div>'+
     '<div class="hc-bar"><div class="hc-fill"></div></div>'+
     '<div class="hc-sub"><span class="el"></span><span class="gl"></span></div></div>'+
@@ -5795,7 +5809,8 @@ if($('#acInput'))$('#acInput').addEventListener('keydown',function(e){if(e.key==
 /* ============ avatar rasm / onboarding replay / sozlamalar ============ */
 function renderAvatar(){
   var av=$('#avatar');
-  if(store.user.avatar){av.innerHTML='<img src="'+store.user.avatar+'" style="width:100%;height:100%;object-fit:cover;border-radius:24px">';}
+  var _av=safeImg(store.user.avatar);
+  if(_av){av.innerHTML='<img src="'+_av+'" style="width:100%;height:100%;object-fit:cover;border-radius:24px">';}
   else av.textContent=(store.user.name||'?').charAt(0).toUpperCase();
 }
 $('#avatar').addEventListener('click',function(){$('#avatarInput').click();});
