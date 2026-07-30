@@ -28,6 +28,9 @@ if('serviceWorker' in navigator){
 <script>
   window.SB_URL='https://ursuqwotkpczjrqnvoad.supabase.co';
   window.SB_KEY='sb_publishable_j5HKMeo7NDgNDv8nPRKL8g_Kbm-nAc9';   /* publishable (ochiq) kalit — maxfiy emas, RLS himoya qiladi */
+  /* AI Coach — BEPUL Gemini kaliti (aistudio.google.com -> "Get API key").
+     Bo'sh bo'lsa: coach shablon-maslahat beradi (oflayn). Kalit qo'ysangiz: haqiqiy AI chat. */
+  window.GEMINI_KEY='';
   if(window.SB_URL && window.SB_KEY){
     var _sbs=document.createElement('script');
     _sbs.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
@@ -1276,6 +1279,36 @@ input{font-family:inherit}
 .alarm .a-esc.show{display:block}
 .alarm .aerr{color:var(--danger);font-size:13px;min-height:18px}
 
+/* AI Coach kartasi — robot 3D chiqib turadi */
+.aic{position:relative;background:linear-gradient(135deg,rgba(10,32,21,.92),rgba(8,18,12,.92));border:1px solid rgba(var(--neon-rgb),.25);border-radius:20px;padding:16px;margin-top:14px;overflow:visible;box-shadow:0 14px 40px -18px rgba(0,0,0,.7)}
+.aic-bot{position:absolute;right:4px;top:-44px;width:106px;height:auto;pointer-events:none;
+  filter:drop-shadow(0 14px 20px rgba(0,0,0,.55)) drop-shadow(0 0 26px rgba(var(--neon-rgb),.28));
+  animation:aicFloat 3.4s var(--ease) infinite;z-index:2}
+@keyframes aicFloat{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-7px) rotate(1.5deg)}}
+.aic-body{position:relative;z-index:1;padding-right:92px}
+.aic-title{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon)}
+.aic-msg{font-size:13.5px;line-height:1.6;color:var(--text);margin-top:8px;min-height:20px}
+.aic-msg.dim{color:var(--muted)}
+.aic-actions{display:flex;gap:8px;margin-top:14px}
+.aic-btn{flex:1;padding:10px;border-radius:11px;font-size:12.5px;font-weight:700;background:var(--neon);color:var(--onneon);border:none}
+.aic-btn.ghost{background:rgba(var(--neon-rgb),.1);color:var(--neon);border:1px solid rgba(var(--neon-rgb),.3)}
+.aic-btn:active{transform:scale(.97)}
+/* AI Coach chat sheet */
+.ac-sheet{max-height:88vh;display:flex;flex-direction:column}
+.ac-top{display:flex;align-items:center;gap:11px;padding-bottom:12px;border-bottom:1px solid var(--line)}
+.ac-av{width:40px;height:40px;border-radius:12px;background:rgba(var(--neon-rgb),.1);object-fit:contain;flex:none;padding:2px}
+.ac-id{flex:1}.ac-id b{display:block;font-size:15px}.ac-id s{text-decoration:none;font-size:11px;color:var(--neon)}
+.ac-log{flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:9px;padding:14px 2px;-webkit-overflow-scrolling:touch;min-height:180px}
+.ac-bub{max-width:82%;padding:10px 13px;border-radius:15px;font-size:13.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.ac-bub.me{align-self:flex-end;background:var(--neon);color:var(--onneon);border-bottom-right-radius:5px}
+.ac-bub.bot{align-self:flex-start;background:var(--elev2);border:1px solid var(--line);color:var(--text);border-bottom-left-radius:5px}
+.ac-bub.dim{color:var(--muted)}
+.ac-input{display:flex;gap:8px;padding-top:10px;border-top:1px solid var(--line)}
+.ac-input input{flex:1;background:var(--elev2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;color:var(--text);font-size:14px}
+#acSend{width:46px;height:46px;flex:none;border-radius:12px;background:var(--neon);color:var(--onneon);display:grid;place-items:center;border:none}
+#acSend svg{width:20px;height:20px;fill:currentColor}
+#acSend:active{transform:scale(.92)}
+
 /* PIN qulf */
 .pinlock{position:absolute;inset:0;z-index:140;background:var(--bg);display:none;flex-direction:column;align-items:center;justify-content:center;gap:16px;touch-action:none}
 .pinlock.open{display:flex}
@@ -1937,10 +1970,16 @@ input{font-family:inherit}
       <div class="badges" id="badges"></div>
       <!-- Kunlik sitata -->
       <div class="quote-card" id="quoteCard"><span class="q-mark">❝</span><div class="q-txt" id="quoteTxt"></div></div>
-      <div class="coach">
-        <div class="c-top">🤖 <span data-i18n="coach"></span></div>
-        <div class="c-msg dim" id="coachMsg"></div>
-        <button id="coachBtn" data-i18n="coach_btn"></button>
+      <div class="aic" id="aicCard">
+        <img class="aic-bot" src="assets/robot.webp" alt="AI Coach" id="aicBot">
+        <div class="aic-body">
+          <div class="aic-title">AI Coach</div>
+          <div class="aic-msg dim" id="coachMsg"></div>
+          <div class="aic-actions">
+            <button class="aic-btn" id="coachBtn" data-i18n="coach_btn"></button>
+            <button class="aic-btn ghost" id="coachChat" data-i18n="coach_chat"></button>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -2052,6 +2091,22 @@ input{font-family:inherit}
       <button class="hf-btn" data-f="done" data-i18n="od_done"></button>
     </div>
     <div class="od-list" id="odList"></div>
+  </div>
+
+  <!-- AI COACH CHAT -->
+  <div class="scrim" id="acScrim"></div>
+  <div class="sheet ac-sheet" id="acSheet">
+    <div class="grip"></div>
+    <div class="ac-top">
+      <img src="assets/robot.webp" class="ac-av" alt="">
+      <div class="ac-id"><b>AI Coach</b><s data-i18n="coach_sub"></s></div>
+      <button class="od-close" id="acClose" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div class="ac-log" id="acLog"></div>
+    <div class="ac-input">
+      <input id="acInput" type="text" maxlength="300" data-i18n-ph="coach_ph">
+      <button id="acSend" aria-label="send"><svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-3-6-7-2z"/></svg></button>
+    </div>
   </div>
 
   <!-- SESSION -->
@@ -2425,7 +2480,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   all_done_today:"Bugun hammasi bajarildi!",
   f_type:"Turi",t_timed:"⏱ Vaqtli",t_check:"✓ Belgilash",u_done:"Bugun bajarildi!",u_todo:"Bugun bajarish uchun bos",
   r_title:"Sessiya yakunlandi",mastery:"Daraja",mastery_s:"Daraja",close:"Yopish",share:"Ulashish 📤",
-  wisdom:"Hikmat to'plami",trace:"Fokus izi",streak_week:"Seriya",streak_days:"kunlik seriya",freeze_lbl:"muzlatgich",freeze_got:"Muzlatgich olindi 🧊 — bir kunni himoyalaydi",freeze_need:"Tanga yetarli emas",coach:"AI murabbiy",coach_btn:"Maslahat olish",coach_wait:"O'ylayapman…",
+  wisdom:"Hikmat to'plami",trace:"Fokus izi",streak_week:"Seriya",streak_days:"kunlik seriya",freeze_lbl:"muzlatgich",freeze_got:"Muzlatgich olindi 🧊 — bir kunni himoyalaydi",freeze_need:"Tanga yetarli emas",coach:"AI murabbiy",coach_btn:"Maslahat",coach_chat:"Suhbat",coach_wait:"O'ylayapman…",coach_sub:"doim yoningizda",coach_ph:"Coachdan so'rang…",coach_greet:"Salom! Men Focus AI coachman. Fokus, odat yoki motivatsiya haqida so'rang — yordam beraman.",
   rewards:"Mukofotlar",md1:"Birinchi qadam",md2:"10 soat",md3:"50 soat",md4:"100 soat",md5:"500 soat",md6:"Maqsadli",md7:"3 kun",md8:"Temir iroda",md9:"Afsona",
   shop_hint:"Fokus qilib to'plagan tanga va olmoslaringni o'zing belgilagan mukofotlarga sarfla. 🪙 — har bajarilgan kunlik norma uchun; 💎 — kunning barcha odatlari bajarilganda.",my_rewards:"Mening mukofotlarim",reward_history:"Olingan mukofotlar",
   new_reward:"Yangi mukofot",rw_name:"Nomi (masalan: film, kitob, dam)",rw_cur:"Nima bilan",rw_price:"Narxi",mk_coin:"Tanga",mk_diamond:"Olmos",rw_get:"Olish",
@@ -2536,7 +2591,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   all_done_today:"Всё выполнено сегодня!",
   f_type:"Тип",t_timed:"⏱ По времени",t_check:"✓ Отметка",u_done:"Сегодня выполнено!",u_todo:"Нажми, чтобы отметить",
   r_title:"Сессия завершена",mastery:"Уровень",mastery_s:"Уровень",close:"Закрыть",share:"Поделиться 📤",
-  wisdom:"Мудрость",trace:"След фокуса",streak_week:"Серия",streak_days:"дней подряд",freeze_lbl:"заморозка",freeze_got:"Заморозка куплена 🧊 — защитит один день",freeze_need:"Недостаточно монет",coach:"AI наставник",coach_btn:"Получить совет",coach_wait:"Думаю…",
+  wisdom:"Мудрость",trace:"След фокуса",streak_week:"Серия",streak_days:"дней подряд",freeze_lbl:"заморозка",freeze_got:"Заморозка куплена 🧊 — защитит один день",freeze_need:"Недостаточно монет",coach:"AI наставник",coach_btn:"Совет",coach_chat:"Чат",coach_wait:"Думаю…",coach_sub:"всегда рядом",coach_ph:"Спросите коуча…",coach_greet:"Привет! Я коуч Focus AI. Спросите о фокусе, привычках или мотивации — помогу.",
   rewards:"Награды",md1:"Первый шаг",md2:"10 часов",md3:"50 часов",md4:"100 часов",md5:"500 часов",md6:"Целеустремлённый",md7:"3 дня",md8:"Железная воля",md9:"Легенда",
   shop_hint:"Трать монеты и алмазы, накопленные фокусом, на свои собственные награды. 🪙 — за каждую выполненную дневную норму; 💎 — когда выполнены все привычки дня.",my_rewards:"Мои награды",reward_history:"Полученные награды",
   new_reward:"Новая награда",rw_name:"Название (например: фильм, книга, отдых)",rw_cur:"Чем",rw_price:"Цена",mk_coin:"Монета",mk_diamond:"Алмаз",rw_get:"Получить",
@@ -2647,7 +2702,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   all_done_today:"All done today!",
   f_type:"Type",t_timed:"⏱ Timed",t_check:"✓ Check",u_done:"Done today!",u_todo:"Tap to complete today",
   r_title:"Session complete",mastery:"Level",mastery_s:"Level",close:"Close",share:"Share 📤",
-  wisdom:"Wisdom",trace:"Focus trace",streak_week:"Streak",streak_days:"day streak",freeze_lbl:"freeze",freeze_got:"Freeze bought 🧊 — protects one day",freeze_need:"Not enough coins",coach:"AI coach",coach_btn:"Get advice",coach_wait:"Thinking…",
+  wisdom:"Wisdom",trace:"Focus trace",streak_week:"Streak",streak_days:"day streak",freeze_lbl:"freeze",freeze_got:"Freeze bought 🧊 — protects one day",freeze_need:"Not enough coins",coach:"AI coach",coach_btn:"Advice",coach_chat:"Chat",coach_wait:"Thinking…",coach_sub:"always with you",coach_ph:"Ask the coach…",coach_greet:"Hi! I'm your Focus AI coach. Ask about focus, habits or motivation — I'm here to help.",
   rewards:"Rewards",md1:"First step",md2:"10 hours",md3:"50 hours",md4:"100 hours",md5:"500 hours",md6:"Goal-driven",md7:"3 days",md8:"Iron will",md9:"Legend",
   shop_hint:"Spend the coins and diamonds you earned by focusing on your own rewards. 🪙 — for each daily goal met; 💎 — when all of today's habits are done.",my_rewards:"My rewards",reward_history:"Redeemed rewards",
   new_reward:"New reward",rw_name:"Name (e.g. movie, book, break)",rw_cur:"With",rw_price:"Price",mk_coin:"Coin",mk_diamond:"Diamond",rw_get:"Redeem",
@@ -5370,18 +5425,63 @@ var COACH={
           function(n,t){return t+" of deep work is no small thing. Now rest, continue the chain tomorrow 🌙";}]
   }
 };
-$('#coachBtn').addEventListener('click',function(){
-  var msg=$('#coachMsg');sTap();msg.classList.remove('dim');
+/* shablon maslahat (Gemini kaliti bo'lmasa / oflayn) */
+function fallbackAdvice(){
   var C=COACH[store.settings.lang]||COACH.uz;
   var today=dayTotalMs(TODAY),s=globalStreak(),t=fmtHM(today),l=T('lvls')[levelIdx()];
   var n=store.user.name?' '+store.user.name:'';
-  var arr;
-  if(today<60000)arr=(s>=3)?C.streak:C.start;
-  else if(today<3600000)arr=C.early;
-  else arr=C.strong;
-  var f=arr[Math.floor(Math.random()*arr.length)];
-  msg.textContent=f(n,today<60000?s:t,l);
+  var arr=today<60000?(s>=3?C.streak:C.start):(today<3600000?C.early:C.strong);
+  return arr[Math.floor(Math.random()*arr.length)](n,today<60000?s:t,l);
+}
+/* AI coach konteksti — foydalanuvchi ma'lumotlari bilan */
+function coachContext(){
+  var langN={uz:"o'zbek",ru:"русском",en:"English"}[store.settings.lang]||"o'zbek";
+  var today=fmtHM(dayTotalMs(TODAY)),s=globalStreak(),tot=Math.round(totalHours()),n=store.user.name||'';
+  return "Sen Focus AI ilovasining samimiy AI coachisisan. Faqat "+langN+" tilida, qisqa (2-4 jumla), amaliy va ijobiy javob ber. "+
+    "Ilova maqsadi: fokus, odat, 10 000 soat mahorat. Foydalanuvchi: "+(n||'—')+". Bugungi fokus: "+today+", streak: "+s+" kun, jami ~"+tot+" soat.";
+}
+/* Gemini chaqiruvi (kalit bo'lsa) — bo'lmasa null qaytaradi */
+function askGemini(userMsg){
+  var key=window.GEMINI_KEY;if(!key)return Promise.resolve(null);
+  var body={contents:[{role:'user',parts:[{text:coachContext()+"\n\nSavol: "+userMsg}]}]};
+  var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key='+encodeURIComponent(key);
+  return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+    .then(function(r){return r.json();})
+    .then(function(j){try{return j.candidates[0].content.parts[0].text;}catch(e){return null;}})
+    .catch(function(){return null;});
+}
+/* Maslahat tugmasi */
+$('#coachBtn').addEventListener('click',function(){
+  var msg=$('#coachMsg');sTap();msg.classList.remove('dim');
+  if(window.GEMINI_KEY){
+    msg.textContent=T('coach_wait');
+    askGemini(store.settings.lang==='ru'?'дай короткий совет на сегодня':store.settings.lang==='en'?'give me a short tip for today':'bugun uchun qisqa maslahat ber')
+      .then(function(r){msg.textContent=r||fallbackAdvice();});
+  }else msg.textContent=fallbackAdvice();
 });
+/* boshlang'ich maslahat (karta bo'sh turmasin) */
+(function(){var m=$('#coachMsg');if(m)m.textContent=fallbackAdvice();})();
+/* ===== AI Coach chat ===== */
+function acBub(text,who){var b=document.createElement('div');b.className='ac-bub '+who;b.textContent=text;var log=$('#acLog');log.appendChild(b);log.scrollTop=log.scrollHeight;return b;}
+function acOpen(o){
+  $('#acScrim').classList.toggle('open',o);$('#acSheet').classList.toggle('open',o);$('#device').classList.toggle('modal',o);
+  if(o){
+    var inp=$('#acInput');if(inp)inp.placeholder=T('coach_ph');
+    if(!$('#acLog').children.length)acBub(T('coach_greet'),'bot');
+    setTimeout(function(){if(inp)inp.focus();},220);
+  }
+}
+function acSend(){
+  var inp=$('#acInput'),v=(inp.value||'').trim();if(!v)return;inp.value='';
+  acBub(v,'me');
+  var typing=acBub(T('coach_wait'),'bot dim');
+  askGemini(v).then(function(r){typing.parentNode&&typing.parentNode.removeChild(typing);acBub(r||fallbackAdvice(),'bot');});
+}
+if($('#coachChat'))$('#coachChat').addEventListener('click',function(){sTap();acOpen(true);});
+if($('#acClose'))$('#acClose').addEventListener('click',function(){acOpen(false);});
+if($('#acScrim'))$('#acScrim').addEventListener('click',function(){acOpen(false);});
+if($('#acSend'))$('#acSend').addEventListener('click',acSend);
+if($('#acInput'))$('#acInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();acSend();}});
 
 /* ============ avatar rasm / onboarding replay / sozlamalar ============ */
 function renderAvatar(){
