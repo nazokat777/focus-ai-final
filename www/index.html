@@ -1302,6 +1302,10 @@ input{font-family:inherit}
 .aic-title{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon)}
 .aic-msg{font-size:13.5px;line-height:1.6;color:var(--text);margin-top:8px;min-height:20px}
 .aic-msg.dim{color:var(--muted)}
+/* Light tema: AI Coach kartasi ham yorug' bo'lsin (dark karta light fon'да begona) */
+.device[data-theme="light"] .aic{background:linear-gradient(135deg,rgba(var(--neon-rgb),.12),var(--elev));border-color:rgba(var(--neon-rgb),.32)}
+.device[data-theme="light"] .aic-msg,.device[data-theme="light"] .aic-msg.dim{color:var(--text)}
+.device[data-theme="light"] .aic-bot{filter:drop-shadow(0 14px 20px rgba(0,0,0,.25)) drop-shadow(0 0 20px rgba(var(--neon-rgb),.2))}
 .aic-actions{display:flex;gap:8px;margin-top:14px}
 .aic-btn{flex:1;padding:10px;border-radius:11px;font-size:12.5px;font-weight:700;background:var(--neon);color:var(--onneon);border:none}
 .aic-btn.ghost{background:rgba(var(--neon-rgb),.1);color:var(--neon);border:1px solid rgba(var(--neon-rgb),.3)}
