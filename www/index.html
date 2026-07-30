@@ -1280,12 +1280,12 @@ input{font-family:inherit}
 .alarm .aerr{color:var(--danger);font-size:13px;min-height:18px}
 
 /* AI Coach kartasi — robot 3D chiqib turadi */
-.aic{position:relative;background:linear-gradient(135deg,rgba(10,32,21,.92),rgba(8,18,12,.92));border:1px solid rgba(var(--neon-rgb),.25);border-radius:20px;padding:16px;margin-top:14px;overflow:visible;box-shadow:0 14px 40px -18px rgba(0,0,0,.7)}
-.aic-bot{position:absolute;right:4px;top:-44px;width:106px;height:auto;pointer-events:none;
-  filter:drop-shadow(0 14px 20px rgba(0,0,0,.55)) drop-shadow(0 0 26px rgba(var(--neon-rgb),.28));
+.aic{position:relative;background:linear-gradient(135deg,rgba(10,32,21,.92),rgba(8,18,12,.92));border:1px solid rgba(var(--neon-rgb),.25);border-radius:18px;padding:13px 14px;margin-top:14px;overflow:visible;box-shadow:0 14px 40px -18px rgba(0,0,0,.7)}
+.aic-bot{position:absolute;right:-4px;top:-58px;width:138px;height:auto;pointer-events:none;
+  filter:drop-shadow(0 16px 22px rgba(0,0,0,.6)) drop-shadow(0 0 30px rgba(var(--neon-rgb),.3));
   animation:aicFloat 3.4s var(--ease) infinite;z-index:2}
 @keyframes aicFloat{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-7px) rotate(1.5deg)}}
-.aic-body{position:relative;z-index:1;padding-right:92px}
+.aic-body{position:relative;z-index:1;padding-right:104px}
 .aic-title{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--neon)}
 .aic-msg{font-size:13.5px;line-height:1.6;color:var(--text);margin-top:8px;min-height:20px}
 .aic-msg.dim{color:var(--muted)}
@@ -1966,8 +1966,6 @@ input{font-family:inherit}
       <div class="grid-lbl" data-i18n="focus_need"></div>
       <div class="focus-need" id="focusNeed"></div>
       <!-- Yutuqlar -->
-      <div class="grid-lbl" data-i18n="achievements"></div>
-      <div class="badges" id="badges"></div>
       <!-- Kunlik sitata -->
       <div class="quote-card" id="quoteCard"><span class="q-mark">❝</span><div class="q-txt" id="quoteTxt"></div></div>
       <div class="aic" id="aicCard">
@@ -1990,6 +1988,8 @@ input{font-family:inherit}
       <div class="streak-row" id="streakRow"></div>
       <div class="grid-lbl" id="rewardsLbl" style="cursor:pointer"><span data-i18n="rewards"></span><span class="rw-bal mono" id="rwBal">🛍</span></div>
       <div class="medals" id="medals"></div>
+      <div class="grid-lbl" data-i18n="achievements"></div>
+      <div class="badges" id="badges"></div>
       <div class="grid-lbl"><span data-i18n="league_lbl"></span><span class="lg-week mono" data-i18n="league_week"></span></div>
       <div class="fr-board" id="leagueBoard"></div>
     </section>
@@ -4908,8 +4908,15 @@ function drawStats(anim){
       if(lvl){c.style.transform='scale(0)';setTimeout(function(){c.style.transform='scale(1)';},200+(55-j)*6);}
     })(j);
   }
-  var best=bestStreakEver(),bd=$('#badges');bd.innerHTML='';
-  var totH=totalHours();
+  renderBadges();
+  renderMastery();renderGolden();
+  /* GSAP-uslub stagger: kartalar birin-ketin ko'tariladi (faqat tab ochilганда) */
+  if(anim)staggerRise([$('#compare'),$('#donutCard'),document.querySelector('#v-stats .mastery'),$('#bars'),$('#grid'),$('#golden'),$('#focusNeed'),$('#quoteCard'),$('#aicCard')],55);
+}
+/* Nishonlar — Statistika va Liga bo'limlarida ham chiziladi (#badges qayerda bo'lsa) */
+function renderBadges(){
+  var bd=$('#badges');if(!bd)return;bd.innerHTML='';
+  var best=bestStreakEver(),totH=totalHours();
   if(!store.seen)store.seen=[];
   var defs=[];
   [3,7,14,30,100,365].forEach(function(n){defs.push({k:'s'+n,n:n,l:'🔥 '+T('days'),ok:best>=n});});
@@ -4922,9 +4929,6 @@ function drawStats(anim){
     bd.appendChild(el);
   });
   save();
-  renderMastery();renderGolden();
-  /* GSAP-uslub stagger: kartalar birin-ketin ko'tariladi (faqat tab ochilганда) */
-  if(anim)staggerRise([$('#compare'),$('#donutCard'),document.querySelector('#v-stats .mastery'),$('#bars'),$('#grid'),$('#golden'),$('#focusNeed'),$('#badges'),$('#quoteCard'),document.querySelector('#v-stats .coach')],55);
 }
 
 /* ============ focus tab timer (timestamp-based countdown) ============ */
@@ -5536,7 +5540,7 @@ $('#avatarInput').addEventListener('change',function(){
   else{host.addEventListener('touchstart',bloom,true);host.addEventListener('mousedown',bloom,true);}
 })();
 $('#onbReplay').addEventListener('click',function(){
-  sTap();onbGo(0);$('#onb').classList.remove('gone');
+  sTap();location.href='landing.html'; /* kinematik landing saytni qayta ko'rsatadi */
 });
 $('#remTime').value=store.settings.remTime||'';
 $('#alarmTime').value=store.settings.alarmTime||'';
@@ -5758,8 +5762,8 @@ function goToView(ni){
   if(!reduce){var ni2=$('#navind');if(ni2){ni2.classList.remove('stretch');void ni2.getBoundingClientRect();ni2.classList.add('stretch');}}
   if(v==='home'){renderSparkline();if(!reduce){var rg=$('#pcRing');if(rg){rg.classList.remove('pop');void rg.offsetWidth;rg.classList.add('pop');}}}
   if(v==='stats')drawStats(true); /* tab ochilganda raqamlar dekodlanadi (til almashuvida emas) */
-  if(v==='league'){renderStreakRow();renderRewards();renderLeague();
-    staggerRise([$('#streakRow'),$('#medals'),$('#leagueBoard')],70);} /* Liga tab: streak + mukofot + reyting */
+  if(v==='league'){renderStreakRow();renderRewards();renderLeague();renderBadges();
+    staggerRise([$('#streakRow'),$('#medals'),$('#badges'),$('#leagueBoard')],70);} /* Liga tab: streak + mukofot + nishonlar + reyting */
   if(v==='focus'&&!store.settings.dialHintShown){ /* rotary dial — birinchi marta oshkor qilamiz */
     store.settings.dialHintShown=true;save();
     setTimeout(function(){if(navIdx===VIEWS.indexOf('focus'))toast(T('dial_hint'));},700);
