@@ -902,6 +902,16 @@ input{font-family:inherit}
 .device[data-theme="light"] .s-ring .breathe{box-shadow:inset 0 10px 26px rgba(var(--neon-rgb),.06),0 0 0 1px var(--line)}
 .device[data-theme="light"] .s-ring.run .s-elapsed{text-shadow:none}
 .device[data-theme="light"] .s-ring .head{filter:drop-shadow(0 0 6px rgba(var(--neon-rgb),.5))}
+/* Sessiya sirti HAR DOIM qorong'i (.session{background:#05070A}) — shuning uchun yorug'
+   rejimda ham ichidagi tugmalar qorong'i palitrada qolsin, aks holda oq tugma qora fonda
+   asosiy "Boshlash"dan ko'ra ko'zga tashlanadi. */
+.device[data-theme="light"] .session .s-skip{background:#0c1a0f;border-color:rgba(90,255,160,.14);color:#7a9784}
+.device[data-theme="light"] .session .s-micro{background:rgba(57,255,140,.12);border-color:rgba(57,255,140,.4);color:#39FF8C}
+.device[data-theme="light"] .session .u-btn{background:#0c1a0f;border-color:rgba(90,255,160,.14)}
+.device[data-theme="light"] .session .u-btn svg{stroke:#7a9784}
+.device[data-theme="light"] .session .u-btn.done{background:#39FF8C;border-color:#39FF8C}
+.device[data-theme="light"] .session .u-btn.done svg{stroke:#04130a}
+.device[data-theme="light"] .session .u-lbl{color:#7a9784}
 .reduce .s-ring,.reduce .s-ring::before,.reduce .s-ring .head,.reduce .s-ring .halo,.reduce .s-elapsed{transition:none!important}
 .reduce .s-ring.run::before,.reduce .s-ring.run .s-elapsed,.reduce .s-ring.run .s-dot{animation:none!important}
 .s-pomodoro svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
@@ -2173,14 +2183,18 @@ input{font-family:inherit}
       </div>
     </div>
 
-    <!-- Hidden native elements for JS -->
+    <!-- Belgilash odati uchun (type:'check') — CSS ko'rsatadi: .session.untimed .u-check{display:flex} -->
+    <div class="u-check">
+      <button class="u-btn" id="uBtn" aria-label="Bajarildi">
+        <svg viewBox="0 0 24 24"><polyline points="4,12.5 9.5,18 20,6.5"/></svg>
+      </button>
+      <div class="u-lbl" id="uLbl"></div>
+    </div>
+
+    <!-- JS yozadigan, lekin sessiya ekranida ko'rsatilmaydigan elementlar (mavjud bo'lishi shart) -->
     <div style="display:none">
-      <span id="sStreak"></span>
-      <div id="sCal"></div>
-      <button id="sMicro"></button>
-      <button id="sSkip"></button>
-      <button id="uBtn"></button>
-      <div id="uLbl"></div>
+      <span class="mono" id="sStreak"></span>
+      <div class="grid" id="sCal"></div>
     </div>
 
     <!-- Ambient Sound (Native functional) -->
@@ -2196,22 +2210,17 @@ input{font-family:inherit}
       <button class="s-btn-start s-btn s-fin" id="sFinish" style="flex:1;display:none;background:#1a1c20;border-color:rgba(255,255,255,0.1)" data-i18n="finish"></button>
     </div>
 
+    <!-- "🌙 Bugun dam" va "⚡ Faqat 5 daqiqa" — matnini JS beradi.
+         .s-micro CSS'da display:none; JS .show sinfi bilan ko'rsatadi (4220). -->
+    <button class="s-skip" id="sSkip"></button>
+    <button class="s-micro" id="sMicro"></button>
+
     <!-- Fokus muhiti (Environments) -->
     <div class="s-env-section">
       <div class="s-env-banner" id="envBanner" style="background-image:url('assets/forest_rain.png')">
         <div class="s-env-info">
           <div class="s-env-title" id="envTitle">O'rmon yomg'iri</div>
         </div>
-      </div>
-      <div class="s-env-thumbs">
-    <div class="deep" id="deepInd" style="display:none"><span>🌙</span><span id="deepTxt"></span></div>
-    <div class="ambi" id="ambi" style="display:none"></div>
-    <div class="u-check" style="display:none"><button class="u-btn" id="uBtn"></button><div class="u-lbl" id="uLbl"></div></div>
-    <button class="s-skip" id="sSkip" style="display:none"></button>
-    <button class="s-micro" id="sMicro" style="display:none"></button>
-    <span class="mono" id="sStreak" style="display:none"></span>
-    <div class="grid" id="sCal" style="display:none"></div>
-    <div class="s-grab" id="sGrab" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -2366,16 +2375,11 @@ input{font-family:inherit}
       <div class="rtime mono" id="rTime">0m</div>
       <div class="rdelta mono" id="rDelta"></div>
       <div class="rname" id="rName"></div>
-      <div class="guess" id="guessBox">
-        <div class="g-q" data-i18n="g_q"></div>
-        <div class="goalrow">
-          <button id="gMinus">−</button>
-          <div class="gval mono"><span id="gVal">30</span><span class="g-u" id="gUnit"></span></div>
-          <button id="gPlus">+</button>
-        </div>
-        <button class="g-go" id="gGo" data-i18n="g_show"></button>
-        <div class="g-skip" id="gSkip" data-i18n="g_skip"></div>
-      </div>
+      <!-- "Idrok ko'zgusi" (taxmin so'rash) o'chirilgan (foydalanuvchi so'rovi).
+           Markup ham olib tashlandi: uning gMinus/gPlus/gVal ID'lari "Yangi odat"
+           oynasidagi maqsad tugmalari bilan TO'QNASHARDI — maqsad ko'rsatkichi
+           "10 000" o'rniga "35" bo'lib ketardi. -->
+      <span id="gUnit" style="display:none"></span>
       <div class="r-row">
         <div class="r-stat"><div class="n mono" id="rStreak">0</div><div class="l" data-i18n="streak"></div></div>
         <div class="r-stat"><div class="n mono" id="rTotal">0</div><div class="l" data-i18n="total_hrs"></div></div>
@@ -5342,7 +5346,7 @@ function guessReveal(est){
     if(store.guessLog.length>200)store.guessLog=store.guessLog.slice(-200);
     save();
   }
-  $('#guessBox').style.display='none';
+  var _gb=$('#guessBox'); if(_gb)_gb.style.display='none';   /* markup olib tashlangan — himoya */
   $('#rTime').classList.remove('hid');
   if(est==null){$('#rTime').textContent=fmtHM(act);return;}
   var done=false;
@@ -5373,11 +5377,8 @@ function showResult(h){
   guessHid=h.id;
   $('#rDelta').innerHTML='';
   /* idrok ko'zgusi (taxmin so'rash) — o'chirildi (foydalanuvchi so'rovi) */
-  var ask=false;
-  $('#guessBox').style.display=ask?'':'none';
-  $('#rTime').classList.toggle('hid',ask);
-  if(ask){guessSet(h.dailyMin||30);$('#rTime').textContent='?';}
-  else $('#rTime').textContent=fmtHM(todayMs);
+  $('#rTime').classList.remove('hid');
+  $('#rTime').textContent=fmtHM(todayMs);
   $('#rName').textContent=h.name;
   $('#rStreak').textContent=globalStreak();
   $('#rTotal').textContent=totalHours().toFixed(1);
@@ -5386,10 +5387,9 @@ function showResult(h){
   $('#rQuote').textContent='“'+qs[Math.floor(Math.random()*qs.length)]+'”';
   $('#result').classList.add('open');
 }
-$('#gMinus').addEventListener('click',function(){guessSet(guessMin-5);sTap();});
-$('#gPlus').addEventListener('click',function(){guessSet(guessMin+5);sTap();});
-$('#gGo').addEventListener('click',function(){sGo();guessReveal(guessMin);});
-$('#gSkip').addEventListener('click',function(){sTap();guessReveal(null);});
+/* Taxmin tugmalarining ishlovchilari OLIB TASHLANDI: ular #gMinus/#gPlus ni
+   tanlar edi, lekin bu ID'lar "Yangi odat" oynasidagi maqsad tugmalariga tegishli
+   (hujjatda birinchi turadi) — natijada maqsad qiymati taxmin soni bilan almashardi. */
 $('#rClose').addEventListener('click',function(){$('#result').classList.remove('open');sTap();});
 $('#rShare').addEventListener('click',function(){
   try{
