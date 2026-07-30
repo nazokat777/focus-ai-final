@@ -3,10 +3,6 @@
   "appName": "Focus AI",
   "webDir": "www",
   "backgroundColor": "#030806",
-  "server": {
-    "url": "https://focus-ai-final.vercel.app",
-    "cleartext": false
-  },
   "android": {
     "allowMixedContent": false
   },
