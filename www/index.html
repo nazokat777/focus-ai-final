@@ -2490,7 +2490,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
   week:"Shu hafta",weeks8:"Oxirgi 8 hafta",achievements:"Nishonlar",days:"kun",focus_need:"Diqqat kerak",fn_ok:"Hammasi izchil — zo'r ketyapsan! ✨",fn_none:"Hali odat yo'q — birinchisini qo'shing",fn_new:"Ma'lumot yig'ilmoqda — bir necha kundan keyin ko'rinadi",
   gap_skip:function(n){return "«"+n+"» taymeri uzoq ochiq qolibdi — bu vaqt hisoblanmadi, taymer to'xtatildi";},
-  bak_save:"Saqlash",focus_done_bg:"Fokus blokingiz tugagan edi — vaqt hisobga qo'shildi ✓",
+  bak_save:"Saqlash",focus_done_bg:"Fokus blokingiz tugagan edi — vaqt hisobga qo'shildi ✓",focus_end_t:"Fokus bloki tugadi",back_exit:"Chiqish uchun yana bir marta bosing",focus_end_b:function(m){return m+" daqiqa fokus hisobga yozildi ✓";},
   cmp_more:function(h,p){return "Bu hafta <b>"+h+" soat</b> fokus qilding — o'tgan haftaga nisbatan <b>+"+p+"%</b> 💪";},
   cmp_less:function(h,p){return "Bu hafta <b>"+h+" soat</b> — o'tgan haftadan "+p+"% kam. Bugun bitta sessiya boshla!";},
   cmp_first:function(h){return "Bu hafta <b>"+h+" soat</b> fokus qilding. Ajoyib boshlanish!";},
@@ -2603,7 +2603,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
   week:"Эта неделя",weeks8:"Последние 8 недель",achievements:"Значки",days:"дн.",focus_need:"Нужно внимание",fn_ok:"Всё стабильно — отлично! ✨",fn_none:"Пока нет привычек — добавьте первую",fn_new:"Данные собираются — появятся через несколько дней",
   gap_skip:function(n){return "Таймер «"+n+"» долго оставался включённым — это время не засчитано, таймер остановлен";},
-  bak_save:"Сохранить",focus_done_bg:"Ваш фокус-блок завершился — время засчитано ✓",
+  bak_save:"Сохранить",focus_done_bg:"Ваш фокус-блок завершился — время засчитано ✓",focus_end_t:"Фокус-блок завершён",back_exit:"Нажмите ещё раз, чтобы выйти",focus_end_b:function(m){return m+" минут фокуса засчитано ✓";},
   cmp_more:function(h,p){return "На этой неделе <b>"+h+" ч</b> фокуса — на <b>+"+p+"%</b> больше прошлой 💪";},
   cmp_less:function(h,p){return "На этой неделе <b>"+h+" ч</b> — на "+p+"% меньше прошлой. Начни сессию сегодня!";},
   cmp_first:function(h){return "На этой неделе <b>"+h+" ч</b> фокуса. Отличное начало!";},
@@ -2716,7 +2716,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
   week:"This week",weeks8:"Last 8 weeks",achievements:"Badges",days:"days",focus_need:"Needs focus",fn_ok:"All on track — great job! ✨",fn_none:"No habits yet — add your first",fn_new:"Collecting data — visible in a few days",
   gap_skip:function(n){return "«"+n+"» timer was left running for a long time — that time wasn't counted, timer stopped";},
-  bak_save:"Save",focus_done_bg:"Your focus block had finished — time counted ✓",
+  bak_save:"Save",focus_done_bg:"Your focus block had finished — time counted ✓",focus_end_t:"Focus block finished",back_exit:"Press again to exit",focus_end_b:function(m){return m+" minutes of focus counted ✓";},
   cmp_more:function(h,p){return "This week you focused <b>"+h+"h</b> — <b>+"+p+"%</b> vs last week 💪";},
   cmp_less:function(h,p){return "This week <b>"+h+"h</b> — "+p+"% less than last week. Start a session today!";},
   cmp_first:function(h){return "You focused <b>"+h+"h</b> this week. Great start!";},
@@ -3175,8 +3175,40 @@ function askNotify(){
   notifyAsked=true;
   try{if(Notification.permission==='default')Notification.requestPermission();}catch(e){}
 }
+/* Bildirishnoma ko'prigi: APK'da Web Notification API YO'Q (Capacitor WebView'da
+   'Notification' mavjud emas) — ilgari notify() APK'da jim no-op edi va fokus bloki
+   tugagani hech qanday tarzda bilinmasdi. Endi LocalNotifications'ga yo'naltiriladi. */
+var _nId=1500;
 function notify(t,b){
+  try{
+    var P=(window.Capacitor&&window.Capacitor.Plugins)||{};
+    if(P.LocalNotifications&&P.LocalNotifications.schedule){
+      _nId=1500+((_nId-1500+1)%400);
+      P.LocalNotifications.schedule({notifications:[{id:_nId,title:t,body:b,
+        schedule:{at:new Date(Date.now()+400),allowWhileIdle:true}}]});
+      return;
+    }
+  }catch(e){}
   try{if('Notification' in window&&Notification.permission==='granted')new Notification(t,{body:b});}catch(e){}
+}
+/* Fokus bloki tugashiga OLDINDAN bildirishnoma (telefon yuztuban yotganda ham keladi) */
+var FOCUS_NID=1003;
+function focusNotifSchedule(at,mins){
+  try{
+    var P=(window.Capacitor&&window.Capacitor.Plugins)||{};
+    if(!P.LocalNotifications||!P.LocalNotifications.schedule)return;
+    P.LocalNotifications.cancel({notifications:[{id:FOCUS_NID}]}).catch(function(){});
+    P.LocalNotifications.schedule({notifications:[{id:FOCUS_NID,
+      title:T('focus_end_t'),body:T('focus_end_b')(mins),
+      schedule:{at:new Date(at),allowWhileIdle:true}}]});
+  }catch(e){}
+}
+function focusNotifCancel(){
+  try{
+    var P=(window.Capacitor&&window.Capacitor.Plugins)||{};
+    if(P.LocalNotifications&&P.LocalNotifications.cancel)
+      P.LocalNotifications.cancel({notifications:[{id:FOCUS_NID}]}).catch(function(){});
+  }catch(e){}
 }
 
 /* ============ icons & colors ============ */
@@ -5209,25 +5241,26 @@ $('#fStart').addEventListener('click',function(){
   tone(494,.05);
   if(fRunning){
     var rm=fRemain(),spent=fStartRemain-rm;
-    fPausedRemain=rm;fRunning=false;fStateK='paused';
+    fPausedRemain=rm;fRunning=false;fStateK='paused';focusNotifCancel();
     if(spent>=60000){fLog(spent);refreshChips();}
   }else{
     fStartRemain=fPausedRemain;
     fEndAt=Date.now()+fPausedRemain;fRunning=true;fLastMin=-1;fStateK='focusing';
+    focusNotifSchedule(fEndAt,Math.round(fPausedRemain/60000));
   }
   fDraw();fSave();
 });
 $('#fReset').addEventListener('click',function(){
   sTap();
   if(fRunning){var spent=fStartRemain-fRemain();if(spent>=60000)fLog(spent);}
-  fRunning=false;fPausedRemain=fDur;fStateK='ready';fDraw();refreshChips();fSave();
+  fRunning=false;fPausedRemain=fDur;fStateK='ready';focusNotifCancel();fDraw();refreshChips();fSave();
 });
 /* Yakunlash: sessiyani hozir tugatib, fokus vaqtini 10 000 soat hisobiga banklaydi */
 $('#fFinish').addEventListener('click',function(){
   if(fStateK!=='focusing'&&fStateK!=='paused')return;
   tone(587,.06);
   if(fRunning){var spent=fStartRemain-fRemain();if(spent>=60000)fLog(spent);}
-  fRunning=false;fPausedRemain=fDur;fStateK='done';
+  fRunning=false;fPausedRemain=fDur;fStateK='done';focusNotifCancel();
   sWin();buzz([20,60,20]);notify('Focus AI',T('done'));
   fDraw();refreshChips();fSave();
 });
@@ -6007,6 +6040,41 @@ $('#pills').addEventListener('click',function(e){
     var det=document.querySelector('.detail.open');if(det){det.classList.remove('open');sTap();return;}
     if(sessionOpen){$('#sClose').click();return;}
   });
+  /* ANDROID "ORQAGA" TUGMASI — ilgari umuman ushlanmagan edi (backButton listener yo'q),
+     shuning uchun telefonda eng tabiiy harakat kutilmagan natija berardi (ilovadan chiqib
+     ketish). Endi: ochiq overlay -> yopiladi; aks holda Asosiy tabga; Asosiyda -> chiqish. */
+  (function(){
+    var P=(window.Capacitor&&window.Capacitor.Plugins)||{};
+    if(!P.App||!P.App.addListener)return;
+    P.App.addListener('backButton',function(){
+      /* 1) ustki qatlamlar — Escape bilan bir xil tartib */
+      var ov=[
+        ['#pinlock',function(){}],                          /* PIN — yopilmasin */
+        ['#alarmOv',function(){}]                           /* budilnik — yopilmasin */
+      ];
+      for(var i=0;i<ov.length;i++){
+        var e=$(ov[i][0]); if(e&&e.classList.contains('open'))return;   /* jim: yopmaymiz */
+      }
+      if($('#rSheet')&&$('#rSheet').classList.contains('open')){openRSheet(false);return;}
+      if($('#sheet')&&$('#sheet').classList.contains('open')){openSheet(false);return;}
+      if($('#chat')&&$('#chat').classList.contains('open')){closeChat();return;}
+      if($('#acSheet')&&$('#acSheet').classList.contains('open')){$('#acSheet').classList.remove('open');return;}
+      if($('#odSheet')&&$('#odSheet').classList.contains('open')){$('#odSheet').classList.remove('open');return;}
+      var det=document.querySelector('.detail.open');if(det){det.classList.remove('open');sTap();return;}
+      if($('#result')&&$('#result').classList.contains('open')){$('#result').classList.remove('open');return;}
+      if(sessionOpen){$('#sClose').click();return;}
+      var fr=$('#friends'); if(fr&&fr.classList.contains('open')){fr.classList.remove('open');return;}
+      /* 2) overlay yo'q — Asosiy tabga qaytamiz */
+      var home=document.querySelector('.tab[data-view="home"]');
+      var onHome=$('#v-home')&&$('#v-home').classList.contains('active');
+      if(home&&!onHome){home.click();return;}
+      /* 3) Asosiyda ikkinchi bosishda chiqamiz (tasodifiy chiqib ketmasin) */
+      if(window._backArm){try{P.App.exitApp();}catch(e){}return;}
+      window._backArm=true;
+      try{toast(T('back_exit'));}catch(e){}
+      setTimeout(function(){window._backArm=false;},2000);
+    });
+  })();
 })();
 
 /* odometr — foiz silliq aylanib o'sadi; 10 000 soatlik maqsadlarda mayda foizlar kasr bilan */
