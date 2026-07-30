@@ -29,9 +29,8 @@ if('serviceWorker' in navigator){
 <script>
   window.SB_URL='https://ursuqwotkpczjrqnvoad.supabase.co';
   window.SB_KEY='sb_publishable_j5HKMeo7NDgNDv8nPRKL8g_Kbm-nAc9';   /* publishable (ochiq) kalit — maxfiy emas, RLS himoya qiladi */
-  /* AI Coach — BEPUL Gemini kaliti (aistudio.google.com -> "Get API key").
-     Bo'sh bo'lsa: coach shablon-maslahat beradi (oflayn). Kalit qo'ysangiz: haqiqiy AI chat. */
-  window.GEMINI_KEY='';
+  /* AI Coach kaliti bu yerda EMAS — u Vercel serverida yashirin (GEMINI_KEY env).
+     Ilova /api/coach ko'prigiga murojaat qiladi; kalit bo'lmasa shablon maslahat ishlaydi. */
   if(window.SB_URL && window.SB_KEY){
     var _sbs=document.createElement('script');
     _sbs.src='https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
@@ -5588,24 +5587,25 @@ function coachContext(){
   return "Sen Focus AI ilovasining samimiy AI coachisisan. Faqat "+langN+" tilida, qisqa (2-4 jumla), amaliy va ijobiy javob ber. "+
     "Ilova maqsadi: fokus, odat, 10 000 soat mahorat. Foydalanuvchi: "+(n||'—')+". Bugungi fokus: "+today+", streak: "+s+" kun, jami ~"+tot+" soat.";
 }
-/* Gemini chaqiruvi (kalit bo'lsa) — bo'lmasa null qaytaradi */
+/* AI so'rovi — xavfsiz ko'prik orqali (kalit serverda, brauzerda YO'Q).
+   Javob bo'lmasa (kalit yo'q / internet yo'q) null qaytaradi -> shablon maslahat ishlatiladi. */
+var COACH_API='https://focus-ai-final.vercel.app/api/coach';
 function askGemini(userMsg){
-  var key=window.GEMINI_KEY;if(!key)return Promise.resolve(null);
-  var body={contents:[{role:'user',parts:[{text:coachContext()+"\n\nSavol: "+userMsg}]}]};
-  var url='https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key='+encodeURIComponent(key);
-  return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
-    .then(function(r){return r.json();})
-    .then(function(j){try{return j.candidates[0].content.parts[0].text;}catch(e){return null;}})
+  if(!navigator.onLine)return Promise.resolve(null);
+  return fetch(COACH_API,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({message:userMsg,context:coachContext()})
+  }).then(function(r){return r.json();})
+    .then(function(j){return (j&&j.text)?j.text:null;})
     .catch(function(){return null;});
 }
 /* Maslahat tugmasi */
 $('#coachBtn').addEventListener('click',function(){
   var msg=$('#coachMsg');sTap();msg.classList.remove('dim');
-  if(window.GEMINI_KEY){
-    msg.textContent=T('coach_wait');
-    askGemini(store.settings.lang==='ru'?'дай короткий совет на сегодня':store.settings.lang==='en'?'give me a short tip for today':'bugun uchun qisqa maslahat ber')
-      .then(function(r){msg.textContent=r||fallbackAdvice();});
-  }else msg.textContent=fallbackAdvice();
+  msg.textContent=T('coach_wait');
+  /* avval AI'dan so'raymiz; javob bo'lmasa (kalit yo'q/oflayn) shablon maslahat */
+  askGemini(store.settings.lang==='ru'?'дай короткий совет на сегодня':store.settings.lang==='en'?'give me a short tip for today':'bugun uchun qisqa maslahat ber')
+    .then(function(r){msg.textContent=r||fallbackAdvice();});
 });
 /* boshlang'ich maslahat (karta bo'sh turmasin) */
 (function(){var m=$('#coachMsg');if(m)m.textContent=fallbackAdvice();})();
