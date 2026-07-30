@@ -456,29 +456,35 @@ input{font-family:inherit}
 /* fon shaffof bo'lgani uchun ikonka NEON bo'lishi shart (ilgari --onneon edi —
    to'ldirilgan neon fonda to'g'ri, shaffof fonda ko'rinmaydi) */
 .sec-lbl .add svg{width:16px;height:16px;stroke:var(--neon);stroke-width:2.4;fill:none}
-/* Bugungi reja — jimgina matn kirishi (tugma emas), faqat ro'yxat ustida */
-.plan-bar{display:flex;align-items:center;gap:8px;padding:0 4px 12px;
-  font-size:12.5px;color:var(--muted);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.plan-bar .pb-ic{font-size:13px;opacity:.85}
-.plan-bar b{color:var(--neon);font-weight:700}
-.plan-bar .pb-edit{margin-left:auto;color:var(--neon);opacity:.85;font-weight:600}
-.plan-bar:active{opacity:.6}
-/* Bugungi reja sheet */
-.plan-hint{font-size:12.5px;color:var(--muted);line-height:1.5;margin:-4px 0 12px}
-.plan-list{display:flex;flex-direction:column;gap:8px;max-height:46vh;overflow-y:auto;margin-bottom:14px}
-.plan-row{display:flex;align-items:center;gap:12px;padding:11px 13px;border-radius:14px;
-  background:var(--elev);border:1px solid var(--line);cursor:pointer;transition:border-color .2s var(--ease),background .2s var(--ease)}
-.plan-row .pr-ic{width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:none}
-.plan-row .pr-ic svg{width:19px;height:19px}
-.plan-row .pr-nm{flex:1;font-size:14px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.plan-row .pr-chk{width:24px;height:24px;border-radius:8px;border:2px solid var(--line);flex:none;display:grid;place-items:center;transition:.2s var(--ease)}
-.plan-row .pr-chk svg{width:14px;height:14px;stroke:var(--onneon);stroke-width:3;fill:none;opacity:0;transform:scale(.5);transition:.2s var(--spring)}
-.plan-row.on{border-color:rgba(var(--neon-rgb),.55);background:rgba(var(--neon-rgb),.08)}
-.plan-row.on .pr-chk{background:var(--neon);border-color:var(--neon)}
-.plan-row.on .pr-chk svg{opacity:1;transform:scale(1)}
-.plan-clear{display:block;width:100%;margin-top:9px;background:transparent;border:none;
-  color:var(--muted);font-size:13px;padding:8px;letter-spacing:.02em}
-.plan-clear:active{color:var(--text)}
+/* Bosh ekran: "Odatlar" kirish havolasi (matn, tugma-quti emas) */
+.sl-right{display:flex;align-items:center;gap:10px}
+.od-open{display:inline-flex;align-items:center;gap:2px;background:transparent;border:none;
+  color:var(--neon);font-size:12px;font-weight:600;letter-spacing:.02em;padding:4px 2px}
+.od-open svg{width:14px;height:14px;stroke:var(--neon);stroke-width:2.4;fill:none}
+.od-open:active{opacity:.55}
+/* Odatlar ekrani (sheet) */
+.od-sheet{max-height:88vh;display:flex;flex-direction:column}
+.od-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.od-close{width:32px;height:32px;border-radius:10px;background:var(--elev);border:1px solid var(--line);
+  display:grid;place-items:center;flex:none}
+.od-close svg{width:15px;height:15px;stroke:var(--muted);stroke-width:2.4;fill:none}
+.od-close:active{transform:scale(.9)}
+.plan-hint{font-size:12.5px;color:var(--muted);line-height:1.5;margin:6px 0 12px}
+.od-filter{margin:0 0 12px}
+.od-list{display:flex;flex-direction:column;gap:10px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-bottom:6px}
+.od-row{background:var(--elev);border:1px solid var(--line);border-radius:16px;padding:12px 13px}
+.od-head{display:flex;align-items:center;gap:11px;margin-bottom:11px}
+.od-ic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:none}
+.od-ic svg{width:20px;height:20px}
+.od-nm{flex:1;font-size:14.5px;font-weight:600;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.od-done{color:var(--neon);font-weight:800;font-size:15px}
+.od-days{display:flex;gap:5px;justify-content:space-between}
+.od-day{flex:1;min-width:0;height:34px;border-radius:9px;font-size:11.5px;font-weight:700;
+  background:var(--elev2);border:1px solid var(--line);color:var(--muted);
+  transition:background .18s var(--ease),color .18s var(--ease),border-color .18s var(--ease)}
+.od-day.on{background:rgba(var(--neon-rgb),.16);border-color:rgba(var(--neon-rgb),.5);color:var(--neon)}
+.od-day.today{box-shadow:0 0 0 1px var(--neon) inset}
+.od-day:active{transform:scale(.92)}
 
 /* habit cards — time based */
 .habits{display:flex;flex-direction:column;gap:10px}
@@ -1792,7 +1798,10 @@ input{font-family:inherit}
         <div class="chip"><div class="sc-ic">🎯</div><div class="sc-val" id="tasksV">0/0</div><div class="sc-lbl" data-i18n="tasks_lbl"></div><div class="sc-sub" data-i18n="tasks_sub"></div></div>
       </div>
       <div class="sec-lbl"><span data-i18n="today_tasks"></span>
-        <button class="add" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        <div class="sl-right">
+          <button class="od-open" id="odBtn"><span data-i18n="od_open"></span><svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg></button>
+          <button class="add" id="addBtn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
+        </div>
       </div>
       <div class="habit-filter" id="habitFilter" style="display:none">
         <button class="hf-btn sel" data-f="today" data-i18n="hf_today"></button>
@@ -2001,15 +2010,21 @@ input{font-family:inherit}
     <button class="save" id="saveHabit" data-i18n="add"></button>
   </div>
 
-  <!-- BUGUNGI REJA SHEET -->
-  <div class="scrim" id="planScrim"></div>
-  <div class="sheet" id="planSheet">
+  <!-- ODATLAR EKRANI -->
+  <div class="scrim" id="odScrim"></div>
+  <div class="sheet od-sheet" id="odSheet">
     <div class="grip"></div>
-    <h3 data-i18n="plan_title"></h3>
-    <p class="plan-hint" id="planHint" data-i18n="plan_hint"></p>
-    <div class="plan-list" id="planList"></div>
-    <button class="save" id="planSave" data-i18n="plan_save"></button>
-    <button class="plan-clear" id="planClear" data-i18n="plan_clear"></button>
+    <div class="od-top">
+      <h3 data-i18n="od_title"></h3>
+      <button class="od-close" id="odClose" aria-label="close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <p class="plan-hint" data-i18n="od_hint"></p>
+    <div class="habit-filter od-filter" id="odFilter">
+      <button class="hf-btn sel" data-f="today" data-i18n="od_today"></button>
+      <button class="hf-btn" data-f="undone" data-i18n="od_undone"></button>
+      <button class="hf-btn" data-f="done" data-i18n="od_done"></button>
+    </div>
+    <div class="od-list" id="odList"></div>
   </div>
 
   <!-- SESSION -->
@@ -2295,7 +2310,7 @@ var $=function(s){return document.querySelector(s);},
 /* ============ i18n ============ */
 var I18N={
 uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",today_time:"Bugun",my_habits:"Odatlarim",
-  today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",plan_title:"Bugungi reja",plan_hint:"Bugun qaysi vazifalarni bajarasiz? Belgilanganlar «Bugun» ro'yxatida chiqadi.",plan_save:"Rejani saqlash",plan_clear:"Rejani tozalash (hammasi chiqsin)",plan_set:"Bugungi reja",plan_make:"Bugungi rejani tuzish",plan_edit:"o'zgartirish",score_lbl:"Ball",sc_today:"Bugun",tasks_lbl:"Vazifalar",tasks_sub:"bajarildi",
+  today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",od_open:"Odatlar",od_title:"Odatlar",od_hint:"Har odat uchun hafta kunlarini tanlang. Belgilangan kunlarda odat «Bugun» ro'yxatida chiqadi.",od_today:"Bugungi reja",od_undone:"Bajarilmagan",od_done:"Bajarilgan",od_empty:"Bu ro'yxat hozircha bo'sh.",plan_title:"Bugungi reja",plan_hint:"Bugun qaysi vazifalarni bajarasiz? Belgilanganlar «Bugun» ro'yxatida chiqadi.",plan_save:"Rejani saqlash",plan_clear:"Rejani tozalash (hammasi chiqsin)",plan_set:"Bugungi reja",plan_make:"Bugungi rejani tuzish",plan_edit:"o'zgartirish",score_lbl:"Ball",sc_today:"Bugun",tasks_lbl:"Vazifalar",tasks_sub:"bajarildi",
   hf_today:"Bugun",hf_done:"Bajarilgan",hf_all:"Hammasi",done_group:"Bajarildi",hf_done_empty:"Bugun hali hech narsa bajarilmadi — birinchi vazifani boshlang.",hf_all_rested:"Dam kunida",all_done:"Bugungi hammasi bajarildi 🔥",
   sc_best:function(n){return "eng yaxshi: "+n;},
   sc_w0:"boshlanish",sc_w1:"o'smoqda",sc_w2:"barqaror",sc_w3:"kuchli",sc_w4:"zo'r",
@@ -2406,7 +2421,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   quotes:["Har kuni 1% — bir yilda 37 barobar kuchliroq.","Boshlash eng qiyini. Qolgani osonroq.","Fokus — bu «yo'q» deyish san'ati.","Kichik qadamlar — katta natija.","Diqqating — eng qimmatli boyliging.","Chalg'imaslik — zamonaviy superkuch."],
   prof:function(s){return "seriya: "+s+" kun";}},
 ru:{tagline:"Время — самая честная мера.",growth:"Рост",streak:"Серия",today_time:"Сегодня",my_habits:"Мои привычки",
-  today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",plan_title:"План на сегодня",plan_hint:"Что сделаешь сегодня? Отмеченные появятся в списке «Сегодня».",plan_save:"Сохранить план",plan_clear:"Очистить план (показать все)",plan_set:"План на сегодня",plan_make:"Составить план на сегодня",plan_edit:"изменить",score_lbl:"Балл",sc_today:"Сегодня",tasks_lbl:"Задачи",tasks_sub:"выполнено",
+  today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",od_open:"Привычки",od_title:"Привычки",od_hint:"Выберите дни недели для каждой привычки. В выбранные дни она появится в списке «Сегодня».",od_today:"План на сегодня",od_undone:"Не выполнено",od_done:"Выполнено",od_empty:"Этот список пока пуст.",plan_title:"План на сегодня",plan_hint:"Что сделаешь сегодня? Отмеченные появятся в списке «Сегодня».",plan_save:"Сохранить план",plan_clear:"Очистить план (показать все)",plan_set:"План на сегодня",plan_make:"Составить план на сегодня",plan_edit:"изменить",score_lbl:"Балл",sc_today:"Сегодня",tasks_lbl:"Задачи",tasks_sub:"выполнено",
   hf_today:"Сегодня",hf_done:"Выполнено",hf_all:"Все",done_group:"Выполнено",hf_done_empty:"Сегодня пока ничего не выполнено — начните первую задачу.",hf_all_rested:"На отдыхе",all_done:"Всё на сегодня выполнено 🔥",
   sc_best:function(n){return "рекорд: "+n;},
   sc_w0:"старт",sc_w1:"растёт",sc_w2:"стабильно",sc_w3:"сильно",sc_w4:"отлично",
@@ -2517,7 +2532,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   quotes:["Каждый день на 1% — за год в 37 раз сильнее.","Начать — самое трудное. Дальше легче.","Фокус — это искусство говорить «нет».","Маленькие шаги — большой результат.","Твоё внимание — твой главный капитал.","Не отвлекаться — суперсила нашего времени."],
   prof:function(s){return "серия: "+s+" дн.";}},
 en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today_time:"Today",my_habits:"My habits",
-  today_progress:"Today's progress",today_tasks:"Today's tasks",plan_title:"Today's plan",plan_hint:"What will you do today? Checked ones appear in the «Today» list.",plan_save:"Save plan",plan_clear:"Clear plan (show all)",plan_set:"Today's plan",plan_make:"Plan your day",plan_edit:"edit",score_lbl:"Score",sc_today:"Today",tasks_lbl:"Tasks",tasks_sub:"completed",
+  today_progress:"Today's progress",today_tasks:"Today's tasks",od_open:"Habits",od_title:"Habits",od_hint:"Pick weekdays for each habit. On chosen days it appears in the «Today» list.",od_today:"Today's plan",od_undone:"Not done",od_done:"Done",od_empty:"This list is empty for now.",plan_title:"Today's plan",plan_hint:"What will you do today? Checked ones appear in the «Today» list.",plan_save:"Save plan",plan_clear:"Clear plan (show all)",plan_set:"Today's plan",plan_make:"Plan your day",plan_edit:"edit",score_lbl:"Score",sc_today:"Today",tasks_lbl:"Tasks",tasks_sub:"completed",
   hf_today:"Today",hf_done:"Done",hf_all:"All",done_group:"Done",hf_done_empty:"Nothing done yet today — start your first task.",hf_all_rested:"Resting",all_done:"All done for today 🔥",
   sc_best:function(n){return "best: "+n;},
   sc_w0:"start",sc_w1:"growing",sc_w2:"steady",sc_w3:"strong",sc_w4:"excellent",
@@ -3592,7 +3607,8 @@ function renderHabits(){
   /* uch guruh: faol (qolgani) / bugun bajarilgan / dam. Ishlayotgan odat DOIM faol
      bo'lib turadi — normani o'tsa ham (taymer ochiq ekan yuqorida ko'rinsin). */
   var active=[],done=[],rested=[];
-  store.habits.forEach(function(h){
+  /* Bosh ekran = FAQAT bugungi odatlar (hafta kuniga qarab). Jadval «Odatlar» ekranida. */
+  store.habits.filter(habitActiveToday).forEach(function(h){
     if(isSkip(h,TODAY))rested.push(h);
     else if(doneToday(h)&&!h.runningSince)done.push(h);
     else active.push(h);
@@ -3612,10 +3628,7 @@ function renderHabits(){
     if(rested.length)appendGroup(list,'','🌙',T('rest_group'),rested,restOpen,function(){restOpen=!restOpen;renderHabits();},ciBox);
     refreshCards();return;
   }
-  /* mode==='today' (asosiy): tepada faqat qolgani, bajarilgan+dam pastda yig'iladi.
-     Agar bugungi reja tuzilgan bo'lsa — faqat rejadagilar ko'rinadi (qolganlari «Hammasi»da). */
-  if(hasTodayPlan()){active=active.filter(inTodayPlan);done=done.filter(inTodayPlan);}
-  var _pb=planBarEl(); if(_pb) list.appendChild(_pb); /* jimgina reja kirishi (3+ vazifa) */
+  /* mode==='today' (asosiy): tepada faqat qolgani, bajarilgan+dam pastda yig'iladi. */
   active.forEach(function(h){list.appendChild(renderOneCard(h,ciBox.v++,stagger));});
   if(!active.length&&done.length){                     /* hammasi bajarildi — tabrik lahzasi */
     var ad=document.createElement('div');ad.className='all-done';
@@ -3759,63 +3772,62 @@ function openSheet(o){$('#scrim').classList.toggle('open',o);$('#sheet').classLi
   if(o){$('#addErr').textContent='';setTimeout(function(){$('#hName').focus();},200);}}
 $('#addBtn').addEventListener('click',function(){sTap();resetSheet();openSheet(true);});
 
-/* ===== Bugungi reja (today's plan): faqat tanlangan vazifalar «Bugun»da chiqadi ===== */
-function todayPlanArr(){return (store.plan&&store.plan[TODAY])||null;}
-function hasTodayPlan(){var p=todayPlanArr();return !!(p&&p.length);}
-function inTodayPlan(h){var p=todayPlanArr();return !p||!p.length||p.indexOf(h.id)!==-1;}
-function planBarEl(){
-  var cands=planCandidates(); if(cands.length<3) return null; /* kam vazifada reja shart emas */
-  var el=document.createElement('div'); el.className='plan-bar';
-  el.innerHTML = hasTodayPlan()
-    ? '<span class="pb-ic">📋</span><span>'+T('plan_set')+' · <b>'+todayPlanArr().length+'</b></span><span class="pb-edit">'+T('plan_edit')+'</span>'
-    : '<span class="pb-ic">📋</span><span>'+T('plan_make')+'</span>';
-  el.addEventListener('click',function(){sTap();openPlan(true);});
-  return el;
+/* ===== Odatlar ekrani + hafta-kuni jadvali ===== */
+function todayDow(){return ((TODAY+3)%7+7)%7;}                 /* 0=Dushanba .. 6=Yakshanba */
+function habitDays(h){return (h.weekdays&&h.weekdays.length)?h.weekdays:null;} /* null = har kuni */
+function habitActiveToday(h){var d=habitDays(h);return !d||d.indexOf(todayDow())!==-1;}
+function toggleHabitDay(h,dow){
+  if(!h.weekdays||!h.weekdays.length)h.weekdays=[0,1,2,3,4,5,6];  /* avval har kuni faol edi */
+  var i=h.weekdays.indexOf(dow);
+  if(i===-1)h.weekdays.push(dow); else h.weekdays.splice(i,1);
+  h.weekdays.sort(function(a,b){return a-b;});
+  if(h.weekdays.length===7)h.weekdays=[];                        /* hammasi = har kuni (bo'sh saqlanadi) */
+  save();
 }
-var planTmp=[];
-function planCandidates(){return store.habits.filter(function(h){return !h.completed;});}
-function renderPlanList(){
-  var box=$('#planList');if(!box)return;box.innerHTML='';
-  var hs=planCandidates();
-  if(!hs.length){box.innerHTML='<p class="plan-hint">'+T('empty1')+'</p>';return;}
+function dayLetters(){
+  var m={uz:['Du','Se','Ch','Pa','Ju','Sh','Ya'],ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],en:['Mo','Tu','We','Th','Fr','Sa','Su']};
+  return m[store.settings.lang]||m.en;
+}
+var odMode='today';                                            /* today | done | undone */
+function odClose(){$('#odScrim').classList.remove('open');$('#odSheet').classList.remove('open');$('#device').classList.remove('modal');}
+function odOpen(){$('#odScrim').classList.add('open');$('#odSheet').classList.add('open');$('#device').classList.add('modal');renderOdatlar();staggerRise($$('#odSheet>*'),22,110);}
+function odFiltered(){
+  var hs=store.habits.filter(function(h){return !h.completed;});
+  if(odMode==='done')  return hs.filter(function(h){return doneToday(h);});
+  if(odMode==='undone')return hs.filter(function(h){return habitActiveToday(h)&&!doneToday(h)&&!isSkip(h,TODAY);});
+  return hs.filter(habitActiveToday);                          /* today = bugungi reja */
+}
+function renderOdatlar(){
+  $$('#odFilter .hf-btn').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-f')===odMode);});
+  var box=$('#odList');if(!box)return;box.innerHTML='';
+  var hs=odFiltered();
+  if(!hs.length){box.innerHTML='<div class="empty"><div class="big">🗓</div><p>'+T('od_empty')+'</p></div>';return;}
+  var letters=dayLetters();
   hs.forEach(function(h){
-    var on=planTmp.indexOf(h.id)!==-1;
-    var row=document.createElement('div');
-    row.className='plan-row'+(on?' on':'');
-    row.innerHTML='<span class="pr-ic" style="background:'+h.color+'">'+icon(h.icon)+'</span>'+
-      '<span class="pr-nm">'+esc(h.name)+'</span>'+
-      '<span class="pr-chk"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>';
-    row.addEventListener('click',function(){
-      var i=planTmp.indexOf(h.id);
-      if(i===-1)planTmp.push(h.id);else planTmp.splice(i,1);
-      row.classList.toggle('on');buzz(5);
+    var row=document.createElement('div');row.className='od-row';
+    var dsel=habitDays(h);
+    var days='';
+    for(var d=0;d<7;d++){
+      var on=!dsel||dsel.indexOf(d)!==-1, isT=d===todayDow();
+      days+='<button class="od-day'+(on?' on':'')+(isT?' today':'')+'" data-d="'+d+'">'+letters[d]+'</button>';
+    }
+    row.innerHTML='<div class="od-head"><span class="od-ic" style="background:'+h.color+'">'+icon(h.icon)+'</span>'+
+      '<span class="od-nm">'+esc(h.name)+'</span>'+(doneToday(h)?'<span class="od-done">✓</span>':'')+'</div>'+
+      '<div class="od-days">'+days+'</div>';
+    row.querySelector('.od-days').addEventListener('click',function(e){
+      var b=e.target.closest('.od-day');if(!b)return;
+      toggleHabitDay(h,+b.getAttribute('data-d'));buzz(5);
+      renderOdatlar();firstCardRender=true;renderHabits();
     });
     box.appendChild(row);
   });
 }
-function openPlan(o){
-  $('#planScrim').classList.toggle('open',o);
-  $('#planSheet').classList.toggle('open',o);
-  $('#device').classList.toggle('modal',o);
-  if(o){
-    var p=todayPlanArr();
-    planTmp = p ? p.slice() : planCandidates().map(function(h){return h.id;}); /* reja yo'q -> hammasi belgilangan */
-    renderPlanList();
-    staggerRise($$('#planSheet>*'),26,120);
-  }
-}
-$('#planScrim').addEventListener('click',function(){openPlan(false);});
-$('#planSave').addEventListener('click',function(){
-  var all=planCandidates();
-  store.plan={}; /* faqat bugungi reja saqlanadi (eski kunlar tozalanadi) */
-  if(planTmp.length>0 && planTmp.length<all.length) store.plan[TODAY]=planTmp.slice();
-  /* hammasi belgilansa reja saqlanmaydi = hamma vazifa chiqadi (filtrsiz) */
-  save();openPlan(false);buzz(10);
-  firstCardRender=true;renderHabits();toast(T('plan_save'));
-});
-$('#planClear').addEventListener('click',function(){
-  store.plan={};save();openPlan(false);buzz(8);
-  firstCardRender=true;renderHabits();
+if($('#odScrim'))$('#odScrim').addEventListener('click',odClose);
+if($('#odClose'))$('#odClose').addEventListener('click',odClose);
+if($('#odBtn'))$('#odBtn').addEventListener('click',function(){sTap();odOpen();});
+if($('#odFilter'))$('#odFilter').addEventListener('click',function(e){
+  var b=e.target.closest('.hf-btn');if(!b)return;
+  odMode=b.getAttribute('data-f');sTap();buzz(6);renderOdatlar();
 });
 $('#habitFilter').addEventListener('click',function(e){
   var b=e.target.closest('.hf-btn');if(!b)return;
@@ -3870,8 +3882,7 @@ $('#saveHabit').addEventListener('click',function(){
     return;
   }
   store.habits.push({id:store.nextId++,name:v,icon:pickIconK,color:pickColor,type:pickType,
-    goalH:goalH,dailyMin:dailyMin,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],skips:[],msDone:[],coinDays:[],completed:false,image:photoData});
-  if(store.plan&&store.plan[TODAY])store.plan[TODAY].push(store.nextId-1); /* reja faol bo'lsa yangi vazifa ham rejaga */
+    goalH:goalH,dailyMin:dailyMin,accMs:0,runningSince:null,lastFlush:null,dayMs:{},days:[],weekdays:[],skips:[],msDone:[],coinDays:[],completed:false,image:photoData});
   save();
   $('#hName').value='';photoData=null;$('#photoLbl').textContent=T('photo_none');
   openSheet(false);sGo();buzz(10);
