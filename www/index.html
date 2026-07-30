@@ -3,12 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <script>
-/* Landing darvozasi: birinchi WEB-tashrif -> landing.html.
-   Native (Capacitor, localhost) va lokal fayl rejimiga tegmaydi. */
+/* Landing darvozasi: birinchi tashrif -> landing.html (web VA native mobil).
+   Native'da videolar APK/IPA ichida -> offlayn ham ishlaydi.
+   Faqat bir marta: "Ilovani ochish" bosilgach fai_landing_seen qo'yiladi. */
 (function(){try{
-  var isWeb = /^https?:$/.test(location.protocol) &&
-              !/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  if(isWeb && !localStorage.getItem('fai_landing_seen')){
+  if(!localStorage.getItem('fai_landing_seen')){
     location.replace('landing.html');
   }
 }catch(e){}})();

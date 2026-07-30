@@ -26,10 +26,11 @@
 html{scrollbar-width:thin;scrollbar-color:rgba(var(--neon-rgb),.35) transparent}
 html.lenis,html.lenis body{height:auto}
 .lenis.lenis-smooth{scroll-behavior:auto!important}
+html{overflow-x:clip}
 body{
   background:var(--black);color:var(--text);font-family:var(--sans);
   -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
-  overflow-x:hidden;
+  overflow-x:clip;
 }
 ::selection{background:rgba(var(--neon-rgb),.25);color:var(--neon-br)}
 
@@ -196,7 +197,7 @@ body{
    ============================================================ */
 #s2{overflow:hidden}
 #bg2::after{background:linear-gradient(180deg,#000,rgba(0,0,0,.45) 30%,rgba(0,0,0,.45) 70%,#000 100%)}
-.noti-field{position:absolute;inset:0;z-index:4;pointer-events:none}
+.noti-field{position:absolute;inset:0;z-index:4;pointer-events:none;overflow:hidden}
 .noti{position:absolute;width:min(248px,66vw);border-radius:15px;padding:12px 14px;
   background:rgba(10,16,12,.88);border:1px solid rgba(255,255,255,.1);
   box-shadow:0 24px 60px -18px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.06);
@@ -368,8 +369,13 @@ body{
 .ai-final{margin-top:44px;font:400 clamp(17px,2.6vw,24px)/1.5 var(--sans);color:var(--muted)}
 .ai-final b{color:var(--text);font-weight:800}
 @media(max-width:600px){
-  .ai-tag{padding:8px 10px}
-  .ai-tag .type{font-size:10.5px}
+  .ai-stage{width:100%}                 /* sahna scene-inner ichiga sig'adi */
+  .ai-frame{width:min(215px,52vw)}
+  .ai-tag{padding:7px 9px;gap:7px}
+  .ai-tag b{font-size:9px;padding:2px 4px}
+  .ai-tag .type{font-size:9.5px}
+  .ai-tag.t1,.ai-tag.t3{left:0}
+  .ai-tag.t2,.ai-tag.t4{right:0}         /* o'ng chetga aniq bog'lanadi */
 }
 /* past ekranlar: skaner-kadr kichrayadi */
 @media(max-height:840px){
