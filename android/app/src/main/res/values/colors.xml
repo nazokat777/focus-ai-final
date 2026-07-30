@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Widget ranglari — ilova brendi bilan aynan bir xil (www/index.html :root) -->
 <resources>
-    <color name="w_neon">#39FF8C</color>
-    <color name="w_bg">#0B120E</color>
-    <color name="w_line">#1E2C24</color>
-    <color name="w_track">#16241C</color>
-    <color name="w_text">#EAF3EE</color>
-    <color name="w_muted">#7C8A83</color>
-    <color name="w_onneon">#04150B</color>
+    <color name="w_neon">#39FF8C</color>       <!-- neon -->
+    <color name="w_neon_br">#7CFFB5</color>    <!-- neon-br -->
+    <color name="w_bg">#030806</color>         <!-- bg -->
+    <color name="w_elev">#081209</color>       <!-- elev: karta foni -->
+    <color name="w_elev2">#0C1A0F</color>      <!-- elev2: bo'sh katak -->
+    <color name="w_line">#175AFFA0</color>     <!-- line: rgba(90,255,160,.09) -->
+    <color name="w_track">#1AFFFFFF</color>    <!-- halqa yo'li: rgba(255,255,255,.1) -->
+    <color name="w_text">#EAFBF0</color>       <!-- text -->
+    <color name="w_muted">#7A9784</color>      <!-- muted -->
+    <color name="w_onneon">#04130A</color>     <!-- onneon -->
 </resources>

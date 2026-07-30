@@ -20,7 +20,8 @@ import org.json.JSONObject;
 public class HabitsWidgetProvider extends AppWidgetProvider {
 
     private static final int MAX_ROWS = 8;
-    private static final int DOT_EMPTY = 0x1F39FF8C;   /* juda xira neon — bajarilmagan kun */
+    /* bajarilmagan kun — ilovadagi issiqlik xaritasi bo'sh katagi (--elev2) */
+    private static final int DOT_EMPTY = 0xFF0C1A0F;
 
     private static final int[] DOT_IDS = {
         R.id.wr_0, R.id.wr_1, R.id.wr_2, R.id.wr_3, R.id.wr_4, R.id.wr_5, R.id.wr_6
@@ -57,8 +58,7 @@ public class HabitsWidgetProvider extends AppWidgetProvider {
                     int color = parseColor(h.optString("color", "#39FF8C"));
 
                     row.setTextViewText(R.id.wr_name, h.optString("name", ""));
-                    row.setTextViewText(R.id.wr_ic, "●");        /* ● odat rangida */
-                    row.setTextColor(R.id.wr_ic, color);
+                    row.setInt(R.id.wr_ic, "setColorFilter", color);   /* ikonka odat rangida */
 
                     JSONArray days = h.optJSONArray("days");
                     for (int d = 0; d < 7; d++) {

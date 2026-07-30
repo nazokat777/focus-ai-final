@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Haftalik jadval nuqtasi. Rangi kodda setColorFilter bilan beriladi. -->
-<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+<!-- Haftalik jadval katagi — ilovadagi issiqlik xaritasi (.hm .hcell, radius 3px) kabi.
+     Rangi kodda setColorFilter bilan beriladi. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
     <solid android:color="#FFFFFFFF" />
+    <corners android:radius="3dp" />
     <size android:width="12dp" android:height="12dp" />
 </shape>

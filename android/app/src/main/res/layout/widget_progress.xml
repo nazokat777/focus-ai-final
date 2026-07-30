@@ -23,14 +23,18 @@
             android:layout_height="76dp"
             android:contentDescription="@null" />
 
+        <!-- Ilovadagi .pr-lbl uslubi: kichik, katta harf, keng oraliq -->
         <TextView
             android:id="@+id/wp_sub"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="3dp"
-            android:text="Bugun"
+            android:paddingTop="4dp"
+            android:text="BUGUN"
             android:textColor="@color/w_muted"
-            android:textSize="10sp" />
+            android:textSize="8.5sp"
+            android:textAllCaps="true"
+            android:letterSpacing="0.2"
+            android:fontFamily="monospace" />
     </LinearLayout>
 
     <LinearLayout

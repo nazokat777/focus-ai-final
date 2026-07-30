@@ -13,14 +13,15 @@
     android:paddingBottom="9dp"
     android:background="@drawable/w_pill">
 
-    <TextView
+    <ImageView
         android:id="@+id/wpr_ic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingEnd="7dp"
-        android:paddingRight="7dp"
-        android:textSize="12sp"
-        android:text="●" />
+        android:layout_width="13dp"
+        android:layout_height="13dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:scaleType="fitXY"
+        android:src="@drawable/w_chip"
+        android:contentDescription="@null" />
 
     <TextView
         android:id="@+id/wpr_name"
@@ -30,8 +31,7 @@
         android:maxLines="1"
         android:ellipsize="end"
         android:textColor="@color/w_text"
-        android:textSize="12.5sp"
-        android:textStyle="bold" />
+        android:textSize="13sp" />
 
     <TextView
         android:id="@+id/wpr_state"

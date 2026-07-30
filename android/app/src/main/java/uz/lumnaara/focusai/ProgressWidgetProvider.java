@@ -22,8 +22,12 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
 
     private static final int MAX_ROWS = 3;
     private static final int RING_PX = 168;                 /* kichik bitmap — xotira xavfsiz */
-    private static final int NEON = 0xFF39FF8C;
-    private static final int TRACK = 0x2239FF8C;
+    /* ilovaning bosh-ekran halqasi (.pc-ring) bilan bir xil */
+    private static final int NEON  = 0xFF39FF8C;            /* --neon */
+    private static final int TRACK = 0x1AFFFFFF;            /* rgba(255,255,255,.1) */
+    private static final int TXT   = 0xFFEAFBF0;            /* --text */
+    private static final float STROKE_R = 0.08f;            /* 8/100 (app: stroke-width 8) */
+    private static final float TEXT_R   = 0.23f;            /* 23/100 (app: font-size 23px) */
 
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
@@ -56,7 +60,7 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
                     boolean done = h.optInt("done", 0) == 1;
 
                     row.setTextViewText(R.id.wpr_name, h.optString("name", ""));
-                    row.setTextColor(R.id.wpr_ic, color);
+                    row.setInt(R.id.wpr_ic, "setColorFilter", color);   /* ikonka odat rangida */
                     row.setTextColor(R.id.wpr_state, done ? color : 0x66EAF3EE);
                     row.setTextViewText(R.id.wpr_state, done ? "✓" : "○");
                     /* pill foni — odat rangining xira varianti (yumaloq burchak saqlanadi) */
@@ -90,8 +94,9 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
     private static Bitmap drawRing(int pct) {
         Bitmap bm = Bitmap.createBitmap(RING_PX, RING_PX, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bm);
-        float stroke = RING_PX * 0.11f;
-        RectF r = new RectF(stroke / 2f + 2, stroke / 2f + 2, RING_PX - stroke / 2f - 2, RING_PX - stroke / 2f - 2);
+        float stroke = RING_PX * STROKE_R;
+        float pad = stroke / 2f + 2;
+        RectF r = new RectF(pad, pad, RING_PX - pad, RING_PX - pad);
 
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setStyle(Paint.Style.STROKE);
@@ -99,18 +104,20 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
         p.setStrokeCap(Paint.Cap.ROUND);
 
         p.setColor(TRACK);
-        c.drawArc(r, 0, 360, false, p);              /* yo'l */
+        c.drawArc(r, 0, 360, false, p);                       /* yo'l */
 
         if (pct > 0) {
             p.setColor(NEON);
-            c.drawArc(r, -90, 360f * pct / 100f, false, p);   /* progress */
+            c.drawArc(r, -90, 360f * pct / 100f, false, p);   /* progress (12 dan boshlanadi) */
         }
 
+        /* markazdagi foiz — ilovadagidek MONO, qalin, --text rangida */
         Paint t = new Paint(Paint.ANTI_ALIAS_FLAG);
-        t.setColor(NEON);
+        t.setColor(TXT);
         t.setTextAlign(Paint.Align.CENTER);
-        t.setFakeBoldText(true);
-        t.setTextSize(RING_PX * 0.28f);
+        t.setTypeface(android.graphics.Typeface.create(
+            android.graphics.Typeface.MONOSPACE, android.graphics.Typeface.BOLD));
+        t.setTextSize(RING_PX * TEXT_R);
         Paint.FontMetrics fm = t.getFontMetrics();
         float cy = RING_PX / 2f - (fm.ascent + fm.descent) / 2f;
         c.drawText(pct + "%", RING_PX / 2f, cy, t);
