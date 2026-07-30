@@ -2,6 +2,17 @@
 <html lang="uz">
 <head>
 <meta charset="UTF-8">
+<script>
+/* Landing darvozasi: birinchi WEB-tashrif -> landing.html.
+   Native (Capacitor, localhost) va lokal fayl rejimiga tegmaydi. */
+(function(){try{
+  var isWeb = /^https?:$/.test(location.protocol) &&
+              !/^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  if(isWeb && !localStorage.getItem('fai_landing_seen')){
+    location.replace('landing.html');
+  }
+}catch(e){}})();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
 <title>Focus AI</title>
 <link rel="icon" type="image/png" href="assets/ikonka.png">

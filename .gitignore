@@ -17,3 +17,6 @@ _*.js
 .DS_Store
 
 .vercel
+
+# landing xom videolari (siqilganlari www/assets/video da)
+videolar/

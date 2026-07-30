@@ -1,0 +1,1520 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#000000">
+<title>Focus AI — Focus • Adapt • Dominate</title>
+<meta name="description" content="Diqqatingni qaytar. Intizom qur. O'z hayotingning qahramoniga aylan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   FOCUS AI · CINEMATIC LANDING · DESIGN TOKENS
+   ============================================================ */
+:root{
+  --black:#000000; --void:#030806; --elev:#081209;
+  --neon:#39FF8C; --neon-br:#7CFFB5; --neon-dp:#0E9F55; --onneon:#04130a;
+  --neon-rgb:57,255,140;
+  --silver:#C7CFCA; --silver-dim:#6E7A73;
+  --text:#EAFBF0; --muted:#7a9784; --line:rgba(90,255,160,.10);
+  --sans:'Inter',system-ui,sans-serif; --mono:'JetBrains Mono',ui-monospace,monospace;
+  --ease-out:cubic-bezier(.32,.72,0,1); --spring:cubic-bezier(.34,1.42,.58,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scrollbar-width:thin;scrollbar-color:rgba(var(--neon-rgb),.35) transparent}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+body{
+  background:var(--black);color:var(--text);font-family:var(--sans);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+::selection{background:rgba(var(--neon-rgb),.25);color:var(--neon-br)}
+
+/* ---------- kino-tipografika shkalasi ---------- */
+.display{font-weight:900;letter-spacing:-.035em;line-height:.96;
+  font-size:clamp(44px,10vw,124px)}
+.headline{font-weight:800;letter-spacing:-.025em;line-height:1.04;
+  font-size:clamp(30px,5.6vw,64px)}
+.lead{font-weight:400;color:var(--muted);line-height:1.6;
+  font-size:clamp(15px,2.2vw,19px)}
+.eyebrow{font:700 clamp(10px,1.4vw,13px)/1 var(--mono);letter-spacing:.34em;
+  text-transform:uppercase;color:var(--neon)}
+.mono{font-family:var(--mono)}
+.tx-neon{color:var(--neon)}
+.tx-silver{background:linear-gradient(160deg,#f4f8f5 20%,var(--silver) 50%,#5c6660 90%);
+  -webkit-background-clip:text;background-clip:text;color:transparent}
+
+/* ---------- global kino-qatlamlar ---------- */
+.grain{position:fixed;inset:-100%;z-index:96;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 8s steps(10) infinite}
+@keyframes grain{
+  0%,100%{transform:translate(0,0)}10%{transform:translate(-5%,-8%)}
+  20%{transform:translate(-13%,3%)}30%{transform:translate(6%,-10%)}
+  40%{transform:translate(-4%,12%)}50%{transform:translate(-11%,4%)}
+  60%{transform:translate(12%,0)}70%{transform:translate(0,10%)}
+  80%{transform:translate(3%,13%)}90%{transform:translate(-9%,7%)}}
+.vignette{position:fixed;inset:0;z-index:95;pointer-events:none;
+  background:radial-gradient(130% 100% at 50% 40%,transparent 55%,rgba(0,0,0,.5) 100%)}
+
+/* ---------- shisha (glassmorphism) ---------- */
+.glass{background:rgba(8,18,10,.5);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  border:1px solid rgba(255,255,255,.07);
+  box-shadow:0 30px 90px -30px rgba(0,0,0,.9),inset 0 1px 0 rgba(255,255,255,.05)}
+
+/* ---------- sahna asosi ---------- */
+.scene{position:relative;min-height:100svh;display:flex;align-items:center;justify-content:center}
+.scene-inner{position:relative;z-index:5;width:min(1200px,92vw);margin:0 auto}
+.bgvideo{position:absolute;inset:0;overflow:hidden;z-index:0}
+.bgvideo video,.bgvideo img{width:100%;height:100%;object-fit:cover;display:block}
+.bgvideo::after{content:"";position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(0,0,0,.75),rgba(0,0,0,.25) 30%,rgba(0,0,0,.25) 65%,#000 100%)}
+
+/* ---------- magnetic CTA ---------- */
+.btn{position:relative;display:inline-flex;align-items:center;gap:12px;
+  height:60px;padding:0 34px;border-radius:18px;border:0;cursor:pointer;
+  font:700 16px var(--sans);letter-spacing:.01em;color:var(--onneon);
+  background:linear-gradient(180deg,var(--neon-br),var(--neon));
+  box-shadow:0 16px 50px -12px rgba(var(--neon-rgb),.55),inset 0 1px 0 rgba(255,255,255,.45);
+  text-decoration:none;will-change:transform;transition:box-shadow .3s}
+.btn:hover{box-shadow:0 20px 70px -10px rgba(var(--neon-rgb),.8),inset 0 1px 0 rgba(255,255,255,.5)}
+.btn-ghost{background:transparent;color:var(--text);
+  border:1px solid rgba(255,255,255,.16);box-shadow:none}
+.btn-ghost:hover{border-color:rgba(var(--neon-rgb),.5);box-shadow:0 0 40px -10px rgba(var(--neon-rgb),.4)}
+
+/* ---------- navigatsiya ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:90;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:calc(env(safe-area-inset-top) + 18px) clamp(18px,4vw,44px) 14px;
+  transition:transform .5s var(--ease-out)}
+.nav .logo{font:900 19px var(--sans);letter-spacing:-.02em;color:var(--text);text-decoration:none}
+.nav .logo em{color:var(--neon);font-style:normal;font:700 10px var(--mono);
+  background:rgba(var(--neon-rgb),.12);border:1px solid rgba(var(--neon-rgb),.25);
+  padding:2px 6px;border-radius:6px;margin-left:6px;vertical-align:3px;letter-spacing:.08em}
+.lang{display:flex;gap:2px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);
+  border-radius:999px;padding:3px;backdrop-filter:blur(12px)}
+.lang button{font:600 11px/1 var(--mono);letter-spacing:.05em;color:var(--muted);
+  background:none;border:0;padding:6px 10px;border-radius:999px;cursor:pointer;transition:.2s}
+.lang button.on{background:var(--neon);color:var(--onneon)}
+
+/* ---------- skroll progress (o'ng qirra) ---------- */
+.rail{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:90;
+  display:flex;flex-direction:column;gap:10px}
+.rail a{width:5px;height:5px;border-radius:50%;background:rgba(255,255,255,.18);
+  transition:.3s;display:block}
+.rail a.on{background:var(--neon);box-shadow:0 0 12px rgba(var(--neon-rgb),.8);transform:scale(1.5)}
+@media(max-width:760px){.rail{display:none}}
+
+/* ---------- loader: terminal-boot ---------- */
+#loader{position:fixed;inset:0;z-index:200;background:var(--black);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:34px}
+#loader .llogo{width:min(190px,44vw);height:auto;
+  filter:drop-shadow(0 0 30px rgba(var(--neon-rgb),.25))}
+.lterm{width:min(330px,84vw);min-height:132px;text-align:left}
+.lterm .tl{font:500 12.5px/1.75 var(--mono);white-space:nowrap;
+  display:flex;gap:8px;opacity:0}
+.lterm .tl.show{opacity:1}
+.lterm .tl .pfx{color:var(--neon)}
+.lterm .tl .lbl{color:#7fcf9f}
+.lterm .tl .dts{color:rgba(122,151,132,.6);overflow:hidden;flex:1}
+.lterm .tl .st{color:var(--neon);font-weight:700}
+.lterm .tl .st.rd{color:#FFB84D}
+.ltype{display:flex;align-items:center}
+.ltype span{font:800 clamp(26px,7vw,38px)/1 var(--sans);letter-spacing:.32em;color:var(--text)}
+.lcur{width:.55em;height:1.05em;background:var(--neon);display:inline-block;
+  margin-left:6px;box-shadow:0 0 14px rgba(var(--neon-rgb),.9);
+  animation:blink 1s steps(1) infinite}
+@keyframes blink{50%{opacity:0}}
+
+/* ============================================================
+   S1 · HERO
+   ============================================================ */
+#s1 .scene-inner{display:grid;gap:44px;align-items:center;padding:130px 0 100px}
+@media(min-width:920px){#s1 .scene-inner{grid-template-columns:1.05fr .95fr;padding:80px 0}}
+.hero-copy{max-width:640px}
+.hero-copy .eyebrow{display:inline-flex;align-items:center;gap:12px;margin-bottom:24px}
+.hero-copy .eyebrow::before{content:"";width:28px;height:1px;background:var(--neon);
+  box-shadow:0 0 8px rgba(var(--neon-rgb),.8)}
+.hero-title{margin-bottom:26px;perspective:600px}
+.hero-title .ch{display:inline-block;will-change:transform}
+.hero-lead{max-width:44ch;margin-bottom:40px}
+.hero-cta{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+.hero-link{font:600 14px var(--sans);color:var(--muted);text-decoration:none;
+  display:inline-flex;gap:8px;align-items:center;transition:color .3s}
+.hero-link:hover{color:var(--text)}
+.hero-stage{perspective:1200px;display:flex;justify-content:center}
+.hero-phone{width:min(252px,64vw);border-radius:40px;padding:10px;position:relative;
+  transform:rotateY(-14deg) rotateX(6deg);transform-style:preserve-3d;will-change:transform;
+  background:linear-gradient(160deg,rgba(255,255,255,.13),rgba(255,255,255,.02));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 60px 130px -40px rgba(0,0,0,.95),0 0 100px -30px rgba(var(--neon-rgb),.35)}
+.php-notch{position:absolute;top:19px;left:50%;transform:translateX(-50%);
+  width:72px;height:18px;background:#000;border-radius:10px;z-index:3}
+.php-scr{border-radius:31px;overflow:hidden;position:relative;
+  background:radial-gradient(120% 90% at 50% 0%,#07130b,#020604 60%);
+  border:1px solid rgba(255,255,255,.05);
+  padding:52px 18px 24px;display:flex;flex-direction:column;align-items:center;gap:15px}
+.php-top{align-self:flex-start;font:900 13px var(--sans);letter-spacing:-.02em;color:var(--text)}
+.php-top em{color:var(--neon);font-style:normal;font:700 8px var(--mono);
+  vertical-align:2px;margin-left:4px;letter-spacing:.08em}
+.php-ringwrap{position:relative;width:150px;height:150px}
+.php-rbg{fill:none;stroke:rgba(var(--neon-rgb),.12);stroke-width:8}
+.php-rfg{fill:none;stroke:var(--neon);stroke-width:8;stroke-linecap:round;
+  transform:rotate(-90deg);transform-origin:center;
+  stroke-dasharray:289;stroke-dashoffset:289;
+  filter:drop-shadow(0 0 6px rgba(var(--neon-rgb),.8))}
+.php-center{position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:2px}
+.php-center b{font:800 30px var(--mono);color:var(--neon);letter-spacing:-.02em}
+.php-center s{text-decoration:none;font:600 9px var(--mono);letter-spacing:.2em;color:var(--muted)}
+.php-time{font:700 22px var(--mono);letter-spacing:.05em;color:var(--text)}
+.php-chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+.php-chips span{font:600 9.5px var(--mono);letter-spacing:.06em;color:var(--muted);
+  border:1px solid var(--line);background:rgba(var(--neon-rgb),.05);
+  padding:6px 10px;border-radius:999px;white-space:nowrap}
+.php-chips b{color:var(--text)}
+.php-glow{position:absolute;inset:-30%;z-index:-1;pointer-events:none;
+  background:radial-gradient(50% 50% at 50% 55%,rgba(var(--neon-rgb),.25),transparent 70%);
+  filter:blur(30px)}
+.hero-hint{position:absolute;bottom:28px;left:50%;transform:translateX(-50%);z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:9px;color:var(--muted)}
+.hero-hint span{font:600 10px var(--mono);letter-spacing:.32em}
+.hero-hint i{width:1px;height:46px;display:block;
+  background:linear-gradient(var(--neon),transparent);
+  animation:hint 1.9s var(--ease-out) infinite}
+@keyframes hint{
+  0%{transform:scaleY(0);transform-origin:top}
+  45%{transform:scaleY(1);transform-origin:top}
+  55%{transform:scaleY(1);transform-origin:bottom}
+  100%{transform:scaleY(0);transform-origin:bottom}}
+
+/* ============================================================
+   S2 · MUAMMO — bildirishnoma-bombardimon
+   ============================================================ */
+#s2{overflow:hidden}
+#bg2::after{background:linear-gradient(180deg,#000,rgba(0,0,0,.45) 30%,rgba(0,0,0,.45) 70%,#000 100%)}
+.noti-field{position:absolute;inset:0;z-index:4;pointer-events:none}
+.noti{position:absolute;width:min(248px,66vw);border-radius:15px;padding:12px 14px;
+  background:rgba(10,16,12,.88);border:1px solid rgba(255,255,255,.1);
+  box-shadow:0 24px 60px -18px rgba(0,0,0,.85),inset 0 1px 0 rgba(255,255,255,.06);
+  display:flex;gap:11px;align-items:flex-start;will-change:transform}
+.noti .ic{flex:none;width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+  font:800 15px var(--sans);color:#fff}
+.noti .tx{min-width:0}
+.noti .nm{font:700 12.5px var(--sans);color:var(--text);display:flex;gap:8px;align-items:baseline}
+.noti .nm s{text-decoration:none;font:500 9.5px var(--mono);color:var(--muted)}
+.noti .ms{font:400 12px/1.4 var(--sans);color:var(--muted);margin-top:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.noti .dotr{position:absolute;top:-4px;right:-4px;width:10px;height:10px;border-radius:50%;
+  background:#ff4d4d;box-shadow:0 0 10px rgba(255,77,77,.8)}
+.prob-inner{text-align:center}
+.prob-fact{display:flex;flex-direction:column;align-items:center;gap:10px}
+.prob-num{display:flex;align-items:baseline;color:var(--neon);
+  text-shadow:0 0 60px rgba(var(--neon-rgb),.5)}
+.prob-num i{font-style:normal;font-size:.5em;color:var(--neon-dp);margin-left:6px}
+.prob-cap{font:600 clamp(10px,1.4vw,13px)/1 var(--mono);letter-spacing:.3em;color:var(--muted)}
+.prob-h{margin-top:26px;max-width:17ch}
+.prob-sub{max-width:46ch;margin-top:14px}
+
+/* ============================================================
+   S3 · YECHIM — jonli stat teatri
+   ============================================================ */
+#s3{background:var(--black);overflow:hidden}
+.sol-glow{position:absolute;left:50%;top:50%;width:130vmax;height:130vmax;
+  transform:translate(-50%,-50%);pointer-events:none;z-index:0;
+  background:radial-gradient(circle,rgba(var(--neon-rgb),.13),rgba(var(--neon-rgb),.03) 34%,transparent 62%)}
+.sol-inner{position:relative;z-index:5;text-align:center;padding:110px 0 90px}
+.sol-head{margin-bottom:44px}
+.sol-head .eyebrow{display:inline-flex;align-items:center;gap:12px;margin-bottom:18px}
+.sol-head .eyebrow::before{content:"";width:28px;height:1px;background:var(--neon)}
+.sol-stage{position:relative;min-height:480px;display:flex;align-items:center;justify-content:center}
+.sol-timer{border-radius:26px;padding:30px 44px;display:inline-flex;flex-direction:column;
+  align-items:center;gap:10px;position:relative;z-index:3}
+.st-label{display:flex;align-items:center;gap:9px;
+  font:600 10.5px var(--mono);letter-spacing:.3em;color:var(--muted)}
+.st-label i{width:7px;height:7px;border-radius:50%;background:#ff5555;
+  box-shadow:0 0 10px rgba(255,85,85,.9);animation:rec 1.4s ease-in-out infinite}
+@keyframes rec{50%{opacity:.35}}
+.st-digits{font:800 clamp(46px,9vw,88px)/1 var(--mono);letter-spacing:-.01em;color:var(--text);
+  font-variant-numeric:tabular-nums;text-shadow:0 0 50px rgba(var(--neon-rgb),.35)}
+.sol-card{border-radius:20px;padding:18px 20px;display:flex;flex-direction:column;
+  align-items:center;gap:12px;will-change:transform}
+.sol-card>s{text-decoration:none;font:600 10px var(--mono);letter-spacing:.14em;
+  color:var(--muted);text-transform:uppercase;white-space:nowrap}
+.ring-mini{position:relative;width:96px;height:96px}
+.rm-bg{fill:none;stroke:rgba(var(--neon-rgb),.13);stroke-width:8}
+.rm-fg{fill:none;stroke:var(--neon);stroke-width:8;stroke-linecap:round;
+  transform:rotate(-90deg);transform-origin:center;
+  stroke-dasharray:1;stroke-dashoffset:1;
+  filter:drop-shadow(0 0 5px rgba(var(--neon-rgb),.8))}
+.ring-mini b{position:absolute;inset:0;display:grid;place-items:center;
+  font:800 19px var(--mono);color:var(--neon)}
+.days{display:grid;grid-template-columns:repeat(7,16px);gap:6px}
+.days i{width:16px;height:16px;border-radius:5px;background:rgba(var(--neon-rgb),.10);
+  border:1px solid rgba(var(--neon-rgb),.14)}
+.sc-graph svg{width:180px;display:block}
+.ema-line{fill:none;stroke:var(--neon);stroke-width:2.6;stroke-linecap:round;
+  stroke-dasharray:1;stroke-dashoffset:1;
+  filter:drop-shadow(0 0 5px rgba(var(--neon-rgb),.7))}
+.ema-area{fill:url(#emaGrad);fill:rgba(var(--neon-rgb),.08);opacity:0}
+.ema-dot{fill:var(--neon);opacity:0;filter:drop-shadow(0 0 8px rgba(var(--neon-rgb),1))}
+.sol-final{margin-top:48px;font:400 clamp(17px,2.6vw,24px)/1.5 var(--sans);color:var(--muted)}
+.sol-final b{color:var(--text);font-weight:800}
+/* desktop: kartalar taymer atrofida suzadi */
+@media(min-width:960px){
+  .sc-ring{position:absolute;right:5%;top:0}
+  .sc-streak{position:absolute;left:3%;top:22%}
+  .sc-graph{position:absolute;right:9%;bottom:2%}
+}
+/* mobil: taymer keng, kartalar bir qatorda mini bo'lib teriladi */
+@media(max-width:959px){
+  .sol-stage{flex-direction:row;flex-wrap:wrap;justify-content:center;
+    align-items:stretch;gap:12px;min-height:0}
+  .sol-timer{flex:0 0 100%;padding:20px 24px}
+  .sol-card{padding:13px 15px;gap:9px}
+  .ring-mini{width:66px;height:66px}
+  .ring-mini b{font-size:14px}
+  .days{grid-template-columns:repeat(7,11px);gap:4px}
+  .days i{width:11px;height:11px;border-radius:3px}
+  .sc-graph svg{width:124px}
+  .sol-inner{padding:84px 0 50px}
+  .sol-head{margin-bottom:24px}
+  .sol-final{margin-top:26px;font-size:15px}
+}
+
+/* ============================================================
+   S4 · EVEREST TIZIMI — ko'tarilish xaritasi
+   ============================================================ */
+#s4{overflow:hidden}
+#bg4::after{background:linear-gradient(180deg,#000,rgba(0,0,0,.55) 26%,rgba(0,0,0,.55) 70%,#000 100%)}
+.jr-inner{text-align:center;padding:100px 0 60px}
+.jr-head .eyebrow{display:inline-flex;align-items:center;gap:12px;margin-bottom:18px}
+.jr-head .eyebrow::before{content:"";width:28px;height:1px;background:var(--neon)}
+.jr-sub{max-width:40ch;margin:14px auto 0}
+.jr-stage{position:relative;aspect-ratio:380/560;margin:30px auto 0;
+  width:min(400px,90vw,calc((100svh - 340px)*.68))}
+.jr-ghost{fill:none;stroke:rgba(255,255,255,.13);stroke-width:2;
+  stroke-dasharray:2 8;stroke-linecap:round;vector-effect:non-scaling-stroke}
+.jr-line{fill:none;stroke:var(--neon);stroke-width:3;stroke-linecap:round;
+  stroke-dasharray:1;stroke-dashoffset:1;vector-effect:non-scaling-stroke;
+  filter:drop-shadow(0 0 8px rgba(var(--neon-rgb),.9))}
+.jr-dot{position:absolute;top:0;left:0;width:13px;height:13px;border-radius:50%;
+  background:#fff;box-shadow:0 0 16px var(--neon),0 0 44px rgba(var(--neon-rgb),.8);
+  visibility:hidden;z-index:4}
+.jr-camp{position:absolute;z-index:3;width:0;height:0}
+.jr-camp .pt{position:absolute;left:-8px;top:-8px;width:16px;height:16px;border-radius:50%;
+  background:var(--neon);box-shadow:0 0 16px rgba(var(--neon-rgb),.9);display:block}
+.jr-camp .pt::after{content:"";position:absolute;inset:-8px;border-radius:50%;
+  border:1px solid rgba(var(--neon-rgb),.55);animation:ping 2.2s ease-out infinite}
+.jr-camp .pt.sum{background:#fff;box-shadow:0 0 22px #fff,0 0 60px rgba(var(--neon-rgb),1)}
+@keyframes ping{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.9);opacity:0}}
+.jr-camp .lab{position:absolute;top:0;transform:translateY(-50%);
+  display:flex;flex-direction:column;align-items:flex-start;gap:3px;
+  background:rgba(6,14,9,.78);border:1px solid rgba(var(--neon-rgb),.22);
+  border-radius:12px;padding:9px 13px;white-space:nowrap;
+  box-shadow:0 18px 50px -16px rgba(0,0,0,.8)}
+.jr-camp .lab.jl-r{left:20px}
+.jr-camp .lab.jl-l{right:20px;align-items:flex-end}
+.jr-camp .lab b{font:800 14px var(--mono);color:var(--neon);letter-spacing:-.01em}
+.jr-camp .lab s{text-decoration:none;font:600 9.5px var(--mono);letter-spacing:.16em;
+  color:var(--muted);text-transform:uppercase}
+
+/* ============================================================
+   S5 · AI USTOZ — qahramon skaneri
+   ============================================================ */
+#s5{background:var(--black);overflow:hidden}
+.ai-inner{text-align:center;padding:100px 0 70px}
+.ai-head .eyebrow{display:inline-flex;align-items:center;gap:12px;margin-bottom:18px}
+.ai-head .eyebrow::before{content:"";width:28px;height:1px;background:var(--neon)}
+.ai-stage{position:relative;width:min(560px,94vw);margin:36px auto 0}
+.ai-frame{position:relative;width:min(310px,70vw);aspect-ratio:9/16;margin:0 auto;
+  border-radius:22px;overflow:hidden;background:#050a07;
+  border:1px solid rgba(var(--neon-rgb),.18);
+  box-shadow:0 50px 120px -40px rgba(0,0,0,.95),0 0 80px -30px rgba(var(--neon-rgb),.3)}
+.ai-frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ai-grid{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:.5;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 39px,rgba(var(--neon-rgb),.07) 39px 40px),
+    repeating-linear-gradient(90deg,transparent 0 39px,rgba(var(--neon-rgb),.07) 39px 40px)}
+.ai-scan{position:absolute;left:-5%;right:-5%;top:0;height:2px;z-index:3;
+  background:var(--neon);box-shadow:0 0 18px rgba(var(--neon-rgb),.9);
+  visibility:hidden}
+.ai-scan::after{content:"";position:absolute;left:0;right:0;top:2px;height:64px;
+  background:linear-gradient(rgba(var(--neon-rgb),.16),transparent)}
+.crn{position:absolute;width:20px;height:20px;z-index:4;
+  border:2px solid rgba(var(--neon-rgb),.75)}
+.crn.c1{top:10px;left:10px;border-right:0;border-bottom:0;border-radius:6px 0 0 0}
+.crn.c2{top:10px;right:10px;border-left:0;border-bottom:0;border-radius:0 6px 0 0}
+.crn.c3{bottom:10px;left:10px;border-right:0;border-top:0;border-radius:0 0 0 6px}
+.crn.c4{bottom:10px;right:10px;border-left:0;border-top:0;border-radius:0 0 6px 0}
+.ai-tag{position:absolute;z-index:6;display:flex;align-items:center;gap:9px;
+  background:rgba(5,12,8,.9);border:1px solid rgba(var(--neon-rgb),.28);
+  border-radius:11px;padding:10px 13px;white-space:nowrap;
+  box-shadow:0 20px 50px -18px rgba(0,0,0,.85)}
+.ai-tag b{font:800 10px var(--mono);color:var(--onneon);background:var(--neon);
+  border-radius:5px;padding:3px 5px;letter-spacing:.05em}
+.ai-tag .type{font:600 12px var(--mono);color:var(--text);letter-spacing:.01em;
+  min-height:15px;display:inline-block}
+.ai-tag .type::after{content:"▮";color:var(--neon);animation:blink 1s steps(1) infinite;
+  margin-left:1px;font-size:11px}
+/* yorliqlar yuz zonasiga (yuqori ~32%) tegmaydi */
+.ai-tag.t1{left:0;top:38%}
+.ai-tag.t2{right:0;top:52%}
+.ai-tag.t3{left:0;top:66%}
+.ai-tag.t4{right:0;top:80%}
+.ai-final{margin-top:44px;font:400 clamp(17px,2.6vw,24px)/1.5 var(--sans);color:var(--muted)}
+.ai-final b{color:var(--text);font-weight:800}
+@media(max-width:600px){
+  .ai-tag{padding:8px 10px}
+  .ai-tag .type{font-size:10.5px}
+}
+/* past ekranlar: skaner-kadr kichrayadi */
+@media(max-height:840px){
+  .ai-inner{padding:80px 0 44px}
+  .ai-stage{margin-top:22px}
+  .ai-frame{width:min(250px,60vw)}
+  .ai-final{margin-top:24px;font-size:15px}
+}
+@media(max-height:700px){
+  .ai-frame{width:min(215px,56vw)}
+  .ai-head .headline{font-size:clamp(24px,4.6vw,40px)}
+}
+
+/* ============================================================
+   S6 · LIGA — jonli reyting teatri
+   ============================================================ */
+#s6{overflow:hidden}
+#bg6::after{background:linear-gradient(180deg,#000,rgba(0,0,0,.6) 28%,rgba(0,0,0,.6) 70%,#000 100%)}
+.lg-inner{text-align:center;padding:100px 0 70px}
+.lg-head .eyebrow{display:inline-flex;align-items:center;gap:12px;margin-bottom:18px}
+.lg-head .eyebrow::before{content:"";width:28px;height:1px;background:var(--neon)}
+.lg-board{width:min(520px,92vw);margin:38px auto 0;border-radius:22px;padding:18px 16px 16px}
+.lg-cap{display:flex;justify-content:space-between;align-items:center;
+  padding:0 8px 14px;font:600 10px var(--mono);letter-spacing:.22em;
+  color:var(--muted);text-transform:uppercase}
+.lg-rows{position:relative}
+.lg-row{position:absolute;left:0;right:0;top:0;height:60px;
+  display:flex;align-items:center;gap:12px;padding:0 14px;
+  background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.07);
+  border-radius:14px;will-change:transform}
+.lg-row .rk{font:800 13px var(--mono);color:var(--muted);width:18px;text-align:center;flex:none}
+.lg-row .av{flex:none;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;
+  font:800 14px var(--sans);color:#fff;font-style:normal}
+.lg-row .nm{font:700 14px var(--sans);color:var(--text);text-align:left;flex:1;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lg-row .fl{font:600 11px var(--mono);color:var(--muted);flex:none}
+.lg-row .hrs{font:800 14px var(--mono);color:var(--text);flex:none;width:52px;text-align:right}
+.lg-row.me{background:rgba(var(--neon-rgb),.10);border-color:rgba(var(--neon-rgb),.45);
+  box-shadow:0 0 34px -8px rgba(var(--neon-rgb),.45);z-index:3}
+.lg-row.me .rk,.lg-row.me .hrs{color:var(--neon)}
+.lg-final{margin-top:44px;font:400 clamp(17px,2.6vw,24px)/1.5 var(--sans);color:var(--muted)}
+.lg-final b{color:var(--text);font-weight:800}
+@media(max-width:600px){
+  .lg-row{height:54px;gap:9px;padding:0 11px}
+  .lg-row .nm{font-size:13px}
+}
+/* past ekranlar: jadval zichlashadi */
+@media(max-height:840px){
+  .lg-inner{padding:80px 0 44px}
+  .lg-board{margin-top:22px;padding:14px 12px 12px}
+  .lg-row{height:48px;gap:9px;padding:0 11px}
+  .lg-final{margin-top:24px;font-size:15px}
+  .lg-head .headline{font-size:clamp(24px,4.6vw,40px)}
+}
+
+/* ============================================================
+   S7 · YUKLAB OLISH — qora sukunat
+   ============================================================ */
+#s7{overflow:hidden}
+#bg7::after{background:radial-gradient(120% 100% at 50% 50%,rgba(0,0,0,.55) 30%,#000 100%)}
+.dl-inner{text-align:center;padding:110px 0 90px;display:flex;
+  flex-direction:column;align-items:center;gap:0}
+.dl-logo{width:min(170px,38vw);aspect-ratio:1;margin-bottom:34px;
+  filter:drop-shadow(0 0 34px rgba(var(--neon-rgb),.35))}
+.dl-logo img{width:100%;height:100%;display:block}
+.dl-h{max-width:16ch;margin-bottom:38px}
+.dl-h b{color:var(--neon)}
+.dl-cta{height:64px;padding:0 46px;font-size:17px;border-radius:20px}
+.dl-stores{display:flex;gap:14px;margin-top:26px;flex-wrap:wrap;justify-content:center}
+.store{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 20px;
+  border-radius:14px;background:rgba(255,255,255,.04);
+  border:1px solid rgba(255,255,255,.11);cursor:default}
+.store>span{font:700 11.5px var(--mono);letter-spacing:.14em;color:var(--silver)}
+.store s{text-decoration:none;font:600 8.5px var(--mono);letter-spacing:.1em;
+  color:var(--onneon);background:rgba(var(--neon-rgb),.75);
+  padding:3px 7px;border-radius:999px;text-transform:uppercase}
+.dl-sig{margin-top:56px;font:600 clamp(10px,1.5vw,12px)/1.6 var(--mono);
+  letter-spacing:.22em;color:var(--muted);text-transform:uppercase}
+@media(max-height:840px){
+  .dl-inner{padding:84px 0 60px}
+  .dl-logo{width:min(110px,28vw);margin-bottom:24px}
+  .dl-h{margin-bottom:28px}
+  .dl-sig{margin-top:34px}
+}
+
+.hide-scroll{overflow:hidden;height:100vh}
+@media (prefers-reduced-motion:reduce){
+  .grain{animation:none}
+  *{animation-duration:.001s!important;transition-duration:.15s!important}
+}
+</style>
+</head>
+<body class="hide-scroll">
+
+<!-- KINO QATLAMLARI -->
+<div class="grain"></div>
+<div class="vignette"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <img class="llogo" src="assets/logo_full.webp" alt="Focus AI" width="320" height="337">
+  <div class="lterm" id="lterm"></div>
+  <div class="ltype"><span id="ltypeTx"></span><span class="lcur"></span></div>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <a class="logo" href="#s1">FOCUS<em>AI</em></a>
+  <div style="display:flex;gap:14px;align-items:center">
+    <div class="lang" id="lang">
+      <button data-l="uz" class="on">UZ</button>
+      <button data-l="ru">RU</button>
+      <button data-l="en">EN</button>
+    </div>
+  </div>
+</header>
+
+<!-- SKROLL RAIL -->
+<nav class="rail" id="rail">
+  <a href="#s1"></a><a href="#s2"></a><a href="#s3"></a><a href="#s4"></a>
+  <a href="#s5"></a><a href="#s6"></a><a href="#s7"></a>
+</nav>
+
+<main id="film">
+  <!-- S1 · HERO — Everest, suzuvchi telefon, parallax -->
+  <section class="scene" id="s1" data-scene="hero">
+    <div class="bgvideo" id="bg1"></div>
+    <div class="scene-inner">
+      <div class="hero-copy">
+        <span class="eyebrow">Focus • Adapt • Dominate</span>
+        <h1 class="display hero-title" id="heroTitle" data-i="h1"></h1>
+        <p class="lead hero-lead" data-i="h1l"></p>
+        <div class="hero-cta">
+          <a class="btn" id="heroCta" href="#s7" data-i="dl"></a>
+          <a class="hero-link" href="#s2"><span data-i="how"></span> <span aria-hidden="true">↓</span></a>
+        </div>
+      </div>
+      <div class="hero-stage">
+        <div class="hero-phone" id="phone">
+          <div class="php-notch"></div>
+          <div class="php-scr">
+            <div class="php-top">FOCUS<em>AI</em></div>
+            <div class="php-ringwrap">
+              <svg viewBox="0 0 110 110" width="100%" height="100%">
+                <circle class="php-rbg" cx="55" cy="55" r="46"/>
+                <circle id="phRing" class="php-rfg" cx="55" cy="55" r="46"/>
+              </svg>
+              <div class="php-center"><b>68%</b><s data-i="today"></s></div>
+            </div>
+            <div class="php-time" id="phTime">02:41:07</div>
+            <div class="php-chips">
+              <span><b>17</b> STREAK</span><span><b>243</b>H</span><span>LIGA <b>#4</b></span>
+            </div>
+          </div>
+          <div class="php-glow"></div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-hint"><span>SCROLL</span><i></i></div>
+  </section>
+  <!-- S2 · MUAMMO — chalg'ishlar hujumi -->
+  <section class="scene" id="s2" data-scene="problem">
+    <div class="bgvideo" id="bg2"></div>
+    <div class="noti-field" id="notiField"></div>
+    <div class="scene-inner prob-inner">
+      <div class="prob-fact" id="probFact">
+        <span class="eyebrow" data-i="p_eye"></span>
+        <div class="display prob-num"><b id="probNum">0</b><i>×</i></div>
+        <div class="prob-cap mono" data-i="p_cap"></div>
+        <h2 class="headline prob-h" data-i="p_h"></h2>
+        <p class="lead prob-sub" data-i="p_sub"></p>
+      </div>
+    </div>
+  </section>
+  <!-- S3 · YECHIM — jonli stat teatri -->
+  <section class="scene" id="s3" data-scene="solution">
+    <div class="sol-glow" id="solGlow"></div>
+    <div class="scene-inner sol-inner">
+      <div class="sol-head">
+        <span class="eyebrow" data-i="so_eye"></span>
+        <h2 class="headline" data-i="so_h"></h2>
+      </div>
+      <div class="sol-stage" id="solStage">
+        <div class="sol-timer glass" id="solTimer">
+          <div class="st-label"><i></i><span data-i="so_live"></span></div>
+          <div class="st-digits" id="solDigits">00:00:00</div>
+        </div>
+        <div class="sol-card glass sc-ring" id="scRing">
+          <div class="ring-mini">
+            <svg viewBox="0 0 92 92" width="100%" height="100%">
+              <circle class="rm-bg" cx="46" cy="46" r="38" pathLength="1"/>
+              <circle class="rm-fg" id="normRing" cx="46" cy="46" r="38" pathLength="1"/>
+            </svg>
+            <b id="ringPct">0%</b>
+          </div>
+          <s data-i="so_norm"></s>
+        </div>
+        <div class="sol-card glass sc-streak" id="scStreak">
+          <div class="days" id="streakDays"></div>
+          <s data-i="so_streak"></s>
+        </div>
+        <div class="sol-card glass sc-graph" id="scGraph">
+          <svg viewBox="0 0 170 72" width="100%">
+            <path class="ema-area" id="emaArea" d="M6 64 C30 60 40 52 58 46 C76 40 88 44 104 32 C120 20 138 18 164 8 L164 64 Z"/>
+            <path class="ema-line" id="emaPath" pathLength="1" d="M6 64 C30 60 40 52 58 46 C76 40 88 44 104 32 C120 20 138 18 164 8"/>
+            <circle class="ema-dot" id="emaDot" cx="164" cy="8" r="4"/>
+          </svg>
+          <s data-i="so_ema"></s>
+        </div>
+      </div>
+      <p class="sol-final" id="solFinal" data-i="so_final"></p>
+    </div>
+  </section>
+  <!-- S4 · EVEREST TIZIMI — skroll bilan ko'tarilish -->
+  <section class="scene" id="s4" data-scene="journey">
+    <div class="bgvideo" id="bg4"></div>
+    <div class="scene-inner jr-inner">
+      <div class="jr-head">
+        <span class="eyebrow" data-i="j_eye"></span>
+        <h2 class="headline" data-i="j_h"></h2>
+        <p class="lead jr-sub" data-i="j_sub"></p>
+      </div>
+      <div class="jr-stage" id="jrStage">
+        <svg viewBox="0 0 380 560" preserveAspectRatio="none" width="100%" height="100%">
+          <path id="jrGhost" class="jr-ghost" d="M30 540 C90 520 70 470 120 450 C170 430 150 380 200 350 C250 320 210 260 260 220 C310 180 280 120 330 60"/>
+          <path id="jrPath" class="jr-line" pathLength="1" d="M30 540 C90 520 70 470 120 450 C170 430 150 380 200 350 C250 320 210 260 260 220 C310 180 280 120 330 60"/>
+        </svg>
+        <div class="jr-dot" id="jrDot"></div>
+        <!-- lagerlar JS bilan yo'l ustiga aniq o'rnatiladi -->
+        <div class="jr-camp" id="jc1"><i class="pt"></i><div class="lab jl-r"><b>100h</b><s data-i="j_c1"></s></div></div>
+        <div class="jr-camp" id="jc2"><i class="pt"></i><div class="lab jl-l"><b>1,000h</b><s data-i="j_c2"></s></div></div>
+        <div class="jr-camp" id="jc3"><i class="pt"></i><div class="lab jl-l"><b>5,000h</b><s data-i="j_c3"></s></div></div>
+        <div class="jr-camp" id="jc4"><i class="pt sum"></i><div class="lab jl-l"><b>10,000h</b><s data-i="j_c4"></s></div></div>
+      </div>
+    </div>
+  </section>
+  <!-- S5 · AI USTOZ — qahramon skaneri -->
+  <section class="scene" id="s5" data-scene="mentor">
+    <div class="scene-inner ai-inner">
+      <div class="ai-head">
+        <span class="eyebrow" data-i="ai_eye"></span>
+        <h2 class="headline" data-i="ai_h"></h2>
+      </div>
+      <div class="ai-stage" id="aiStage">
+        <div class="ai-frame" id="aiFrame">
+          <div class="ai-grid"></div>
+          <div class="ai-scan" id="aiScan"></div>
+          <span class="crn c1"></span><span class="crn c2"></span>
+          <span class="crn c3"></span><span class="crn c4"></span>
+        </div>
+        <div class="ai-tag t1" id="at1"><b>01</b><span class="type" id="tt1"></span></div>
+        <div class="ai-tag t2" id="at2"><b>02</b><span class="type" id="tt2"></span></div>
+        <div class="ai-tag t3" id="at3"><b>03</b><span class="type" id="tt3"></span></div>
+        <div class="ai-tag t4" id="at4"><b>04</b><span class="type" id="tt4"></span></div>
+      </div>
+      <p class="ai-final" id="aiFinal" data-i="ai_final"></p>
+    </div>
+  </section>
+  <!-- S6 · LIGA — transformatsiya va reyting -->
+  <section class="scene" id="s6" data-scene="league">
+    <div class="bgvideo" id="bg6"></div>
+    <div class="scene-inner lg-inner">
+      <div class="lg-head">
+        <span class="eyebrow" data-i="lg_eye"></span>
+        <h2 class="headline" data-i="lg_h"></h2>
+      </div>
+      <div class="lg-board glass" id="lgBoard">
+        <div class="lg-cap"><span data-i="lg_week"></span><span class="mono">FOCUS LIGA</span></div>
+        <div class="lg-rows" id="lgRows">
+          <div class="lg-row" id="lr1">
+            <b class="rk">1</b><i class="av" style="background:#E1306C">M</i>
+            <span class="nm">Malika</span><span class="fl">🔥 34</span><span class="hrs">412h</span>
+          </div>
+          <div class="lg-row" id="lr2">
+            <b class="rk">2</b><i class="av" style="background:#2AABEE">T</i>
+            <span class="nm">Timur</span><span class="fl">🔥 27</span><span class="hrs">356h</span>
+          </div>
+          <div class="lg-row" id="lr3">
+            <b class="rk">3</b><i class="av" style="background:#a855f7">A</i>
+            <span class="nm">Aziz</span><span class="fl">🔥 21</span><span class="hrs">298h</span>
+          </div>
+          <div class="lg-row" id="lr4">
+            <b class="rk">4</b><i class="av" style="background:#f59e0b">D</i>
+            <span class="nm">Diyor</span><span class="fl">🔥 12</span><span class="hrs">251h</span>
+          </div>
+          <div class="lg-row me" id="lrMe">
+            <b class="rk">5</b><i class="av" style="background:var(--neon);color:var(--onneon)">S</i>
+            <span class="nm" data-i="lg_you"></span><span class="fl">🔥 17</span><span class="hrs" id="meHrs">187h</span>
+          </div>
+        </div>
+      </div>
+      <p class="lg-final" id="lgFinal" data-i="lg_final"></p>
+    </div>
+  </section>
+  <!-- S7 · YUKLAB OLISH — qora sukunat -->
+  <section class="scene" id="s7" data-scene="download">
+    <div class="bgvideo" id="bg7"></div>
+    <div class="scene-inner dl-inner">
+      <div class="dl-logo" id="dlLogo">
+        <img src="assets/logo_mark.webp" alt="Focus AI" width="380" height="380">
+      </div>
+      <h2 class="headline dl-h" data-i="d_h"></h2>
+      <a class="btn dl-cta" id="dlCta" href="index.html" data-i="open"></a>
+      <div class="dl-stores">
+        <span class="store"><span>APP STORE&nbsp;↗</span><s data-i="d_soon"></s></span>
+        <span class="store"><span>GOOGLE PLAY&nbsp;↗</span><s data-i="d_soon"></s></span>
+      </div>
+      <p class="dl-sig" data-i="d_sig"></p>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/MotionPathPlugin.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script>
+(function(){
+"use strict";
+
+/* ============================================================
+   GLOBAL INFRA · Lenis + GSAP + video menejer + i18n
+   ============================================================ */
+gsap.registerPlugin(ScrollTrigger);
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- Lenis silliq skroll (GSAP bilan sinxron) ---------- */
+var lenis = new Lenis({ lerp:.09, wheelMultiplier:1, smoothWheel:true });
+window.FAI_lenis = lenis;
+lenis.on('scroll', ScrollTrigger.update);
+gsap.ticker.add(function(t){ lenis.raf(t*1000); });
+gsap.ticker.lagSmoothing(0);
+
+/* anchor havolalar Lenis orqali */
+document.addEventListener('click', function(e){
+  var a = e.target.closest('a[href^="#"]'); if(!a) return;
+  var el = document.querySelector(a.getAttribute('href'));
+  if(el){ e.preventDefault(); lenis.scrollTo(el, {duration:1.4}); }
+});
+
+/* ilovaga o'tishda belgi: keyingi tashriflar to'g'ri ilovaga kiradi */
+document.addEventListener('click', function(e){
+  var a = e.target.closest('a[href="index.html"]'); if(!a) return;
+  try{ localStorage.setItem('fai_landing_seen','1'); }catch(err){}
+});
+
+/* ---------- video menejer: ko'rinsa o'ynaydi, yo'qolsa to'xtaydi ---------- */
+var vidObserver = new IntersectionObserver(function(entries){
+  entries.forEach(function(en){
+    var v = en.target;
+    if(en.isIntersecting){ v.play && v.play().catch(function(){}); }
+    else { v.pause && v.pause(); }
+  });
+},{ threshold:.12 });
+window.FAI_video = function(src, poster, cls){
+  var v = document.createElement('video');
+  v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'metadata';
+  v.setAttribute('muted',''); v.setAttribute('playsinline','');
+  v.src = src; if(poster) v.poster = poster; if(cls) v.className = cls;
+  vidObserver.observe(v);
+  return v;
+};
+
+/* ---------- i18n ---------- */
+var LANG = 'uz';
+try{ var sv = localStorage.getItem('fai_lang'); if(sv) LANG = sv; }catch(e){}
+var I18N = {
+  uz:{ dl:"Yuklab olish", open:"Ilovani ochish" },
+  ru:{ dl:"Скачать", open:"Открыть приложение" },
+  en:{ dl:"Download", open:"Open the app" }
+};
+if(!I18N[LANG]) LANG = 'uz';
+/* chiplar saqlangan tilga sinxron */
+[].forEach.call(document.getElementById('lang').children, function(b){
+  b.classList.toggle('on', b.getAttribute('data-l') === LANG);
+});
+window.FAI_t = function(k){ return (I18N[LANG] && I18N[LANG][k]) || k; };
+window.FAI_setText = function(){
+  document.querySelectorAll('[data-i]').forEach(function(el){
+    var k = el.getAttribute('data-i');
+    if(I18N[LANG][k] != null) el.innerHTML = I18N[LANG][k];
+  });
+};
+document.getElementById('lang').addEventListener('click', function(ev){
+  var b = ev.target.closest('button'); if(!b) return;
+  LANG = b.getAttribute('data-l');
+  [].forEach.call(this.children, function(x){ x.classList.toggle('on', x===b); });
+  try{ localStorage.setItem('fai_lang', LANG); }catch(e){}
+  FAI_setText();
+});
+window.FAI_lang = function(){ return LANG; };
+window.FAI_addStrings = function(dict){
+  Object.keys(dict).forEach(function(l){
+    Object.keys(dict[l]).forEach(function(k){ I18N[l][k] = dict[l][k]; });
+  });
+};
+
+/* ---------- magnetic tugmalar ---------- */
+function magnetize(el){
+  if(reduced || !matchMedia('(pointer:fine)').matches) return;
+  var b = null;
+  el.addEventListener('mousemove', function(e){
+    b = b || el.getBoundingClientRect();
+    var dx = e.clientX - (b.left + b.width/2), dy = e.clientY - (b.top + b.height/2);
+    gsap.to(el, { x:dx*.22, y:dy*.3, duration:.4, ease:'power2.out' });
+  });
+  el.addEventListener('mouseleave', function(){
+    b = null; gsap.to(el, { x:0, y:0, duration:.7, ease:'elastic.out(1,.4)' });
+  });
+}
+window.FAI_magnetize = magnetize;
+
+/* ---------- skroll rail faol nuqta ---------- */
+var railLinks = [].slice.call(document.querySelectorAll('#rail a'));
+document.querySelectorAll('.scene').forEach(function(sc, idx){
+  ScrollTrigger.create({
+    trigger:sc, start:'top 50%', end:'bottom 50%',
+    onToggle:function(st){ if(st.isActive) railLinks.forEach(function(l,i){ l.classList.toggle('on', i===idx); }); }
+  });
+});
+
+/* ---------- LOADER: terminal-boot + resurslar ---------- */
+var posters = ['s1','s2','s3','s4','s5'].map(function(n){ return 'assets/video/'+n+'-poster.jpg'; });
+var loaded = 0, total = posters.length + 1, seqDone = false;
+function bump(){ loaded++; maybeFinish(); }
+posters.forEach(function(src){ var im = new Image(); im.onload = bump; im.onerror = bump; im.src = src; });
+(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(bump);
+
+/* boot sekvensi: satrlar harf-harf yoziladi */
+var BOOT = [
+  ['boot focus.engine','OK'],
+  ['load timers.db','OK'],
+  ['restore sessions','OK'],
+  ['sync progress','OK'],
+  ['calibrate neural core','OK'],
+  ['target: 10,000 HOURS','READY']
+];
+var termBox = document.getElementById('lterm');
+var typeTx = document.getElementById('ltypeTx');
+function bootLine(i){
+  if(i >= BOOT.length){ typeFocus(0); return; }
+  var row = document.createElement('div');
+  row.className = 'tl show';
+  row.innerHTML = '<span class="pfx">&gt;</span><span class="lbl"></span>'+
+    '<span class="dts"></span><span class="st'+(BOOT[i][1]==='READY'?' rd':'')+'"></span>';
+  termBox.appendChild(row);
+  var lbl = row.querySelector('.lbl'), st = row.querySelector('.st'),
+      dts = row.querySelector('.dts'), txt = BOOT[i][0], c = 0;
+  var iv = setInterval(function(){
+    c++; lbl.textContent = txt.slice(0, c);
+    if(c >= txt.length){
+      clearInterval(iv);
+      dts.textContent = ' ............';
+      setTimeout(function(){ st.textContent = BOOT[i][1]; bootLine(i+1); }, 90);
+    }
+  }, 16);
+}
+function typeFocus(i){
+  var W = 'FOCUS';
+  if(i > W.length){ seqDone = true; maybeFinish(); return; }
+  typeTx.textContent = W.slice(0, i);
+  setTimeout(function(){ typeFocus(i+1); }, 140);
+}
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){
+  BOOT.forEach(function(b){
+    var row = document.createElement('div');
+    row.className = 'tl show';
+    row.innerHTML = '<span class="pfx">&gt;</span><span class="lbl">'+b[0]+'</span>'+
+      '<span class="dts"> ............</span><span class="st'+(b[1]==='READY'?' rd':'')+'">'+b[1]+'</span>';
+    termBox.appendChild(row);
+  });
+  typeTx.textContent = 'FOCUS';
+  seqDone = true;
+} else {
+  bootLine(0);
+}
+
+var finished = false;
+function maybeFinish(){ if(loaded >= total && seqDone) finish(); }
+function finish(){
+  if(finished) return; finished = true;
+  setTimeout(function(){
+    gsap.timeline()
+      .to('#loader',{ yPercent:-100, duration:.9, ease:'power4.inOut' }, .15)
+      .add(function(){
+        document.getElementById('loader').style.display = 'none';
+        document.body.classList.remove('hide-scroll');
+        lenis.resize(); ScrollTrigger.refresh();
+        document.dispatchEvent(new CustomEvent('fai:start'));
+      });
+  }, 400);
+}
+setTimeout(finish, 7000); /* himoya: 7s da baribir ochiladi */
+
+FAI_setText();
+})();
+</script>
+
+<script>
+/* ============================================================
+   S1 · HERO — rejissyorlik
+   ============================================================ */
+(function(){
+"use strict";
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+FAI_addStrings({
+  uz:{ h1:"O'z hayotingning<br>qahramoni bo'l.",
+       h1l:"Har bir fokus-sessiya — Everest sari bir qadam. Focus AI diqqatingni qaytaradi va intizom quradi.",
+       how:"Qanday ishlaydi", today:"BUGUN" },
+  ru:{ h1:"Стань героем<br>своей жизни.",
+       h1l:"Каждая фокус-сессия — шаг к Эвересту. Focus AI возвращает внимание и строит дисциплину.",
+       how:"Как это работает", today:"СЕГОДНЯ" },
+  en:{ h1:"Become the hero<br>of your life.",
+       h1l:"Every focus session is a step toward Everest. Focus AI reclaims your attention and builds discipline.",
+       how:"How it works", today:"TODAY" }
+});
+FAI_setText();
+
+/* fon-kino: Everest parvozi */
+var bg1 = document.getElementById('bg1');
+var v1 = FAI_video('assets/video/s1.mp4','assets/video/s1-poster.jpg');
+bg1.appendChild(v1);
+gsap.set(v1,{ scale:1.1 });
+
+/* sarlavhani harflarga bo'lish */
+var title = document.getElementById('heroTitle');
+function splitChars(el){
+  [].slice.call(el.childNodes).forEach(function(n){
+    if(n.nodeType === 3 && n.textContent.trim() !== ''){
+      var frag = document.createDocumentFragment();
+      n.textContent.split('').forEach(function(c){
+        var s = document.createElement('span');
+        s.className = 'ch'; s.innerHTML = (c === ' ') ? '&nbsp;' : c;
+        frag.appendChild(s);
+      });
+      el.replaceChild(frag, n);
+    }
+  });
+}
+splitChars(title);
+/* til almashsa — qayta bo'lib, ko'rinadigan holatda qoldiramiz */
+document.getElementById('lang').addEventListener('click', function(){
+  requestAnimationFrame(function(){
+    splitChars(title);
+    gsap.set(title.querySelectorAll('.ch'), { clearProps:'all' });
+  });
+});
+
+/* jonli taymer raqami */
+var secs = 2*3600 + 41*60 + 7;
+setInterval(function(){
+  secs++;
+  var h = ('0'+Math.floor(secs/3600)).slice(-2),
+      m = ('0'+Math.floor(secs%3600/60)).slice(-2),
+      s = ('0'+(secs%60)).slice(-2);
+  var el = document.getElementById('phTime');
+  if(el) el.textContent = h+':'+m+':'+s;
+}, 1000);
+
+/* kirish sahnasi — parda ochilgach */
+function intro(){
+  if(reduced){ gsap.fromTo('#phRing',{strokeDashoffset:289},{strokeDashoffset:92,duration:.6}); return; }
+  gsap.timeline({ defaults:{ ease:'power4.out' } })
+    .from('#s1 .eyebrow', { y:24, autoAlpha:0, duration:.8 })
+    .from('#s1 .hero-title .ch', { yPercent:115, rotateX:-55, autoAlpha:0, duration:1, stagger:.022 }, '-=.5')
+    .from('#s1 .hero-lead', { y:26, autoAlpha:0, duration:.9 }, '-=.6')
+    .from('#s1 .hero-cta', { y:22, autoAlpha:0, duration:.8 }, '-=.65')
+    .from('#phone', { y:80, autoAlpha:0, rotateY:-32, duration:1.25, ease:'power3.out' }, '-=.95')
+    .fromTo('#phRing', { strokeDashoffset:289 }, { strokeDashoffset:92, duration:1.6, ease:'power3.inOut' }, '-=.9')
+    .from('.hero-hint', { autoAlpha:0, duration:.6 }, '-=.6')
+    .add(function(){
+      /* suzish sikli */
+      gsap.to('#phone', { y:'-=14', duration:2.8, yoyo:true, repeat:-1, ease:'sine.inOut' });
+    });
+}
+document.addEventListener('fai:start', intro);
+
+/* magnetic CTA */
+FAI_magnetize(document.getElementById('heroCta'));
+
+/* mouse-parallax: 3 qatlam chuqurlik */
+if(!reduced && matchMedia('(pointer:fine)').matches){
+  var s1 = document.getElementById('s1');
+  var ry = gsap.quickTo('#phone','rotationY',{ duration:.7, ease:'power2.out' }),
+      rx = gsap.quickTo('#phone','rotationX',{ duration:.7, ease:'power2.out' }),
+      cx = gsap.quickTo('#s1 .hero-copy','x',{ duration:.9, ease:'power2.out' }),
+      vx = gsap.quickTo(v1,'x',{ duration:1.1, ease:'power2.out' }),
+      vy = gsap.quickTo(v1,'y',{ duration:1.1, ease:'power2.out' });
+  s1.addEventListener('pointermove', function(e){
+    var r = s1.getBoundingClientRect(),
+        nx = e.clientX/r.width - .5, ny = e.clientY/r.height - .5;
+    ry(-14 + nx*11); rx(6 - ny*9);
+    cx(nx*-14);
+    vx(nx*-16); vy(ny*-12);
+  });
+}
+
+/* chiqish: dolly-zoom — skroll bilan kamera ichkariga kiradi */
+gsap.timeline({
+  scrollTrigger:{ trigger:'#s1', start:'top top', end:'bottom top', scrub:true }
+})
+  .to(v1, { scale:1.32, ease:'none' }, 0)
+  .to('#s1 .scene-inner', { y:-130, autoAlpha:0, ease:'none' }, 0)
+  .to('.hero-hint', { autoAlpha:0, ease:'none' }, 0);
+})();
+</script>
+
+<script>
+/* ============================================================
+   S2 · MUAMMO — rejissyorlik
+   ============================================================ */
+(function(){
+"use strict";
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+FAI_addStrings({
+  uz:{ p_eye:"Muammo", p_cap:"KUNIGA SHUNCHA CHALG'ISH", p_h:"Diqqating o'g'irlanmoqda.",
+       p_sub:"Har bir bildirishnoma — kichik hujum. Ular yig'ilib, orzularingdan soatlab vaqt o'g'irlaydi.",
+       nw:"hozir",
+       n1:"senga yangi layk qo'yildi ❤️", n2:"sen uchun yangi video 🔥", n3:"5 ta o'qilmagan xabar",
+       n4:"do'sting hikoya joyladi", n5:"yangi shorts chiqdi ▶", n6:"kuningni yakunla — 3 daqiqa!",
+       n7:"pochtangda 12 yangi xat", n8:"aksiya! faqat bugun −50%", n9:"jonli efir boshlandi",
+       n10:"sen g'olib bo'lishing mumkin 🎁" },
+  ru:{ p_eye:"Проблема", p_cap:"ОТВЛЕЧЕНИЙ КАЖДЫЙ ДЕНЬ", p_h:"Твоё внимание крадут.",
+       p_sub:"Каждое уведомление — маленькая атака. Вместе они крадут часы из твоей мечты.",
+       nw:"сейчас",
+       n1:"новый лайк ❤️", n2:"новое видео для тебя 🔥", n3:"5 непрочитанных сообщений",
+       n4:"друг выложил историю", n5:"вышел новый shorts ▶", n6:"заверши день — 3 минуты!",
+       n7:"12 новых писем", n8:"акция! только сегодня −50%", n9:"начался прямой эфир",
+       n10:"ты можешь выиграть 🎁" },
+  en:{ p_eye:"The problem", p_cap:"DISTRACTIONS EVERY DAY", p_h:"Your attention is being stolen.",
+       p_sub:"Every notification is a tiny attack. Together they steal hours from your dream.",
+       nw:"now",
+       n1:"you got a new like ❤️", n2:"a new video for you 🔥", n3:"5 unread messages",
+       n4:"your friend posted a story", n5:"new shorts dropped ▶", n6:"finish your day — 3 min!",
+       n7:"12 new emails", n8:"sale! today only −50%", n9:"live stream started",
+       n10:"you could win 🎁" }
+});
+FAI_setText();
+
+/* fon-kino: jang (chalg'ishlar bilan kurash) */
+var bg2 = document.getElementById('bg2');
+var v2 = FAI_video('assets/video/s3.mp4','assets/video/s3-poster.jpg');
+bg2.appendChild(v2);
+gsap.set(v2,{ scale:1.06 });
+
+/* bildirishnoma kartalari */
+var APPS = [
+  { n:'Instagram', c:'#E1306C', k:'n1' }, { n:'TikTok',   c:'#00c8c0', k:'n2' },
+  { n:'Telegram',  c:'#2AABEE', k:'n3' }, { n:'Stories',  c:'#a855f7', k:'n4' },
+  { n:'YouTube',   c:'#ff3333', k:'n5' }, { n:'Dopamine', c:'#f59e0b', k:'n6' },
+  { n:'Email',     c:'#64748b', k:'n7' }, { n:'Market',   c:'#ef4444', k:'n8' },
+  { n:'Live',      c:'#ec4899', k:'n9' }, { n:'Lucky',    c:'#8b5cf6', k:'n10' }
+];
+var field = document.getElementById('notiField');
+var cards = APPS.map(function(a, i){
+  var el = document.createElement('div');
+  el.className = 'noti';
+  el.innerHTML =
+    '<div class="ic" style="background:'+a.c+'">'+a.n[0]+'</div>'+
+    '<div class="tx"><div class="nm">'+a.n+' <s data-i="nw"></s></div>'+
+    '<div class="ms" data-i="'+a.k+'"></div></div>'+
+    '<div class="dotr"></div>';
+  /* klaster pozitsiyasi — markaz atrofida tartibsiz to'da */
+  var col = i % 2, row = Math.floor(i/2);
+  var left = 50 + (col ? 1 : -1)*(10 + Math.random()*16);
+  var top  = 16 + row*15 + Math.random()*6;
+  el.style.left = 'calc('+left+'% - 124px)';
+  el.style.top  = top+'%';
+  el.dataset.rot = (Math.random()*22 - 11).toFixed(1);
+  field.appendChild(el);
+  return el;
+});
+FAI_setText();
+
+/* har karta uchun uchish vektori (qaysi qirradan kiradi / qayoqqa sochiladi) */
+function vec(scale){
+  var a = Math.random()*Math.PI*2;
+  return { x:Math.cos(a)*scale, y:Math.sin(a)*scale };
+}
+var flyIn  = cards.map(function(){ return vec(innerWidth*.9 + 300); });
+var flyOut = cards.map(function(){ return vec(innerWidth*.9 + 400); });
+
+/* skroll-kino: pin + 3 parda */
+var probNum = document.getElementById('probNum');
+var counter = { v:0 };
+gsap.set('#probFact',{ autoAlpha:0, y:60 });
+
+var tl = gsap.timeline({
+  scrollTrigger:{
+    trigger:'#s2', start:'top top', end:'+=280%',
+    pin:true, scrub:.6, anticipatePin:1
+  }
+});
+
+/* PARDA 1 · hujum: kartalar har tomondan yopiriladi */
+tl.from(cards, {
+  x:function(i){ return flyIn[i].x; },
+  y:function(i){ return flyIn[i].y; },
+  rotation:function(i){ return flyIn[i].x > 0 ? 90 : -90; },
+  autoAlpha:0,
+  ease:'power2.out',
+  stagger:{ each:.055 },
+  duration:1.4
+}, 0)
+.to(cards, {
+  rotation:function(i){ return parseFloat(cards[i].dataset.rot); },
+  ease:'none', stagger:{ each:.055 }, duration:1.4
+}, 0)
+.to(v2, { scale:1.18, ease:'none', duration:3 }, 0)
+
+/* PARDA 2 · portlash: hammasi chilparchin bo'lib sochiladi */
+.to(cards, { scale:1.06, duration:.12, ease:'power1.in' }, 2.05)
+.to(cards, {
+  x:function(i){ return flyOut[i].x; },
+  y:function(i){ return flyOut[i].y; },
+  rotation:function(){ return Math.random()*400 - 200; },
+  autoAlpha:0,
+  ease:'power3.in',
+  stagger:{ each:.02, from:'random' },
+  duration:.9
+}, 2.2)
+.to(v2, { filter:'brightness(.22)', ease:'none', duration:.9 }, 2.2)
+
+/* PARDA 3 · sukunat va fakt: 96× */
+.to('#probFact', { autoAlpha:1, y:0, ease:'power3.out', duration:.9 }, 3.1)
+.to(counter, {
+  v:96, duration:1.1, ease:'power1.out',
+  onUpdate:function(){ probNum.textContent = Math.round(counter.v); }
+}, 3.15)
+.to({}, { duration:.6 }); /* nafas — fakt bilan qolish */
+
+if(reduced){
+  tl.progress(1).kill();
+  gsap.set(cards, { autoAlpha:0 });
+  gsap.set('#probFact', { autoAlpha:1, y:0 });
+  probNum.textContent = '96';
+}
+})();
+</script>
+
+<script>
+/* ============================================================
+   S3 · YECHIM — rejissyorlik
+   ============================================================ */
+(function(){
+"use strict";
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+FAI_addStrings({
+  uz:{ so_eye:"Yechim", so_h:"Focus AI hisoblay boshlaydi.",
+       so_live:"JONLI SESSIYA", so_norm:"Kunlik norma", so_streak:"14 kunlik zanjir",
+       so_ema:"Fokus kuchi · EMA", so_final:"Belgi emas. <b>Haqiqiy soat.</b>" },
+  ru:{ so_eye:"Решение", so_h:"Focus AI начинает считать.",
+       so_live:"ЖИВАЯ СЕССИЯ", so_norm:"Дневная норма", so_streak:"Цепочка 14 дней",
+       so_ema:"Сила фокуса · EMA", so_final:"Не галочка. <b>Реальные часы.</b>" },
+  en:{ so_eye:"The solution", so_h:"Focus AI starts counting.",
+       so_live:"LIVE SESSION", so_norm:"Daily goal", so_streak:"14-day chain",
+       so_ema:"Focus power · EMA", so_final:"Not a checkbox. <b>Real hours.</b>" }
+});
+FAI_setText();
+
+/* streak katakchalari */
+var daysBox = document.getElementById('streakDays');
+for(var d = 0; d < 14; d++) daysBox.appendChild(document.createElement('i'));
+var cells = [].slice.call(daysBox.children);
+
+/* desktopda kartalarga yengil og'ish */
+if(matchMedia('(min-width:960px)').matches){
+  gsap.set('#scRing',   { rotation:3 });
+  gsap.set('#scStreak', { rotation:-4 });
+  gsap.set('#scGraph',  { rotation:-2 });
+}
+
+/* raqam formatlash */
+var digitsEl = document.getElementById('solDigits');
+var TARGET = 2*3600 + 47*60 + 12; /* 02:47:12 */
+function fmt(t){
+  t = Math.max(0, Math.round(t));
+  return ('0'+Math.floor(t/3600)).slice(-2)+':'+
+         ('0'+Math.floor(t%3600/60)).slice(-2)+':'+
+         ('0'+(t%60)).slice(-2);
+}
+var clock = { v:0 };
+var pctEl = document.getElementById('ringPct');
+var pct = { v:0 };
+
+/* pin tugagach taymer jonli davom etadi */
+var liveTimer = null, liveVal = TARGET;
+function liveOn(){
+  if(liveTimer) return;
+  liveTimer = setInterval(function(){ liveVal++; digitsEl.textContent = fmt(liveVal); }, 1000);
+}
+function liveOff(){
+  if(liveTimer){ clearInterval(liveTimer); liveTimer = null; }
+  liveVal = TARGET;
+}
+
+var tl = gsap.timeline({
+  scrollTrigger:{
+    trigger:'#s3', start:'top top', end:'+=240%',
+    pin:true, scrub:.6, anticipatePin:1,
+    onLeave:liveOn, onEnterBack:liveOff
+  }
+});
+
+/* PARDA 1 · yashil puls + sarlavha */
+tl.fromTo('#solGlow', { scale:.25, autoAlpha:0 }, { scale:1, autoAlpha:1, ease:'power2.out', duration:.8 }, 0)
+  .from('.sol-head', { y:50, autoAlpha:0, ease:'power3.out', duration:.7 }, .15)
+
+/* PARDA 2 · taymer tushadi va sanay boshlaydi */
+  .from('#solTimer', { y:90, scale:.88, autoAlpha:0, ease:'power3.out', duration:.8 }, .7)
+  .to(clock, {
+    v:TARGET, duration:2.6, ease:'power1.inOut',
+    onUpdate:function(){ digitsEl.textContent = fmt(clock.v); }
+  }, 1.1)
+
+/* PARDA 3 · orbit-kartalar birma-bir ochiladi */
+  .from('#scRing', { y:70, autoAlpha:0, scale:.85, ease:'power3.out', duration:.6 }, 1.5)
+  .to('#normRing', { strokeDashoffset:.16, ease:'power2.inOut', duration:1.2 }, 1.7)
+  .to(pct, {
+    v:84, duration:1.2, ease:'power2.inOut',
+    onUpdate:function(){ pctEl.textContent = Math.round(pct.v)+'%'; }
+  }, 1.7)
+
+  .from('#scStreak', { y:70, autoAlpha:0, scale:.85, ease:'power3.out', duration:.6 }, 2.1)
+  .to(cells, {
+    backgroundColor:'rgba(57,255,140,.85)',
+    borderColor:'rgba(57,255,140,.9)',
+    boxShadow:'0 0 10px rgba(57,255,140,.55)',
+    stagger:.055, duration:.15, ease:'none'
+  }, 2.3)
+
+  .from('#scGraph', { y:70, autoAlpha:0, scale:.85, ease:'power3.out', duration:.6 }, 2.7)
+  .to('#emaPath', { strokeDashoffset:0, ease:'power1.inOut', duration:1.1 }, 2.9)
+  .to('#emaArea', { opacity:1, duration:.5 }, 3.6)
+  .to('#emaDot', { opacity:1, duration:.2 }, 3.85)
+
+/* PARDA 4 · xulosa jumlasi + yengil chuqurlik */
+  .from('#solFinal', { y:34, autoAlpha:0, ease:'power3.out', duration:.7 }, 4.0)
+  .to('#scRing',   { y:-26, ease:'none', duration:1.4 }, 3.4)
+  .to('#scStreak', { y:-16, ease:'none', duration:1.4 }, 3.4)
+  .to('#scGraph',  { y:-34, ease:'none', duration:1.4 }, 3.4)
+  .to({}, { duration:.5 });
+
+if(reduced){
+  tl.progress(1).kill();
+  digitsEl.textContent = fmt(TARGET);
+  pctEl.textContent = '84%';
+  liveOn();
+}
+})();
+</script>
+
+<script>
+/* ============================================================
+   S4 · EVEREST TIZIMI — rejissyorlik
+   ============================================================ */
+(function(){
+"use strict";
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+gsap.registerPlugin(MotionPathPlugin);
+
+FAI_addStrings({
+  uz:{ j_eye:"Tizim", j_h:"Everest — sening progress-baring.",
+       j_sub:"Har soat — balandlik. Bosqichlar ko'tarilganing sari ochiladi.",
+       j_c1:"Poydevor", j_c2:"Intizom", j_c3:"Ustalik", j_c4:"Cho'qqi" },
+  ru:{ j_eye:"Система", j_h:"Эверест — твой прогресс-бар.",
+       j_sub:"Каждый час — высота. Этапы открываются по мере подъёма.",
+       j_c1:"Фундамент", j_c2:"Дисциплина", j_c3:"Мастерство", j_c4:"Вершина" },
+  en:{ j_eye:"The system", j_h:"Everest is your progress bar.",
+       j_sub:"Every hour is altitude. Camps unlock as you climb.",
+       j_c1:"Foundation", j_c2:"Discipline", j_c3:"Mastery", j_c4:"The Summit" }
+});
+FAI_setText();
+
+/* fon-kino: maxsus Everest-klip (chaqmoq + HUD) — quyuqroq, sekinroq */
+var bg4 = document.getElementById('bg4');
+var v4 = FAI_video('assets/video/everest.mp4','assets/video/everest-poster.jpg');
+bg4.appendChild(v4);
+gsap.set(v4,{ scale:1.06, filter:'brightness(.5) saturate(.9)' });
+v4.addEventListener('loadedmetadata', function(){ v4.playbackRate = .75; });
+
+/* lagerlarni yo'l ustiga aniq o'rnatish */
+var path = document.getElementById('jrPath');
+var L = path.getTotalLength();
+var FRACS = [.20, .46, .72, .985];
+var camps = ['jc1','jc2','jc3','jc4'].map(function(id, i){
+  var p = path.getPointAtLength(FRACS[i]*L);
+  var el = document.getElementById(id);
+  el.style.left = (p.x/380*100)+'%';
+  el.style.top  = (p.y/560*100)+'%';
+  return el;
+});
+
+/* skroll-kino */
+var tl = gsap.timeline({
+  scrollTrigger:{
+    trigger:'#s4', start:'top top', end:'+=300%',
+    pin:true, scrub:.6, anticipatePin:1
+  }
+});
+
+tl.from('.jr-head', { y:50, autoAlpha:0, ease:'power3.out', duration:.6 }, 0)
+  .to(v4, { scale:1.2, ease:'none', duration:4.2 }, 0)
+
+/* yo'l chiziladi + nur-yo'lovchi ko'tariladi */
+  .set('#jrDot', { visibility:'visible' }, .55)
+  .to('#jrPath', { strokeDashoffset:0, ease:'none', duration:3 }, .6)
+  .to('#jrDot', {
+    motionPath:{ path:'#jrPath', align:'#jrPath', alignOrigin:[.5,.5] },
+    ease:'none', duration:3
+  }, .6);
+
+/* lagerlar — nur yetganda yonadi */
+camps.forEach(function(el, i){
+  var t = .6 + 3*FRACS[i];
+  tl.from(el.querySelector('.pt'), { scale:0, ease:'back.out(2.4)', duration:.22 }, t)
+    .from(el.querySelector('.lab'), {
+      x:(el.querySelector('.lab').classList.contains('jl-r') ? -16 : 16),
+      autoAlpha:0, ease:'power2.out', duration:.3
+    }, t + .05);
+});
+
+/* cho'qqida nafas */
+tl.to('#jc4 .pt', { scale:1.35, ease:'power1.inOut', duration:.3 }, 3.75)
+  .to({}, { duration:.5 });
+
+if(reduced){ tl.progress(1).kill(); }
+})();
+</script>
+
+<script>
+/* ============================================================
+   S5 · AI USTOZ — rejissyorlik
+   ============================================================ */
+(function(){
+"use strict";
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+FAI_addStrings({
+  uz:{ ai_eye:"AI Ustoz", ai_h:"AI seni o'rganadi.",
+       ai_final:"Va senga <b>moslashadi.</b>",
+       a1:"fokus cho'qqisi: 09:00–11:00", a2:"zaif nuqta: tushdan keyin",
+       a3:"eng kuchli odat: dasturlash", a4:"tavsiya: norma +15 daqiqa" },
+  ru:{ ai_eye:"AI Наставник", ai_h:"AI изучает тебя.",
+       ai_final:"И <b>подстраивается.</b>",
+       a1:"пик фокуса: 09:00–11:00", a2:"слабое место: после обеда",
+       a3:"сильнейшая привычка: код", a4:"совет: норма +15 минут" },
+  en:{ ai_eye:"AI Mentor", ai_h:"The AI studies you.",
+       ai_final:"And <b>adapts to you.</b>",
+       a1:"focus peak: 09:00–11:00", a2:"weak spot: afternoons",
+       a3:"strongest habit: coding", a4:"advice: goal +15 minutes" }
+});
+FAI_setText();
+
+/* markaziy kadr: qahramon skan-videosi */
+var frame = document.getElementById('aiFrame');
+var v5 = FAI_video('assets/video/s2.mp4','assets/video/s2-poster.jpg');
+frame.insertBefore(v5, frame.firstChild);
+
+/* terminal-yozuv mexanikasi */
+var KEYS = ['a1','a2','a3','a4'];
+var typeEls = KEYS.map(function(_, i){ return document.getElementById('tt'+(i+1)); });
+var tags = KEYS.map(function(_, i){ return document.getElementById('at'+(i+1)); });
+var props = KEYS.map(function(){ return { v:0 }; });
+function renderType(i){
+  var s = FAI_t(KEYS[i]);
+  typeEls[i].textContent = s.slice(0, Math.round(props[i].v * s.length));
+}
+/* til almashsa yozuvlar qayta chiziladi */
+document.getElementById('lang').addEventListener('click', function(){
+  requestAnimationFrame(function(){ KEYS.forEach(function(_, i){ renderType(i); }); });
+});
+
+/* skroll-kino */
+var tl = gsap.timeline({
+  scrollTrigger:{
+    trigger:'#s5', start:'top top', end:'+=280%',
+    pin:true, scrub:.6, anticipatePin:1
+  }
+});
+
+tl.from('.ai-head', { y:50, autoAlpha:0, ease:'power3.out', duration:.6 }, 0)
+  .from('#aiFrame', { y:80, scale:.92, autoAlpha:0, ease:'power3.out', duration:.8 }, .3)
+  .from('.crn', { scale:0, autoAlpha:0, stagger:.06, ease:'back.out(2)', duration:.3 }, .8)
+
+/* skaner o'tadi */
+  .set('#aiScan', { visibility:'visible' }, 1.0)
+  .fromTo('#aiScan', { top:'0%' }, { top:'99%', ease:'none', duration:2.8 }, 1.05)
+  .to(v5, { scale:1.08, ease:'none', duration:2.8 }, 1.05);
+
+/* skan yetganda yorliq yoziladi (yorliq balandligiga mos vaqt) */
+var TAG_F = [.38, .52, .66, .80];
+TAG_F.forEach(function(f, i){
+  var t = 1.05 + 2.8*f;
+  tl.from(tags[i], {
+      x:(tags[i].classList.contains('t1') || tags[i].classList.contains('t3')) ? -18 : 18,
+      autoAlpha:0, ease:'power2.out', duration:.25
+    }, t)
+    .to(props[i], { v:1, duration:.45, ease:'none',
+      onUpdate:(function(idx){ return function(){ renderType(idx); }; })(i)
+    }, t + .1);
+});
+
+/* yakun: skaner so'nadi, xulosa */
+tl.to('#aiScan', { autoAlpha:0, duration:.2 }, 3.95)
+  .from('#aiFinal', { y:30, autoAlpha:0, ease:'power3.out', duration:.6 }, 4.05)
+  .to({}, { duration:.5 });
+
+if(reduced){
+  tl.progress(1).kill();
+  KEYS.forEach(function(_, i){ props[i].v = 1; renderType(i); });
+}
+})();
+</script>
+
+<script>
+/* ============================================================
+   S6 · LIGA — rejissyorlik
+   ============================================================ */
+(function(){
+"use strict";
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+FAI_addStrings({
+  uz:{ lg_eye:"Liga", lg_h:"Raqobat seni o'stiradi.", lg_week:"Bu hafta", lg_you:"SEN",
+       lg_final:"Yolg'iz emassan. <b>Liga kutmoqda.</b>" },
+  ru:{ lg_eye:"Лига", lg_h:"Соревнование растит тебя.", lg_week:"Эта неделя", lg_you:"ТЫ",
+       lg_final:"Ты не один. <b>Лига ждёт.</b>" },
+  en:{ lg_eye:"The league", lg_h:"Competition makes you grow.", lg_week:"This week", lg_you:"YOU",
+       lg_final:"You're not alone. <b>The league awaits.</b>" }
+});
+FAI_setText();
+
+/* fon-kino: yorug' figura — transformatsiya */
+var bg6 = document.getElementById('bg6');
+var v6 = FAI_video('assets/video/s5.mp4','assets/video/s5-poster.jpg');
+bg6.appendChild(v6);
+gsap.set(v6,{ scale:1.05, filter:'brightness(.5)' });
+
+/* qatorlar geometriyasi */
+var ROW = matchMedia('(max-height:840px)').matches ? 56
+        : (matchMedia('(max-width:600px)').matches ? 62 : 70);
+var rows = {
+  r1:document.getElementById('lr1'), r2:document.getElementById('lr2'),
+  r3:document.getElementById('lr3'), r4:document.getElementById('lr4'),
+  me:document.getElementById('lrMe')
+};
+document.getElementById('lgRows').style.height = (ROW*5 - 10)+'px';
+/* boshlang'ich joylashuv: 1..5 */
+gsap.set(rows.r1,{ y:0 });     gsap.set(rows.r2,{ y:ROW });
+gsap.set(rows.r3,{ y:ROW*2 }); gsap.set(rows.r4,{ y:ROW*3 });
+gsap.set(rows.me,{ y:ROW*4 });
+
+var meHrs = document.getElementById('meHrs');
+var hrs = { v:187 };
+function updHrs(){ meHrs.textContent = Math.round(hrs.v)+'h'; }
+
+/* skroll-kino */
+var tl = gsap.timeline({
+  scrollTrigger:{
+    trigger:'#s6', start:'top top', end:'+=260%',
+    pin:true, scrub:.6, anticipatePin:1
+  }
+});
+
+tl.from('.lg-head', { y:50, autoAlpha:0, ease:'power3.out', duration:.6 }, 0)
+  .to(v6, { scale:1.16, ease:'none', duration:4.6 }, 0)
+  .from('#lgBoard', { y:70, autoAlpha:0, ease:'power3.out', duration:.7 }, .4)
+  .from('.lg-row', { autoAlpha:0, x:-34, stagger:.09, ease:'power2.out', duration:.5 }, .8);
+
+/* quvib o'tish mexanikasi: SEN qatori ko'tariladi, raqib tushadi */
+function overtake(t, rival, meToY, rivalToY, meRank, rivalRank, hrsTo){
+  tl.to(hrs, { v:hrsTo, duration:.5, ease:'power1.inOut', onUpdate:updHrs }, t)
+    .to(rows.me, { y:meToY, scale:1.04, duration:.45, ease:'power2.inOut' }, t + .3)
+    .to(rows.me, { scale:1, duration:.2 }, t + .78)
+    .to(rival,   { y:rivalToY, duration:.45, ease:'power2.inOut' }, t + .3)
+    .set(rows.me.querySelector('.rk'), { textContent:String(meRank) }, t + .5)
+    .set(rival.querySelector('.rk'),   { textContent:String(rivalRank) }, t + .5);
+}
+overtake(1.5, rows.r4, ROW*3, ROW*4, 4, 5, 258); /* Diyor'dan o'tish */
+overtake(2.3, rows.r3, ROW*2, ROW*3, 3, 4, 305); /* Aziz'dan o'tish */
+overtake(3.1, rows.r2, ROW,   ROW*2, 2, 3, 368); /* Timur'dan o'tish */
+
+/* g'alaba pulsi + xulosa */
+tl.fromTo(rows.me, { boxShadow:'0 0 34px -8px rgba(57,255,140,.45)' },
+  { boxShadow:'0 0 60px -4px rgba(57,255,140,.85)', duration:.35, yoyo:true, repeat:1 }, 3.95)
+  .from('#lgFinal', { y:30, autoAlpha:0, ease:'power3.out', duration:.6 }, 4.25)
+  .to({}, { duration:.5 });
+
+if(reduced){
+  tl.progress(1).kill();
+  updHrs();
+}
+})();
+</script>
+
+<script>
+/* ============================================================
+   S7 · YUKLAB OLISH — rejissyorlik
+   ============================================================ */
+(function(){
+"use strict";
+var reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+FAI_addStrings({
+  uz:{ d_h:"Sayohat <b>bugun</b> boshlanadi.", d_soon:"tez kunda",
+       d_sig:"Focus • Adapt • Dominate — 10,000 soat kutmoqda" },
+  ru:{ d_h:"Путь начинается <b>сегодня</b>.", d_soon:"скоро",
+       d_sig:"Focus • Adapt • Dominate — впереди 10 000 часов" },
+  en:{ d_h:"The journey begins <b>today</b>.", d_soon:"soon",
+       d_sig:"Focus • Adapt • Dominate — 10,000 hours await" }
+});
+FAI_setText();
+
+/* fon: muzlatilgan qahramon-lahza, juda xira va sekin */
+var bg7 = document.getElementById('bg7');
+var v7 = FAI_video('assets/video/s4.mp4','assets/video/s4-poster.jpg');
+bg7.appendChild(v7);
+gsap.set(v7,{ scale:1.06, filter:'brightness(.24) saturate(.8)' });
+v7.addEventListener('loadedmetadata', function(){ v7.playbackRate = .5; });
+
+/* magnetic final CTA */
+FAI_magnetize(document.getElementById('dlCta'));
+
+/* kirish: sukunatda birma-bir */
+var tl = gsap.timeline({
+  scrollTrigger:{ trigger:'#s7', start:'top 62%' },
+  defaults:{ ease:'power3.out' }
+});
+tl.from('#dlLogo', { scale:.72, autoAlpha:0, rotation:-8, duration:1.1, ease:'power4.out' })
+  .from('.dl-h', { y:34, autoAlpha:0, duration:.8 }, .5)
+  .from('#dlCta', { y:26, autoAlpha:0, duration:.7 }, .75)
+  .from('.dl-stores', { y:22, autoAlpha:0, duration:.6 }, .9)
+  .from('.dl-sig', { autoAlpha:0, duration:.8 }, 1.15)
+  .add(function(){
+    if(reduced) return;
+    /* abadiy hayot: logo nafas oladi */
+    gsap.to('#dlLogo', { scale:1.045, duration:2.6, yoyo:true, repeat:-1, ease:'sine.inOut' });
+  });
+
+if(reduced){ tl.progress(1); }
+})();
+</script>
+</body>
+</html>
