@@ -705,22 +705,69 @@ input{font-family:inherit}
 .s-mode-selector svg{width:16px;height:16px;stroke:rgba(255,255,255,0.7);stroke-width:2;fill:none}
 /* timer ring */
 .s-ring-wrap{position:relative;width:100%;aspect-ratio:1;max-width:340px;margin:0 auto 30px;display:flex;justify-content:center;align-items:center}
-.s-ring{position:absolute;inset:0;border-radius:50%}
-@keyframes sRingSpin{to{transform:rotate(360deg)}}
-.s-ring-wrap::before{content:'';position:absolute;inset:-15px;border-radius:50%;background:conic-gradient(from 90deg,#02d5ff,#39ff8c,#02d5ff,#9d00ff,#ff007f,#02d5ff);filter:blur(25px);opacity:0.35;animation:sRingSpin 10s linear infinite;z-index:0;}
-.s-ring::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 180deg,#02d5ff,#39ff8c,#02d5ff,#9d00ff,#ff007f,#02d5ff);-webkit-mask:radial-gradient(circle,transparent 65%,black 65.5%,black 68%,transparent 68.5%);animation:sRingSpin 15s linear infinite reverse;opacity:0.8;z-index:1;}
-.s-ring::after{content:'';position:absolute;inset:16px;border-radius:50%;border:1.5px dashed rgba(255,255,255,0.2);animation:sRingSpin 25s linear infinite;z-index:2;pointer-events:none;}
-.s-ring .breathe{position:absolute;inset:26px;border-radius:50%;background:#030507;box-shadow:inset 0 20px 40px rgba(0,0,0,0.9),0 0 0 1px rgba(255,255,255,0.05);z-index:3;}
-.s-ring svg{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible;filter:drop-shadow(0 0 6px rgba(57,255,140,0.4));}
-.s-ring .seg{stroke:rgba(255,255,255,0.02);stroke-width:4px;fill:none;transition:stroke 0.3s ease;}
-.s-ring .seg.on{stroke:#39FF8C;}
-.s-ring .head{stroke:#fff;stroke-width:8px;stroke-linecap:round;filter:drop-shadow(0 0 12px #fff) drop-shadow(0 0 25px #39FF8C);fill:none;opacity:0;transition:transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);}
-.s-ring.run .head{opacity:1;}
-.s-center{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.s-elapsed{font-family:'JetBrains Mono',monospace;font-size:64px;font-weight:600;line-height:1;margin-bottom:4px;letter-spacing:-0.02em}
-.s-remain-lbl{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:16px}
-.s-pomodoro{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,0.06);padding:6px 14px;border-radius:999px;font-size:12px;font-weight:500}
-.s-dot{width:6px;height:6px;border-radius:50%;background:#39FF8C;box-shadow:0 0 8px #39FF8C}
+/* ═══ TOJ-60 IGNITION: halqa = mexanik neon toj (asbob). Kamalak yo'q — hamma rang mavzu varlaridan.
+   Sheen JS'SIZ buriladi: ringSet() qo'yadigan --f (0..1) dan transform:rotate(calc()) —
+   conic REPAINT bo'lmaydi, faqat kompozitor. Ready=qotgan asbob, dialing=prujinali detent,
+   run=YONISH (rimWhip 360°) + diver-bezel sirg'anishi, tutqich↔kometa bitta element (head). */
+.s-ring{position:absolute;inset:0;border-radius:50%;transition:transform .18s var(--ease-out)}
+.s-ring.dialing{transform:scale(.985)} /* "ushladim" — toj ichiga bosiladi; markaz saqlanadi, angleAt() buzilmaydi */
+.s-ring-wrap::before{content:'';position:absolute;inset:-18px;border-radius:50%;z-index:0;pointer-events:none;
+  background:radial-gradient(closest-side,rgba(var(--neon-rgb),.15),rgba(var(--neon-rgb),.05) 55%,transparent 72%)}
+.s-ring::before{content:'';position:absolute;inset:2px;border-radius:50%;z-index:1;opacity:.7;
+  background:conic-gradient(from 210deg,
+    rgba(var(--neon-rgb),.03),rgba(var(--neon-br-rgb),.22) 12%,rgba(var(--neon-rgb),.04) 26%,
+    rgba(var(--neon-rgb),.03) 50%,rgba(var(--neon-br-rgb),.13) 62%,rgba(var(--neon-rgb),.04) 76%,rgba(var(--neon-rgb),.03));
+  -webkit-mask:radial-gradient(circle,transparent 61%,#000 62%,#000 97%,transparent 98%);
+  mask:radial-gradient(circle,transparent 61%,#000 62%,#000 97%,transparent 98%);
+  transform:rotate(calc(var(--f,0)*360deg));
+  transition:transform .45s var(--ease),opacity .25s var(--ease)}
+@supports not ((-webkit-mask:radial-gradient(#000,#000)) or (mask:radial-gradient(#000,#000))){
+  .s-ring::before{background:none;border:1.5px solid rgba(var(--neon-rgb),.25)}
+}
+.s-ring.dialing::before{opacity:1;transition:transform .3s var(--spring),opacity .25s var(--ease)} /* detent — prujinali shiq */
+.s-ring.run::before{transition:transform 1.2s linear;animation:rimWhip .9s cubic-bezier(.2,.85,.25,1) 1} /* YONISH */
+@keyframes rimWhip{from{transform:rotate(-360deg)}to{transform:rotate(0deg)}}
+.s-ring::after{content:'';position:absolute;inset:16px;border-radius:50%;z-index:2;pointer-events:none;
+  border:1px solid var(--line);
+  background:linear-gradient(to bottom,var(--neon-br),rgba(var(--neon-rgb),0)) 50% 0/2px 11px no-repeat} /* qo'zg'almas stator + 12 dagi indeks belgisi */
+.s-ring .breathe{position:absolute;inset:26px;border-radius:50%;z-index:3;background-color:var(--bg);
+  background-image:radial-gradient(circle at 50% 36%,rgba(var(--neon-rgb),.07),transparent 62%);
+  box-shadow:inset 0 18px 36px rgba(0,0,0,.5),0 0 0 1px var(--line)}
+.s-ring svg{position:absolute;inset:0;width:100%;height:100%;z-index:4;pointer-events:none;overflow:visible;filter:drop-shadow(0 0 6px rgba(var(--neon-rgb),.35))}
+.s-ring .seg{stroke:rgba(var(--neon-rgb),.13);stroke-width:3px;fill:none;transition:stroke .3s var(--ease)}
+.s-ring .seg:nth-child(5n+1){stroke:rgba(var(--neon-rgb),.3)} /* har 5-daqiqa detent tishi yorqinroq */
+.s-ring .seg.on{stroke:var(--neon);stroke-width:4px} /* width transitionSIZ — "tish ko'tarildi" shiq hissi */
+.s-ring .seg.on:nth-child(5n+1){stroke:var(--neon-br)}
+.s-ring .head{stroke:var(--neon-br);stroke-width:7px;stroke-linecap:round;fill:none;opacity:0;
+  filter:drop-shadow(0 0 10px rgba(var(--neon-br-rgb),.9)) drop-shadow(0 0 22px rgba(var(--neon-rgb),.6));
+  transition:transform .24s var(--spring),opacity .3s var(--ease)}
+.s-ring:not(.run) .head{opacity:.95} /* tayyorda TUTQICH — tanlangan daqiqada turadi, "ushla-bura" affordansi */
+#sRing:not(.run) .head{opacity:0}    /* sessiya ekranida dial yo'q — tutqich ham yo'q */
+.s-ring.run .head{opacity:1;transition:transform .45s linear,opacity .3s var(--ease)} /* tick=400ms — kometa uzluksiz suzadi */
+.s-ring .halo{stroke:rgba(var(--neon-rgb),.22);stroke-width:13px;stroke-linecap:round;fill:none;opacity:0;transition:transform .45s linear,opacity .3s var(--ease)}
+.s-ring.run .halo{opacity:1}
+.s-ring.dialing .halo{opacity:.45} /* barmoq ostida yumshoq nur */
+.s-center{position:absolute;inset:0;z-index:5;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.s-elapsed{font-family:'JetBrains Mono',monospace;font-size:64px;font-weight:600;line-height:1;margin-bottom:4px;letter-spacing:-.03em;color:var(--text);transition:transform .2s var(--spring),color .2s var(--ease)}
+.s-ring.dialing .s-elapsed{transform:scale(1.05);color:var(--neon-br)} /* displey rejimi */
+.s-ring.run .s-elapsed{text-shadow:0 0 26px rgba(var(--neon-rgb),.28);animation:numPunch .55s var(--spring)}
+@keyframes numPunch{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+.s-remain-lbl{font-size:14px;color:var(--muted);margin-bottom:16px}
+.s-pomodoro{display:flex;align-items:center;gap:6px;background:rgba(var(--neon-rgb),.07);border:1px solid var(--line);padding:4px 12px;border-radius:999px;font-size:12px;font-weight:500;transition:border-color .25s var(--ease)}
+.s-ring.dialing .s-pomodoro{border-color:rgba(var(--neon-rgb),.5)}
+.s-dot{width:6px;height:6px;border-radius:50%;background:var(--neon);box-shadow:0 0 8px rgba(var(--neon-rgb),.8)}
+.s-ring.run .s-dot{animation:dotBeat 1.2s var(--ease) infinite alternate}
+@keyframes dotBeat{to{opacity:.35}}
+/* light: "kunduzgi pribor paneli" — glow pasayadi, tishlar o'yilgan bo'lib o'qiladi */
+.device[data-theme="light"] .s-ring-wrap::before{opacity:.5}
+.device[data-theme="light"] .s-ring::before{opacity:.5}
+.device[data-theme="light"] .s-ring .seg:not(.on){stroke:rgba(var(--neon-rgb),.2)}
+.device[data-theme="light"] .s-ring .seg:not(.on):nth-child(5n+1){stroke:rgba(var(--neon-rgb),.38)}
+.device[data-theme="light"] .s-ring .breathe{box-shadow:inset 0 10px 26px rgba(var(--neon-rgb),.06),0 0 0 1px var(--line)}
+.device[data-theme="light"] .s-ring.run .s-elapsed{text-shadow:none}
+.device[data-theme="light"] .s-ring .head{filter:drop-shadow(0 0 6px rgba(var(--neon-rgb),.5))}
+.reduce .s-ring,.reduce .s-ring::before,.reduce .s-ring .head,.reduce .s-ring .halo,.reduce .s-elapsed{transition:none!important}
+.reduce .s-ring.run::before,.reduce .s-ring.run .s-elapsed,.reduce .s-ring.run .s-dot{animation:none!important}
 .s-pomodoro svg{width:12px;height:12px;stroke:currentColor;stroke-width:2;fill:none}
 /* start button */
 .s-btn-start{width:100%;max-width:340px;margin:0 auto 30px;padding:18px;border-radius:999px;background:linear-gradient(90deg,rgba(10,30,20,1) 0%,rgba(10,50,40,1) 100%);border:1px solid rgba(57,255,140,0.2);box-shadow:0 10px 30px rgba(10,50,40,0.5);display:flex;align-items:center;justify-content:center;gap:12px;font-size:18px;font-weight:600;transition:transform 0.2s}
@@ -748,10 +795,10 @@ input{font-family:inherit}
 .s-env-thumb{aspect-ratio:1;border-radius:14px;background-size:cover;background-position:center;border:2px solid transparent;opacity:0.6;transition:0.25s;cursor:pointer}
 .s-env-thumb:hover{opacity:0.8}
 .s-env-thumb.active{border-color:#39FF8C;opacity:1}
-/* JS overrides */
-.s-ring.run::before { animation-duration: 4s; }
-.s-ring.run .breathe { animation: breathe 5s var(--ease) infinite; }
-@keyframes breathe{0%,100%{transform:scale(.85);opacity:.5}50%{transform:scale(1.1);opacity:1}}
+/* run'da shisha yuz sezilar-sezilmas nafas oladi (eski .85→1.1 vahshiy edi; opacity YO'Q —
+   ostidagi qatlamlar "miltillamasin") */
+.s-ring.run .breathe{animation:breathe 5s var(--ease) infinite}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.012)}}
 
 
 /* achievement overlay */
@@ -1116,7 +1163,7 @@ input{font-family:inherit}
 @keyframes cardIn{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
 .hcard.enter{animation:cardIn .5s var(--ease-out) both}
 /* yangi yongan segment bir lahza yorqinroq chaqnaydi */
-@keyframes segLit{0%{stroke:var(--neon-br);stroke-width:5}100%{stroke:var(--neon);stroke-width:3}}
+@keyframes segLit{0%{stroke:var(--neon-br);stroke-width:5}100%{stroke:var(--neon);stroke-width:4}}
 .s-ring .seg.just{animation:segLit .42s var(--ease-out)}
 /* sessiya ochilganda halqa o'zini yig'adi — faqat opacity (arzon), bir martalik */
 @keyframes segIn{from{opacity:0}to{opacity:1}}
@@ -1157,6 +1204,8 @@ input{font-family:inherit}
 .session.zen .s-body>div[style]{opacity:0;pointer-events:none}
 .session.zen .s-ring{transform:scale(1.12)}
 .session.zen .s-ring svg{opacity:.22}
+/* toj ham tumanga botadi — faqat raqam + ambient qoladi */
+.session.zen .s-ring::before,.session.zen .s-ring::after{opacity:.2;transition:opacity .9s var(--ease)}
 .session.zen .s-pct{opacity:0}
 .session.zen .s-remain{opacity:.45}
 .session.zen .s-elapsed{font-size:40px;color:var(--text);text-shadow:0 0 30px rgba(var(--neon-rgb),.35);letter-spacing:.02em}
@@ -1637,7 +1686,7 @@ input{font-family:inherit}
     <section class="view" id="v-focus">
       <div class="greet" style="text-align:center;margin-bottom:12px">
         <h1 style="font-size:22px;letter-spacing:-.02em" data-i18n="focus_title">FOKUS REJIMI</h1>
-        <p style="font-size:12.5px;color:rgba(255,255,255,0.6)" data-i18n="focus_sub">Bitta chuqur blok. Nol shovqin.</p>
+        <p style="font-size:12.5px;color:var(--muted)" data-i18n="focus_sub">Bitta chuqur blok. Nol shovqin.</p>
       </div>
 
       <!-- PRO GSAP Main Timer Ring -->
@@ -3589,6 +3638,7 @@ function ringSet(el,hd,f){
   if(hd&&hd.head){var t='rotate('+(f*360)+'deg)';hd.head.style.transform=t;hd.halo.style.transform=t;}
 }
 var sSegs=[],sHead=null,sPrevOn=0;
+/* DIQQAT: svg'ga seglardan OLDIN element qo'shmang — CSS .seg:nth-child(5n+1) detent shkalasi buziladi */
 (function(){
   var ns='http://www.w3.org/2000/svg',svg=$('#sRingSvg'),RN=60,cx=100,cy=100,ri=80,ro=95;
   for(var i=0;i<RN;i++){
@@ -4380,6 +4430,7 @@ function drawStats(anim){
 /* ============ focus tab timer (timestamp-based countdown) ============ */
 if(!store.focusDayMs)store.focusDayMs={};
 var fSegs=[],fHead=null,fPrevOn=0;
+/* DIQQAT: svg'ga seglardan OLDIN element qo'shmang — CSS .seg:nth-child(5n+1) detent shkalasi buziladi */
 (function(){
   var ns='http://www.w3.org/2000/svg',svg=$('#fRingSvg'),RN=60,cx=100,cy=100,ri=80,ro=95;
   for(var i=0;i<RN;i++){
