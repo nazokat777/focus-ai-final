@@ -2490,7 +2490,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
   week:"Shu hafta",weeks8:"Oxirgi 8 hafta",achievements:"Nishonlar",days:"kun",focus_need:"Diqqat kerak",fn_ok:"Hammasi izchil — zo'r ketyapsan! ✨",fn_none:"Hali odat yo'q — birinchisini qo'shing",fn_new:"Ma'lumot yig'ilmoqda — bir necha kundan keyin ko'rinadi",
   gap_skip:function(n){return "«"+n+"» taymeri uzoq ochiq qolibdi — bu vaqt hisoblanmadi, taymer to'xtatildi";},
-  bak_save:"Saqlash",
+  bak_save:"Saqlash",focus_done_bg:"Fokus blokingiz tugagan edi — vaqt hisobga qo'shildi ✓",
   cmp_more:function(h,p){return "Bu hafta <b>"+h+" soat</b> fokus qilding — o'tgan haftaga nisbatan <b>+"+p+"%</b> 💪";},
   cmp_less:function(h,p){return "Bu hafta <b>"+h+" soat</b> — o'tgan haftadan "+p+"% kam. Bugun bitta sessiya boshla!";},
   cmp_first:function(h){return "Bu hafta <b>"+h+" soat</b> fokus qilding. Ajoyib boshlanish!";},
@@ -2603,7 +2603,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
   week:"Эта неделя",weeks8:"Последние 8 недель",achievements:"Значки",days:"дн.",focus_need:"Нужно внимание",fn_ok:"Всё стабильно — отлично! ✨",fn_none:"Пока нет привычек — добавьте первую",fn_new:"Данные собираются — появятся через несколько дней",
   gap_skip:function(n){return "Таймер «"+n+"» долго оставался включённым — это время не засчитано, таймер остановлен";},
-  bak_save:"Сохранить",
+  bak_save:"Сохранить",focus_done_bg:"Ваш фокус-блок завершился — время засчитано ✓",
   cmp_more:function(h,p){return "На этой неделе <b>"+h+" ч</b> фокуса — на <b>+"+p+"%</b> больше прошлой 💪";},
   cmp_less:function(h,p){return "На этой неделе <b>"+h+" ч</b> — на "+p+"% меньше прошлой. Начни сессию сегодня!";},
   cmp_first:function(h){return "На этой неделе <b>"+h+" ч</b> фокуса. Отличное начало!";},
@@ -2716,7 +2716,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
   week:"This week",weeks8:"Last 8 weeks",achievements:"Badges",days:"days",focus_need:"Needs focus",fn_ok:"All on track — great job! ✨",fn_none:"No habits yet — add your first",fn_new:"Collecting data — visible in a few days",
   gap_skip:function(n){return "«"+n+"» timer was left running for a long time — that time wasn't counted, timer stopped";},
-  bak_save:"Save",
+  bak_save:"Save",focus_done_bg:"Your focus block had finished — time counted ✓",
   cmp_more:function(h,p){return "This week you focused <b>"+h+"h</b> — <b>+"+p+"%</b> vs last week 💪";},
   cmp_less:function(h,p){return "This week <b>"+h+"h</b> — "+p+"% less than last week. Start a session today!";},
   cmp_first:function(h){return "You focused <b>"+h+"h</b> this week. Great start!";},
@@ -5121,13 +5121,34 @@ function fDraw(){
 function fLog(ms){ /* fokus daqiqalari umumiy statistikaga */
   store.focusDayMs[TODAY]=(store.focusDayMs[TODAY]||0)+ms;save();
 }
+/* Fokus taymeri holatini SAQLAYMIZ: ilgari u faqat xotirada edi va Android WebView'ni
+   o'ldirsa 20 daqiqalik ish izsiz yo'qolardi (odat taymeri esa saqlanardi — nomuvofiqlik). */
+function fSave(){
+  try{
+    store.settings.focusTimer={d:fDur,e:fEndAt,p:fPausedRemain,r:fRunning,k:fStateK,s:fStartRemain};
+    save();
+  }catch(e){}
+}
+function fRestore(){
+  var s=store.settings&&store.settings.focusTimer; if(!s)return;
+  fDur=s.d||fDur; fPausedRemain=(s.p!=null?s.p:fDur); fStateK=s.k||'ready'; fStartRemain=s.s||fDur;
+  if(s.r&&s.e){
+    if(Date.now()>=s.e){
+      /* blok ilova yopiq turganda tugagan — vaqtni yozamiz va foydalanuvchiga aytamiz */
+      fRunning=false;fLog(fStartRemain);fPausedRemain=fDur;fStateK='done';fSave();
+      setTimeout(function(){try{toast(T('focus_done_bg'));refreshChips();}catch(e){}},1500);
+    }else{
+      fEndAt=s.e;fRunning=true;fStateK='focusing';   /* davom etadi */
+    }
+  }else fRunning=false;
+}
 setInterval(function(){
   if(!fRunning)return;
   var rm=fRemain();
   var min=Math.floor(rm/60000);
   if(min!==fLastMin&&rm>1000){fLastMin=min;tone(660,.06,0,'triangle');}
   if(rm<=0){
-    fRunning=false;fLog(fStartRemain);fPausedRemain=fDur;fStateK='done';
+    fRunning=false;fLog(fStartRemain);fPausedRemain=fDur;fStateK='done';fSave();
     sWin();buzz([20,60,20,60]);notify('Focus AI',T('done'));
     refreshChips();
   }
@@ -5139,7 +5160,7 @@ $$('#v-focus .preset').forEach(function(b){
     sTap();
     $$('#v-focus .preset').forEach(function(p){p.classList.remove('sel','on');});
     b.classList.add('sel');
-    fDur=parseInt(b.getAttribute('data-min'),10)*60000;fPausedRemain=fDur;fStateK='ready';fDraw();
+    fDur=parseInt(b.getAttribute('data-min'),10)*60000;fPausedRemain=fDur;fStateK='ready';fDraw();fSave();
   });
 });
 /* ULTRA-interaktiv: fokus halqasini AYLANTIRIB vaqt belgilash (rotary dial, soat metaforasi).
@@ -5158,7 +5179,7 @@ $$('#v-focus .preset').forEach(function(b){
     if(mins<5)mins=5; if(mins>60)mins=60;
     if(guard&&Math.abs(mins-dialMin)>30)return;    /* tepani kesib o'tishда sakramasin */
     if(mins===dialMin)return;
-    dialMin=mins; fDur=mins*60000; fPausedRemain=fDur; fStateK='ready';
+    dialMin=mins; fDur=mins*60000; fPausedRemain=fDur; fStateK='ready'; fSave();
     $$('#v-focus .preset').forEach(function(p){p.classList.toggle('sel',parseInt(p.getAttribute('data-min'),10)===mins);});
     fDraw(); buzz(6); tone(520,.025,0,'sine');
   }
@@ -5194,12 +5215,12 @@ $('#fStart').addEventListener('click',function(){
     fStartRemain=fPausedRemain;
     fEndAt=Date.now()+fPausedRemain;fRunning=true;fLastMin=-1;fStateK='focusing';
   }
-  fDraw();
+  fDraw();fSave();
 });
 $('#fReset').addEventListener('click',function(){
   sTap();
   if(fRunning){var spent=fStartRemain-fRemain();if(spent>=60000)fLog(spent);}
-  fRunning=false;fPausedRemain=fDur;fStateK='ready';fDraw();refreshChips();
+  fRunning=false;fPausedRemain=fDur;fStateK='ready';fDraw();refreshChips();fSave();
 });
 /* Yakunlash: sessiyani hozir tugatib, fokus vaqtini 10 000 soat hisobiga banklaydi */
 $('#fFinish').addEventListener('click',function(){
@@ -5208,9 +5229,11 @@ $('#fFinish').addEventListener('click',function(){
   if(fRunning){var spent=fStartRemain-fRemain();if(spent>=60000)fLog(spent);}
   fRunning=false;fPausedRemain=fDur;fStateK='done';
   sWin();buzz([20,60,20]);notify('Focus AI',T('done'));
-  fDraw();refreshChips();
+  fDraw();refreshChips();fSave();
 });
-fDraw();
+fRestore();fDraw();
+/* ilova fonga o'tganda darhol saqlaymiz (WebView o'ldirilishi mumkin) */
+document.addEventListener('visibilitychange',function(){if(document.hidden)fSave();});
 
 /* ============ SUZUVCHI TAYMER (native overlay) ============
    Boshqa ilovalar ustida ko'rinadigan pill. Faqat native APK'da; web'da jim no-op. */
