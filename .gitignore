@@ -26,3 +26,7 @@ android/local.properties
 # build natijalari
 *.apk
 *.aab
+
+# imzo parollari (mashinaga xos, hech qachon commit qilinmasin)
+keystore.properties
+android/keystore.properties

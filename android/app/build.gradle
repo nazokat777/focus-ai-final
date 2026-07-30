@@ -23,10 +23,22 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file('../focus-ai-release.keystore')
-            storePassword 'FocusAI2026rel!'
-            keyAlias 'focusai'
-            keyPassword 'FocusAI2026rel!'
+            // Parollar android/keystore.properties dan o'qiladi (u .gitignore'da).
+            // Ilgari shu yerda ochiq yozilgan edi va PUBLIC repo'ga tushgan.
+            def kp = new Properties()
+            def kf = rootProject.file('keystore.properties')
+            if (kf.exists()) {
+                kf.withInputStream { kp.load(it) }
+                storeFile file(kp.getProperty('storeFile', '../focus-ai-release.keystore'))
+                storePassword kp.getProperty('storePassword')
+                keyAlias kp.getProperty('keyAlias')
+                keyPassword kp.getProperty('keyPassword')
+            } else {
+                storeFile file('../focus-ai-release.keystore')
+                storePassword System.getenv('FOCUSAI_STORE_PASS')
+                keyAlias System.getenv('FOCUSAI_KEY_ALIAS') ?: 'focusai'
+                keyPassword System.getenv('FOCUSAI_KEY_PASS')
+            }
         }
     }
     buildTypes {

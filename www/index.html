@@ -3657,7 +3657,7 @@ function renderHomeBg(){
   (function tryNext(i){
     if(i>=cands.length){el.style.backgroundImage='';el.style.display='none';if(fx)fx.style.display='none';return;}
     var im=new Image();
-    im.onload=function(){_bgSet=sig;el.style.backgroundImage='url("'+cands[i]+'")';el.style.display='';if(fx){fx.style.display='';positionHomeFx(im);}};
+    im.onload=function(){_bgSet=sig;el.style.backgroundImage='url("'+safeImg(cands[i])+'")';el.style.display='';if(fx){fx.style.display='';positionHomeFx(im);}};
     im.onerror=function(){tryNext(i+1);};
     im.src=cands[i];
   })(0);
@@ -4087,7 +4087,7 @@ function renderOdatlar(){
       var on=!dsel||dsel.indexOf(d)!==-1, isT=d===todayDow();
       days+='<button class="od-day'+(on?' on':'')+(isT?' today':'')+'" data-d="'+d+'">'+letters[d]+'</button>';
     }
-    row.innerHTML='<div class="od-head"><span class="od-ic" style="background:'+h.color+'">'+icon(h.icon)+'</span>'+
+    row.innerHTML='<div class="od-head"><span class="od-ic" style="background:'+esc(h.color)+'">'+icon(h.icon)+'</span>'+
       '<span class="od-nm">'+esc(h.name)+'</span>'+(doneToday(h)?'<span class="od-done">✓</span>':'')+'</div>'+
       '<div class="od-days">'+days+'</div>';
     row.querySelector('.od-days').addEventListener('click',function(e){
@@ -4672,8 +4672,8 @@ function renderShop(){
     var b=r.cur==='diamond'?(store.diamonds||0):(store.coins||0),ic=r.cur==='diamond'?'💎':'🪙',afford=b>=r.price;
     return '<div class="shop-item"><span class="si-name">'+esc(r.name)+'</span>'+
       '<span class="si-price">'+r.price+' '+ic+'</span>'+
-      '<button class="si-buy" data-buy="'+r.id+'"'+(afford?'':' disabled')+'>'+T('rw_get')+'</button>'+
-      '<button class="si-del" data-del="'+r.id+'">×</button></div>';
+      '<button class="si-buy" data-buy="'+(parseInt(r.id,10)||0)+'"'+(afford?'':' disabled')+'>'+T('rw_get')+'</button>'+
+      '<button class="si-del" data-del="'+(parseInt(r.id,10)||0)+'">×</button></div>';
   }).join('');
   var log=store.rewardLog||[];
   $('#shopLogSec').style.display=log.length?'':'none';
@@ -4847,7 +4847,7 @@ function renderFocusNeeded(){
     box.innerHTML='<div class="fn-ok">'+T(hasHistory?'fn_ok':'fn_new')+'</div>';return;
   }
   box.innerHTML=arr.map(function(o){
-    return '<div class="fn-row"><span class="fn-dot" style="background:'+o.h.color+';color:'+o.h.color+'"></span>'+
+    return '<div class="fn-row"><span class="fn-dot" style="background:'+esc(o.h.color)+';color:'+esc(o.h.color)+'"></span>'+
       '<span class="fn-name">'+esc(o.h.name)+'</span>'+
       '<span class="fn-pct mono">⚡'+Math.round(o.s*100)+'%</span></div>';
   }).join('');
@@ -5046,7 +5046,7 @@ function renderDonut(anim){
     c.style.strokeDasharray=doAnim?('0 '+C):(seg+' '+(C-seg));
     if(doAnim){c.style.transitionDelay=(i*110)+'ms';c.setAttribute('data-seg',seg+' '+(C-seg));}
     svg.appendChild(c);
-    leg+='<div class="dl-row"><span class="dl-dot" style="background:'+col+'"></span>'+
+    leg+='<div class="dl-row"><span class="dl-dot" style="background:'+esc(col)+'"></span>'+
       '<span class="dl-name">'+esc(sl[i].name)+'</span>'+
       '<span class="dl-ms">'+fmtHM(sl[i].ms)+' · '+Math.round(sl[i].ms/tot*100)+'%</span></div>';
     start+=sl[i].ms/tot*C;
@@ -7099,7 +7099,7 @@ window.addEventListener('beforeunload',function(){
       var P = (window.Capacitor && window.Capacitor.Plugins) || {};
       if (P.App && P.App.addListener) {
         P.App.addListener('appUrlOpen', function (ev) {
-          var u = ev && ev.url; if (u && u.indexOf('uz.lumnaara.focusai') === 0) _handleAuthDeepLink(u);
+          var u = ev && ev.url; if (u && u.indexOf('uz.lumnaara.focusai://auth') === 0) _handleAuthDeepLink(u);
         });
       }
     } catch (e) {}
@@ -7149,13 +7149,14 @@ window.addEventListener('beforeunload',function(){
           .then(function (r) { if (r && r.data && r.data.session) { _authUser = r.data.session.user; _emitAuth(); } }, function () {});
         return;
       }
-      /* implicit oqim: #access_token=...&refresh_token=... */
-      var at = (url.match(/[#&]access_token=([^&]+)/) || [])[1];
-      var rt = (url.match(/[#&]refresh_token=([^&]+)/) || [])[1];
-      if (at && rt && c.auth.setSession) {
-        c.auth.setSession({ access_token: decodeURIComponent(at), refresh_token: decodeURIComponent(rt) })
-          .then(function (r) { if (r && r.data && r.data.session) { _authUser = r.data.session.user; _emitAuth(); } }, function () {});
-      }
+      /* XAVFSIZLIK: implicit (#access_token=...) yo'li OLIB TASHLANDI.
+         Ilova PKCE ishlatadi (flowType:'pkce'), ya'ni bu shox hech qachon o'z
+         oqimimizda kerak emas edi — u faqat HUJUM uchun foydali edi: istalgan
+         o'rnatilgan ilova yoki bosilgan havola
+           uz.lumnaara.focusai://auth#access_token=...&refresh_token=...
+         yuborib, qurbonni HUJUMCHI hisobiga kirgizardi; keyin cloudBackupSoon()
+         qurbonning butun localStorage'ini hujumchining bulut zaxirasiga yuklardi.
+         PKCE `code` shoxi xavfsiz: code_verifier faqat shu qurilmada. */
     } catch (e) {}
   }
   function signInEmail(email) {

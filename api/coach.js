@@ -6,13 +6,39 @@
 const MODELS = ['llama-3.3-70b-versatile', 'llama-3.1-8b-instant', 'gemma2-9b-it'];
 const ENDPOINT = 'https://api.groq.com/openai/v1/chat/completions';
 
+/* Ochiq LLM proksisi bo'lib qolmasin: kalit bepul kvotali, endpoint manzili esa
+   ochiq kodda. Himoyasiz qolsa begonalar kvotani yoqib yuboradi va haqiqiy
+   foydalanuvchilarda AI Coach o'ladi. */
+const ALLOW_ORIGINS = [
+  'https://focus-ai-final.vercel.app',
+  'https://localhost',            // Capacitor (Android)
+  'capacitor://localhost',        // Capacitor (iOS)
+  'http://localhost:3000'
+];
+const RATE_MAX = 8;               // bir IP uchun daqiqasiga
+const RATE_WIN = 60 * 1000;
+
 module.exports = async (req, res) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  const origin = req.headers.origin || '';
+  res.setHeader('Access-Control-Allow-Origin', ALLOW_ORIGINS.indexOf(origin) !== -1 ? origin : ALLOW_ORIGINS[0]);
+  res.setHeader('Vary', 'Origin');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') { res.status(204).end(); return; }
   if (req.method !== 'POST') { res.status(405).json({ error: 'POST kerak' }); return; }
+
+  /* oddiy IP-throttling (Vercel instansiyasi doirasida) */
+  try {
+    const ip = String(req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'x';
+    const now = Date.now();
+    global._coachRl = global._coachRl || {};
+    const b = global._coachRl[ip] || { n: 0, t: now };
+    if (now - b.t > RATE_WIN) { b.n = 0; b.t = now; }
+    b.n++; global._coachRl[ip] = b;
+    if (Object.keys(global._coachRl).length > 5000) global._coachRl = {};   // xotira o'smasin
+    if (b.n > RATE_MAX) { res.status(429).json({ text: null, reason: 'rate' }); return; }
+  } catch (e) { /* throttling ishlamasa ham so'rov o'tsin */ }
 
   const key = process.env.GROQ_KEY;
   if (!key) { res.status(200).json({ text: null, reason: 'no_key' }); return; }
