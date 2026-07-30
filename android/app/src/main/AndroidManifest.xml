@@ -24,6 +24,16 @@
 
         </activity>
 
+        <!-- Suzuvchi taymer servisi (boshqa ilovalar ustida) -->
+        <service
+            android:name=".FloatingTimerService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="floating_focus_timer" />
+        </service>
+
         <!-- Bosh-ekran widgeti: bugungi fokus + streak -->
         <receiver
             android:name=".FocusWidgetProvider"
@@ -57,4 +67,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Suzuvchi taymer: boshqa ilovalar ustida chizish + yopiqda yashash -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
 </manifest>

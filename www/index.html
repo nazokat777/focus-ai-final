@@ -2036,6 +2036,7 @@ input{font-family:inherit}
             <button data-m="simple" data-i18n="al_simple"></button>
             <button data-m="math" class="sel" data-i18n="al_math"></button>
           </div></div>
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="12" height="7" rx="3"/><path d="M17 15h4M19 13v4"/></svg><span data-i18n="float_timer"></span></div><button class="tog" id="floatTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="pin"></span></div><button class="tog" id="pinTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z"/><path d="M9 8.5l5 2.5-5 2.5z"/><path d="M8 20h8"/></svg><span data-i18n="replay_onb"></span></div>
           <button class="act-btn" id="onbReplay"><span data-i18n="onb_watch"></span></button></div>
@@ -2520,7 +2521,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   backup:"Zaxira nusxa",restore:"Tiklash",bak_save:"Faylga saqlash",bak_load:"Fayldan tiklash",onb_watch:"Ko'rish",exp_ok:"Zaxira yuklab olindi ✓",exp_bad:"Xatolik yuz berdi",imp_bad:"Fayl noto'g'ri",imp_newer:"Fayl yangiroq versiyadan — ilovani yangilang",
   imp_confirm:function(n){return "Diqqat! Joriy ma'lumotlar "+n+" ta odat bilan almashtiriladi. Davom etasizmi?";},
   rem_body:"Bugun fokus vaqtingni ajratdingmi? Bitta blok yetadi ⏱",rem_action:"Boshlash",rem_msg_ph:"O'z eslatma so'zingiz (ixtiyoriy)…",
-  al_title:"Uyg'onish vaqti!",alarm_mode:"Budilnik rejimi",al_simple:"Oddiy",al_math:"Matematik",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
+  al_title:"Uyg'onish vaqti!",alarm_mode:"Budilnik rejimi",float_timer:"Suzuvchi taymer",ft_need:"Ruxsat kerak: «Boshqa ilovalar ustida chizish»",ft_denied:"Ruxsat berilmadi",ft_native:"Faqat telefon ilovasida ishlaydi",al_simple:"Oddiy",al_math:"Matematik",al_stop:"To'xtatish",al_esc:"Favqulodda chiqish",al_err:"Noto'g'ri — qayta urin!",
   wk_total:"Umumiy fokus vaqti",wk_first:"Taqqoslash uchun o'tgan hafta ma'lumoti yo'q",
   wk_same:"O'tgan hafta bilan deyarli teng",
   wk_up:function(x){return "+"+x+" o'tgan haftaga nisbatan";},
@@ -2631,7 +2632,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   backup:"Резервная копия",restore:"Восстановить",bak_save:"Сохранить в файл",bak_load:"Загрузить файл",onb_watch:"Смотреть",exp_ok:"Копия сохранена ✓",exp_bad:"Произошла ошибка",imp_bad:"Неверный файл",imp_newer:"Файл из новой версии — обновите приложение",
   imp_confirm:function(n){return "Внимание! Текущие данные будут заменены на "+n+" привычек. Продолжить?";},
   rem_body:"Уделил сегодня время фокусу? Хватит одного блока ⏱",rem_action:"Начать",rem_msg_ph:"Своё напоминание (необязательно)…",
-  al_title:"Пора вставать!",alarm_mode:"Режим будильника",al_simple:"Простой",al_math:"Математика",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
+  al_title:"Пора вставать!",alarm_mode:"Режим будильника",float_timer:"Плавающий таймер",ft_need:"Нужно разрешение: «Поверх других приложений»",ft_denied:"Разрешение не выдано",ft_native:"Работает только в приложении",al_simple:"Простой",al_math:"Математика",al_stop:"Стоп",al_esc:"Экстренный выход",al_err:"Неверно — ещё раз!",
   wk_total:"Общее время фокуса",wk_first:"Нет данных за прошлую неделю для сравнения",
   wk_same:"Почти как на прошлой неделе",
   wk_up:function(x){return "+"+x+" к прошлой неделе";},
@@ -2742,7 +2743,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   backup:"Backup",restore:"Restore",bak_save:"Save to file",bak_load:"Load file",onb_watch:"Watch",exp_ok:"Backup downloaded ✓",exp_bad:"An error occurred",imp_bad:"Invalid file",imp_newer:"File from a newer version — update the app",
   imp_confirm:function(n){return "Warning! Current data will be replaced with "+n+" habits. Continue?";},
   rem_body:"Made time to focus today? One block is enough ⏱",rem_action:"Start",rem_msg_ph:"Your own reminder (optional)…",
-  al_title:"Time to wake up!",alarm_mode:"Alarm mode",al_simple:"Simple",al_math:"Math",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
+  al_title:"Time to wake up!",alarm_mode:"Alarm mode",float_timer:"Floating timer",ft_need:"Permission needed: «Display over other apps»",ft_denied:"Permission denied",ft_native:"Works only in the phone app",al_simple:"Simple",al_math:"Math",al_stop:"Stop",al_esc:"Emergency exit",al_err:"Wrong — try again!",
   wk_total:"Total focus time",wk_first:"No last-week data to compare yet",
   wk_same:"About the same as last week",
   wk_up:function(x){return "+"+x+" vs last week";},
@@ -5113,6 +5114,67 @@ $('#fFinish').addEventListener('click',function(){
   fDraw();refreshChips();
 });
 fDraw();
+
+/* ============ SUZUVCHI TAYMER (native overlay) ============
+   Boshqa ilovalar ustida ko'rinadigan pill. Faqat native APK'da; web'da jim no-op. */
+var FT=(window.Capacitor&&window.Capacitor.Plugins&&window.Capacitor.Plugins.FocusTimer)||null;
+var _ftOn=false,_ftLast='';
+function ftEnabled(){return !!store.settings.floatTimer;}
+function ftAsk(cb){                                  /* ruxsat: bor bo'lsa cb(true) */
+  if(!FT){cb(false);return;}
+  FT.hasPermission().then(function(r){
+    if(r&&r.granted){cb(true);return;}
+    toast(T('ft_need'));
+    FT.requestPermission().then(function(){
+      setTimeout(function(){FT.hasPermission().then(function(r2){cb(!!(r2&&r2.granted));});},600);
+    });
+  }).catch(function(){cb(false);});
+}
+/* taymer tiklaganda chaqiriladi: matn -> pill */
+function ftPush(text){
+  if(!FT||!ftEnabled()||!text)return;
+  if(!_ftOn){
+    _ftOn=true;
+    FT.start({text:text}).catch(function(){_ftOn=false;});
+    _ftLast=text;return;
+  }
+  if(text===_ftLast)return;                          /* bir xil matnni qayta yubormaymiz */
+  _ftLast=text;
+  FT.update({text:text}).catch(function(){});
+}
+function ftStop(){
+  if(!FT||!_ftOn)return;
+  _ftOn=false;_ftLast='';
+  FT.stop().catch(function(){});
+}
+/* sozlamalar tugmasi */
+(function(){
+  var tog=$('#floatTog');if(!tog)return;
+  tog.classList.toggle('on',ftEnabled());
+  tog.addEventListener('click',function(){
+    sTap();
+    if(!FT){toast(T('ft_native'));return;}          /* brauzerda ishlamaydi */
+    if(ftEnabled()){store.settings.floatTimer=false;save();tog.classList.remove('on');ftStop();return;}
+    ftAsk(function(ok){
+      store.settings.floatTimer=!!ok;save();
+      tog.classList.toggle('on',!!ok);
+      if(!ok)toast(T('ft_denied'));
+    });
+  });
+})();
+/* markaziy tik: qaysi taymer ishlayotgan bo'lsa — pill o'shani ko'rsatadi */
+setInterval(function(){
+  if(!FT)return;
+  if(!ftEnabled()){ftStop();return;}
+  var run=null,i,h;
+  for(i=0;i<store.habits.length;i++){h=store.habits[i];if(h.runningSince){run=h;break;}}
+  if(run){
+    var ms=(run.dayMs[TODAY]||0)+(run.lastFlush?Math.max(0,Date.now()-run.lastFlush):0);
+    ftPush(run.name+'  '+fmtHMS(ms));
+  }else if(typeof fRunning!=='undefined'&&fRunning){
+    ftPush(fFmt(fRemain()));
+  }else ftStop();
+},1000);
 
 /* ============ Fokus muhiti — tanlangan rasm butun taymer foni ============ */
 (function(){
