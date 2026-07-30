@@ -2020,7 +2020,8 @@ input{font-family:inherit}
     </div>
     <p class="plan-hint" data-i18n="od_hint"></p>
     <div class="habit-filter od-filter" id="odFilter">
-      <button class="hf-btn sel" data-f="today" data-i18n="od_today"></button>
+      <button class="hf-btn sel" data-f="all" data-i18n="od_all"></button>
+      <button class="hf-btn" data-f="today" data-i18n="od_today"></button>
       <button class="hf-btn" data-f="undone" data-i18n="od_undone"></button>
       <button class="hf-btn" data-f="done" data-i18n="od_done"></button>
     </div>
@@ -2310,7 +2311,7 @@ var $=function(s){return document.querySelector(s);},
 /* ============ i18n ============ */
 var I18N={
 uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",today_time:"Bugun",my_habits:"Odatlarim",
-  today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",od_open:"Odatlar",od_title:"Odatlar",od_hint:"Har odat uchun hafta kunlarini tanlang. Belgilangan kunlarda odat «Bugun» ro'yxatida chiqadi.",od_today:"Bugungi reja",od_undone:"Bajarilmagan",od_done:"Bajarilgan",od_empty:"Bu ro'yxat hozircha bo'sh.",plan_title:"Bugungi reja",plan_hint:"Bugun qaysi vazifalarni bajarasiz? Belgilanganlar «Bugun» ro'yxatida chiqadi.",plan_save:"Rejani saqlash",plan_clear:"Rejani tozalash (hammasi chiqsin)",plan_set:"Bugungi reja",plan_make:"Bugungi rejani tuzish",plan_edit:"o'zgartirish",score_lbl:"Ball",sc_today:"Bugun",tasks_lbl:"Vazifalar",tasks_sub:"bajarildi",
+  today_progress:"Bugungi progress",today_tasks:"Bugungi vazifalar",od_open:"Odatlar",od_title:"Odatlar",od_hint:"Har odat uchun hafta kunlarini tanlang. Belgilangan kunlarda odat «Bugun» ro'yxatida chiqadi.",od_all:"Hammasi",od_today:"Bugun",od_undone:"Qolgan",od_done:"Bajarildi",od_empty:"Bu ro'yxat hozircha bo'sh.",plan_title:"Bugungi reja",plan_hint:"Bugun qaysi vazifalarni bajarasiz? Belgilanganlar «Bugun» ro'yxatida chiqadi.",plan_save:"Rejani saqlash",plan_clear:"Rejani tozalash (hammasi chiqsin)",plan_set:"Bugungi reja",plan_make:"Bugungi rejani tuzish",plan_edit:"o'zgartirish",score_lbl:"Ball",sc_today:"Bugun",tasks_lbl:"Vazifalar",tasks_sub:"bajarildi",
   hf_today:"Bugun",hf_done:"Bajarilgan",hf_all:"Hammasi",done_group:"Bajarildi",hf_done_empty:"Bugun hali hech narsa bajarilmadi — birinchi vazifani boshlang.",hf_all_rested:"Dam kunida",all_done:"Bugungi hammasi bajarildi 🔥",
   sc_best:function(n){return "eng yaxshi: "+n;},
   sc_w0:"boshlanish",sc_w1:"o'smoqda",sc_w2:"barqaror",sc_w3:"kuchli",sc_w4:"zo'r",
@@ -2421,7 +2422,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   quotes:["Har kuni 1% — bir yilda 37 barobar kuchliroq.","Boshlash eng qiyini. Qolgani osonroq.","Fokus — bu «yo'q» deyish san'ati.","Kichik qadamlar — katta natija.","Diqqating — eng qimmatli boyliging.","Chalg'imaslik — zamonaviy superkuch."],
   prof:function(s){return "seriya: "+s+" kun";}},
 ru:{tagline:"Время — самая честная мера.",growth:"Рост",streak:"Серия",today_time:"Сегодня",my_habits:"Мои привычки",
-  today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",od_open:"Привычки",od_title:"Привычки",od_hint:"Выберите дни недели для каждой привычки. В выбранные дни она появится в списке «Сегодня».",od_today:"План на сегодня",od_undone:"Не выполнено",od_done:"Выполнено",od_empty:"Этот список пока пуст.",plan_title:"План на сегодня",plan_hint:"Что сделаешь сегодня? Отмеченные появятся в списке «Сегодня».",plan_save:"Сохранить план",plan_clear:"Очистить план (показать все)",plan_set:"План на сегодня",plan_make:"Составить план на сегодня",plan_edit:"изменить",score_lbl:"Балл",sc_today:"Сегодня",tasks_lbl:"Задачи",tasks_sub:"выполнено",
+  today_progress:"Сегодняшний прогресс",today_tasks:"Задачи на сегодня",od_open:"Привычки",od_title:"Привычки",od_hint:"Выберите дни недели для каждой привычки. В выбранные дни она появится в списке «Сегодня».",od_all:"Все",od_today:"Сегодня",od_undone:"Осталось",od_done:"Готово",od_empty:"Этот список пока пуст.",plan_title:"План на сегодня",plan_hint:"Что сделаешь сегодня? Отмеченные появятся в списке «Сегодня».",plan_save:"Сохранить план",plan_clear:"Очистить план (показать все)",plan_set:"План на сегодня",plan_make:"Составить план на сегодня",plan_edit:"изменить",score_lbl:"Балл",sc_today:"Сегодня",tasks_lbl:"Задачи",tasks_sub:"выполнено",
   hf_today:"Сегодня",hf_done:"Выполнено",hf_all:"Все",done_group:"Выполнено",hf_done_empty:"Сегодня пока ничего не выполнено — начните первую задачу.",hf_all_rested:"На отдыхе",all_done:"Всё на сегодня выполнено 🔥",
   sc_best:function(n){return "рекорд: "+n;},
   sc_w0:"старт",sc_w1:"растёт",sc_w2:"стабильно",sc_w3:"сильно",sc_w4:"отлично",
@@ -2532,7 +2533,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   quotes:["Каждый день на 1% — за год в 37 раз сильнее.","Начать — самое трудное. Дальше легче.","Фокус — это искусство говорить «нет».","Маленькие шаги — большой результат.","Твоё внимание — твой главный капитал.","Не отвлекаться — суперсила нашего времени."],
   prof:function(s){return "серия: "+s+" дн.";}},
 en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today_time:"Today",my_habits:"My habits",
-  today_progress:"Today's progress",today_tasks:"Today's tasks",od_open:"Habits",od_title:"Habits",od_hint:"Pick weekdays for each habit. On chosen days it appears in the «Today» list.",od_today:"Today's plan",od_undone:"Not done",od_done:"Done",od_empty:"This list is empty for now.",plan_title:"Today's plan",plan_hint:"What will you do today? Checked ones appear in the «Today» list.",plan_save:"Save plan",plan_clear:"Clear plan (show all)",plan_set:"Today's plan",plan_make:"Plan your day",plan_edit:"edit",score_lbl:"Score",sc_today:"Today",tasks_lbl:"Tasks",tasks_sub:"completed",
+  today_progress:"Today's progress",today_tasks:"Today's tasks",od_open:"Habits",od_title:"Habits",od_hint:"Pick weekdays for each habit. On chosen days it appears in the «Today» list.",od_all:"All",od_today:"Today",od_undone:"Left",od_done:"Done",od_empty:"This list is empty for now.",plan_title:"Today's plan",plan_hint:"What will you do today? Checked ones appear in the «Today» list.",plan_save:"Save plan",plan_clear:"Clear plan (show all)",plan_set:"Today's plan",plan_make:"Plan your day",plan_edit:"edit",score_lbl:"Score",sc_today:"Today",tasks_lbl:"Tasks",tasks_sub:"completed",
   hf_today:"Today",hf_done:"Done",hf_all:"All",done_group:"Done",hf_done_empty:"Nothing done yet today — start your first task.",hf_all_rested:"Resting",all_done:"All done for today 🔥",
   sc_best:function(n){return "best: "+n;},
   sc_w0:"start",sc_w1:"growing",sc_w2:"steady",sc_w3:"strong",sc_w4:"excellent",
@@ -3788,14 +3789,15 @@ function dayLetters(){
   var m={uz:['Du','Se','Ch','Pa','Ju','Sh','Ya'],ru:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],en:['Mo','Tu','We','Th','Fr','Sa','Su']};
   return m[store.settings.lang]||m.en;
 }
-var odMode='today';                                            /* today | done | undone */
+var odMode='all';                                              /* all | today | undone | done */
 function odClose(){$('#odScrim').classList.remove('open');$('#odSheet').classList.remove('open');$('#device').classList.remove('modal');}
 function odOpen(){$('#odScrim').classList.add('open');$('#odSheet').classList.add('open');$('#device').classList.add('modal');renderOdatlar();staggerRise($$('#odSheet>*'),22,110);}
 function odFiltered(){
   var hs=store.habits.filter(function(h){return !h.completed;});
+  if(odMode==='today') return hs.filter(habitActiveToday);      /* bugungi reja */
   if(odMode==='done')  return hs.filter(function(h){return doneToday(h);});
   if(odMode==='undone')return hs.filter(function(h){return habitActiveToday(h)&&!doneToday(h)&&!isSkip(h,TODAY);});
-  return hs.filter(habitActiveToday);                          /* today = bugungi reja */
+  return hs;                                                    /* all = hammasi (bu yerda kun tanlanadi) */
 }
 function renderOdatlar(){
   $$('#odFilter .hf-btn').forEach(function(b){b.classList.toggle('sel',b.getAttribute('data-f')===odMode);});
