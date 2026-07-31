@@ -2,6 +2,8 @@ package uz.lumnaara.focusai;
 
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.os.Bundle;
+import android.util.TypedValue;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -34,6 +36,12 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
         render(ctx, mgr, ids);
     }
 
+    /* o'lcham o'zgarganda qayta chizamiz — halqa va matn o'sadi */
+    @Override
+    public void onAppWidgetOptionsChanged(Context ctx, AppWidgetManager mgr, int id, Bundle newOptions) {
+        render(ctx, mgr, new int[]{ id });
+    }
+
     static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
         if (ids == null || ids.length == 0) return;
         SharedPreferences sp = ctx.getSharedPreferences(FocusWidgetProvider.PREFS, Context.MODE_PRIVATE);
@@ -41,11 +49,15 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
         String json = sp.getString("habits", "[]");
         String sub = sp.getString("subtitle", "Bugun");
 
-        Bitmap ring = drawRing(pct);
-
         for (int id : ids) {
+            /* widget kattalashsa halqa ham kattalashadi (ilgari qattiq 168px edi) */
+            float sc = FocusWidgetProvider.scaleOf(
+                FocusWidgetProvider.widthDp(mgr, id), FocusWidgetProvider.heightDp(mgr, id));
+            Bitmap ring = drawRing(pct, Math.round(RING_PX * sc));
+
             RemoteViews v = new RemoteViews(ctx.getPackageName(), R.layout.widget_progress);
             v.setImageViewBitmap(R.id.wp_ring, ring);
+            v.setTextViewTextSize(R.id.wp_sub, TypedValue.COMPLEX_UNIT_SP, 8.5f * sc);
             v.setTextViewText(R.id.wp_sub, sub);
             v.removeAllViews(R.id.wp_rows);
 
@@ -91,7 +103,8 @@ public class ProgressWidgetProvider extends AppWidgetProvider {
     }
 
     /** Bugungi foiz halqasi — Canvas'da chiziladi */
-    private static Bitmap drawRing(int pct) {
+    private static Bitmap drawRing(int pct) { return drawRing(pct, RING_PX); }
+    private static Bitmap drawRing(int pct, int RING_PX) {
         Bitmap bm = Bitmap.createBitmap(RING_PX, RING_PX, Bitmap.Config.ARGB_8888);
         Canvas c = new Canvas(bm);
         float stroke = RING_PX * STROKE_R;

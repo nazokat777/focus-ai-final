@@ -3,6 +3,7 @@ package uz.lumnaara.focusai;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
+import android.os.Bundle;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,6 +34,12 @@ public class HabitsWidgetProvider extends AppWidgetProvider {
     @Override
     public void onUpdate(Context ctx, AppWidgetManager mgr, int[] ids) {
         render(ctx, mgr, ids);
+    }
+
+    /* o'lcham o'zgarganda qayta chizamiz — balandroq bo'lsa ko'proq odat sig'adi */
+    @Override
+    public void onAppWidgetOptionsChanged(Context ctx, AppWidgetManager mgr, int id, Bundle newOptions) {
+        onUpdate(ctx, mgr, new int[]{ id });
     }
 
     static void render(Context ctx, AppWidgetManager mgr, int[] ids) {
