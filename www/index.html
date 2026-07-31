@@ -559,6 +559,17 @@ input{font-family:inherit}
   box-shadow:0 2px 10px rgba(var(--neon-rgb),.4);transition:transform .32s var(--spring),width .32s var(--spring)}
 .reduce .hf-ink{transition:none}
 /* GLOBAL "bugun dam" — hordiq kartasi + jimgina havola */
+.recover{position:relative;background:linear-gradient(180deg,rgba(180,140,255,.1),var(--elev));
+  border:1px solid rgba(180,140,255,.28);border-radius:var(--r);padding:18px 18px 16px;margin-bottom:12px}
+.recover .rec-x{position:absolute;top:11px;right:12px;width:26px;height:26px;border-radius:8px;
+  background:transparent;border:0;color:var(--muted);font-size:19px;line-height:1;cursor:pointer}
+.recover .rec-x:active{transform:scale(.9)}
+.recover .rec-t{font-size:15px;font-weight:650;color:var(--text);margin-bottom:6px;padding-right:24px}
+.recover .rec-s{font-size:13px;line-height:1.5;color:var(--muted);margin-bottom:14px}
+.recover .rec-go{background:#c9aaff;color:#1a0f2e;border:0;border-radius:12px;padding:11px 16px;
+  font-size:13.5px;font-weight:650;cursor:pointer;transition:transform var(--t1) var(--ease)}
+.recover .rec-go:active{transform:scale(.96)}
+.device[data-theme="light"] .recover{background:linear-gradient(180deg,rgba(140,90,220,.1),var(--elev))}
 .rest-today{display:flex;flex-direction:column;align-items:center;text-align:center;gap:10px;
   padding:34px 22px;background:linear-gradient(160deg,rgba(180,140,255,.10),var(--elev));
   border:1px solid rgba(180,140,255,.28);border-radius:20px;margin-top:4px}
@@ -1251,6 +1262,30 @@ input{font-family:inherit}
 .fr-nm .you{color:var(--neon)}
 .fr-stat{font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;flex:none;text-align:right}
 .fr-stat b{color:var(--text);font-weight:600}
+/* USTOZ PANELI — shogird qatori bosilsa ochiladigan batafsil kun manzarasi */
+.ward{background:var(--elev);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:9px}
+.ward-head{display:flex;align-items:center;gap:11px;padding:12px 13px;cursor:pointer}
+.ward-av{width:34px;height:34px;border-radius:10px;background:var(--elev2);display:grid;place-items:center;font-size:15px;flex:none}
+.ward-nm{flex:1;min-width:0;font-size:14px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ward-sum{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--neon);flex:none}
+.ward-cev{color:var(--muted);font-size:13px;transition:transform .3s var(--ease);flex:none}
+.ward.open .ward-cev{transform:rotate(90deg)}
+.ward-body{max-height:0;overflow:hidden;transition:max-height .35s var(--ease)}
+.ward.open .ward-body{max-height:520px}
+.ward-in{padding:2px 13px 13px}
+.ward-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px}
+.ward-kpi{background:var(--elev2);border:1px solid var(--line);border-radius:11px;padding:10px 12px}
+.ward-kpi b{display:block;font-family:'JetBrains Mono',monospace;font-size:18px;font-weight:700;color:var(--text)}
+.ward-kpi span{display:block;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:3px}
+.ward-tlbl{font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin:4px 0 7px}
+.ward-task{display:flex;align-items:center;gap:9px;padding:7px 0;border-top:1px solid var(--line)}
+.ward-task .wt-dot{width:7px;height:7px;border-radius:50%;background:var(--neon);flex:none}
+.ward-task .wt-dot.check{background:var(--muted)}
+.ward-task .wt-nm{flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ward-task .wt-mins{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--muted);flex:none}
+.ward-empty{font-size:12.5px;color:var(--muted);padding:6px 0}
+.ward-foot{display:flex;justify-content:flex-end;margin-top:10px}
+.ward-chat{font-size:12px;color:var(--neon);background:var(--neon-soft,rgba(var(--neon-rgb),.1));border:1px solid rgba(var(--neon-rgb),.3);border-radius:9px;padding:7px 13px;display:inline-flex;align-items:center;gap:6px}
 .fr-badge{font-size:10.5px;color:var(--muted);background:var(--elev2);border-radius:6px;padding:3px 7px;font-family:'JetBrains Mono',monospace;flex:none}
 .fr-del{color:var(--danger);font-size:16px;opacity:.5;padding:2px 4px;flex:none}
 .fr-chat{font-size:15px;opacity:.78;padding:2px 4px;flex:none;background:none;border:none;cursor:pointer;line-height:1}
@@ -2072,6 +2107,8 @@ input{font-family:inherit}
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg><span data-i18n="pin"></span></div><button class="tog" id="pinTog"></button></div>
         <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><path d="M4 5h16v11H4z"/><path d="M9 8.5l5 2.5-5 2.5z"/><path d="M8 20h8"/></svg><span data-i18n="replay_onb"></span></div>
           <button class="act-btn" id="onbReplay"><span data-i18n="onb_watch"></span></button></div>
+        <div class="setting"><div class="lab"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 16v-5M12 8.2v-.2"/></svg><span data-i18n="about_app"></span></div>
+          <button class="act-btn" id="aboutBtn"><span data-i18n="about_open"></span></button></div>
 
         <!-- ZAXIRA VA BULUT — JS (renderAuthUI/markCloudStatus/exportData/importData)
              bu elementlarni kutardi, lekin markup yo'q edi: butun blok o'lik kod bo'lib
@@ -2511,7 +2548,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
   week:"Shu hafta",weeks8:"Oxirgi 8 hafta",achievements:"Nishonlar",days:"kun",focus_need:"Diqqat kerak",fn_ok:"Hammasi izchil — zo'r ketyapsan! ✨",fn_none:"Hali odat yo'q — birinchisini qo'shing",fn_new:"Ma'lumot yig'ilmoqda — bir necha kundan keyin ko'rinadi",
   gap_skip:function(n){return "«"+n+"» taymeri uzoq ochiq qolibdi — bu vaqt hisoblanmadi, taymer to'xtatildi";},
-  bak_save:"Saqlash",focus_done_bg:"Fokus blokingiz tugagan edi — vaqt hisobga qo'shildi ✓",focus_end_t:"Fokus bloki tugadi",back_exit:"Chiqish uchun yana bir marta bosing",coach_offline:"Internet yo'q — murabbiy javob bera olmaydi. Ulanib, qayta yozing.",coach_err:"Murabbiyga ulanib bo'lmadi. Birozdan keyin qayta urining.",coach_local_pfx:"⚡ Oflayn maslahat:",rem_denied:"⚠ Bildirishnomalarga ruxsat yo'q — eslatma kelmaydi. Telefon sozlamalaridan ruxsat bering.",rem_web:"⚠ Brauzer versiyasida eslatma faqat ilova ochiq bo'lganda keladi. To'liq eslatma uchun ilovani o'rnating.",ask_yes:"Ha",ask_no:"Bekor",ask_delete:"O'chirish",focus_end_b:function(m){return m+" daqiqa fokus hisobga yozildi ✓";},
+  bak_save:"Saqlash",focus_done_bg:"Fokus blokingiz tugagan edi — vaqt hisobga qo'shildi ✓",focus_end_t:"Fokus bloki tugadi",back_exit:"Chiqish uchun yana bir marta bosing",coach_offline:"Internet yo'q — murabbiy javob bera olmaydi. Ulanib, qayta yozing.",coach_err:"Murabbiyga ulanib bo'lmadi. Birozdan keyin qayta urining.",coach_local_pfx:"⚡ Oflayn maslahat:",rem_denied:"⚠ Bildirishnomalarga ruxsat yo'q — eslatma kelmaydi. Telefon sozlamalaridan ruxsat bering.",rem_web:"⚠ Brauzer versiyasida eslatma faqat ilova ochiq bo'lganda keladi. To'liq eslatma uchun ilovani o'rnating.",ask_yes:"Ha",ask_no:"Bekor",ask_delete:"O'chirish",ward_h:" s",ward_m:" daq",ward_done:"✓ bajarildi",ward_focus:"Bugungi fokus",ward_habits:"Bajarilgan odat",ward_today:"Bugungi vazifalar",ward_none:"Bugun hali faoliyat yo'q",ward_msg:"Yozish",rec_t:"Qaytib kelding 👋",rec_s:function(l,h){return "Kecha o'tkazding — "+l+" kunlik seriya uzildi, buni yashirmaymiz. Lekin "+h+" soatlik mehnating joyida. Bugun kichik qadamdan boshla.";},rec_go:"Bugun boshlayman",about_app:"Ilova haqida",about_open:"Ochish",focus_end_b:function(m){return m+" daqiqa fokus hisobga yozildi ✓";},
   cmp_more:function(h,p){return "Bu hafta <b>"+h+" soat</b> fokus qilding — o'tgan haftaga nisbatan <b>+"+p+"%</b> 💪";},
   cmp_less:function(h,p){return "Bu hafta <b>"+h+" soat</b> — o'tgan haftadan "+p+"% kam. Bugun bitta sessiya boshla!";},
   cmp_first:function(h){return "Bu hafta <b>"+h+" soat</b> fokus qilding. Ajoyib boshlanish!";},
@@ -2624,7 +2661,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
   week:"Эта неделя",weeks8:"Последние 8 недель",achievements:"Значки",days:"дн.",focus_need:"Нужно внимание",fn_ok:"Всё стабильно — отлично! ✨",fn_none:"Пока нет привычек — добавьте первую",fn_new:"Данные собираются — появятся через несколько дней",
   gap_skip:function(n){return "Таймер «"+n+"» долго оставался включённым — это время не засчитано, таймер остановлен";},
-  bak_save:"Сохранить",focus_done_bg:"Ваш фокус-блок завершился — время засчитано ✓",focus_end_t:"Фокус-блок завершён",back_exit:"Нажмите ещё раз, чтобы выйти",coach_offline:"Нет интернета — наставник не может ответить. Подключитесь и напишите снова.",coach_err:"Не удалось связаться с наставником. Попробуйте позже.",coach_local_pfx:"⚡ Офлайн-совет:",rem_denied:"⚠ Нет разрешения на уведомления — напоминание не придёт. Разрешите в настройках телефона.",rem_web:"⚠ В браузере напоминание приходит только когда приложение открыто. Установите приложение.",ask_yes:"Да",ask_no:"Отмена",ask_delete:"Удалить",focus_end_b:function(m){return m+" минут фокуса засчитано ✓";},
+  bak_save:"Сохранить",focus_done_bg:"Ваш фокус-блок завершился — время засчитано ✓",focus_end_t:"Фокус-блок завершён",back_exit:"Нажмите ещё раз, чтобы выйти",coach_offline:"Нет интернета — наставник не может ответить. Подключитесь и напишите снова.",coach_err:"Не удалось связаться с наставником. Попробуйте позже.",coach_local_pfx:"⚡ Офлайн-совет:",rem_denied:"⚠ Нет разрешения на уведомления — напоминание не придёт. Разрешите в настройках телефона.",rem_web:"⚠ В браузере напоминание приходит только когда приложение открыто. Установите приложение.",ask_yes:"Да",ask_no:"Отмена",ask_delete:"Удалить",ward_h:" ч",ward_m:" мин",ward_done:"✓ выполнено",ward_focus:"Фокус сегодня",ward_habits:"Выполнено привычек",ward_today:"Задачи сегодня",ward_none:"Сегодня активности пока нет",ward_msg:"Написать",rec_t:"С возвращением 👋",rec_s:function(l,h){return "Вчера пропустил — серия из "+l+" дней прервалась, мы это не скрываем. Но "+h+" часов твоего труда на месте. Начни сегодня с малого.";},rec_go:"Начать сегодня",about_app:"О приложении",about_open:"Открыть",focus_end_b:function(m){return m+" минут фокуса засчитано ✓";},
   cmp_more:function(h,p){return "На этой неделе <b>"+h+" ч</b> фокуса — на <b>+"+p+"%</b> больше прошлой 💪";},
   cmp_less:function(h,p){return "На этой неделе <b>"+h+" ч</b> — на "+p+"% меньше прошлой. Начни сессию сегодня!";},
   cmp_first:function(h){return "На этой неделе <b>"+h+" ч</b> фокуса. Отличное начало!";},
@@ -2737,7 +2774,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
   week:"This week",weeks8:"Last 8 weeks",achievements:"Badges",days:"days",focus_need:"Needs focus",fn_ok:"All on track — great job! ✨",fn_none:"No habits yet — add your first",fn_new:"Collecting data — visible in a few days",
   gap_skip:function(n){return "«"+n+"» timer was left running for a long time — that time wasn't counted, timer stopped";},
-  bak_save:"Save",focus_done_bg:"Your focus block had finished — time counted ✓",focus_end_t:"Focus block finished",back_exit:"Press again to exit",coach_offline:"No internet — the coach can't reply. Reconnect and try again.",coach_err:"Couldn't reach the coach. Please try again shortly.",coach_local_pfx:"⚡ Offline tip:",rem_denied:"⚠ Notifications not allowed — reminders won't arrive. Enable them in phone settings.",rem_web:"⚠ In the browser, reminders only fire while the app is open. Install the app for full reminders.",ask_yes:"Yes",ask_no:"Cancel",ask_delete:"Delete",focus_end_b:function(m){return m+" minutes of focus counted ✓";},
+  bak_save:"Save",focus_done_bg:"Your focus block had finished — time counted ✓",focus_end_t:"Focus block finished",back_exit:"Press again to exit",coach_offline:"No internet — the coach can't reply. Reconnect and try again.",coach_err:"Couldn't reach the coach. Please try again shortly.",coach_local_pfx:"⚡ Offline tip:",rem_denied:"⚠ Notifications not allowed — reminders won't arrive. Enable them in phone settings.",rem_web:"⚠ In the browser, reminders only fire while the app is open. Install the app for full reminders.",ask_yes:"Yes",ask_no:"Cancel",ask_delete:"Delete",ward_h:" h",ward_m:" min",ward_done:"✓ done",ward_focus:"Focus today",ward_habits:"Habits done",ward_today:"Today's tasks",ward_none:"No activity yet today",ward_msg:"Message",rec_t:"Welcome back 👋",rec_s:function(l,h){return "You missed yesterday — a "+l+"-day streak ended, and we won't hide that. But your "+h+" hours of work remain. Start small today.";},rec_go:"Start today",about_app:"About the app",about_open:"Open",focus_end_b:function(m){return m+" minutes of focus counted ✓";},
   cmp_more:function(h,p){return "This week you focused <b>"+h+"h</b> — <b>+"+p+"%</b> vs last week 💪";},
   cmp_less:function(h,p){return "This week <b>"+h+"h</b> — "+p+"% less than last week. Start a session today!";},
   cmp_first:function(h){return "You focused <b>"+h+"h</b> this week. Great start!";},
@@ -2917,8 +2954,11 @@ function escH(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,
    (avatar/odat rasmi innerHTML ichida src="..." ga qo'yiladi). */
 function safeImg(u){
   u=String(u==null?'':u);
+  /* Ruxsat: data:image base64 YOKI loyiha ichidagi assets/ yo'li (query-string bilan,
+     masalan assets/dark.png?v=3). Xavfli belgilar (" ) < > bo'shliq) yo'q — bular
+     backgroundImage:url("...") dan chiqib injection qilishga imkon bermaydi. */
   if(!/^data:image\/(png|jpe?g|gif|webp|avif);base64,[A-Za-z0-9+/=]+$/i.test(u)
-     && !/^assets\/[\w.\-\/]+$/.test(u)) return '';
+     && !/^assets\/[\w.\-\/?=&%]+$/.test(u)) return '';
   return u;
 }
 /* blok E: avto-backup — har 24 soatda oldingi holat nusxasi (buzilishdan himoya) */
@@ -3501,6 +3541,18 @@ function dayScore(day){return dayTotalMs(day)+checksDone(day)*30*60000;}
 function dayFrozen(day){return !!(store.frozenDays&&store.frozenDays.indexOf(day)!==-1);}
 function dayRest(day){return !dayActive(day)&&(dayFrozen(day)||store.habits.some(function(h){return isSkip(h,day);}));}
 function dayHeld(day){return dayActive(day)||dayRest(day);}
+/* TIKLANISH REJIMI — seriya uzilganda halol qo'llab-quvvatlash.
+   MUHIM: seriya (globalStreak) hisobiga TEGMAYDI — faqat ko'rsatadi. Sizning
+   3-qoidangiz: uzilgan seriyani "saqlab qolish" uni SOXTALASHTIRADI. Shu sababli
+   biz o'tkazilgan kunni yashirmaymiz — faqat yo'qolmagan qismini eslataman. */
+function recoveryInfo(){
+  if(dayHeld(TODAY))return null;                 /* bugun allaqachon faol — kerak emas */
+  if(dayHeld(TODAY-1))return null;               /* kecha o'tkazilmagan — uzilish yo'q */
+  var d=TODAY-2,lost=0;
+  while(dayHeld(d)){lost++;d--;}                 /* uzilishdan oldingi seriya uzunligi */
+  if(lost<2)return null;                          /* arziydigan seriya yo'q edi */
+  return {lost:lost,hours:totalHours()};
+}
 function globalStreak(){
   var d=dayHeld(TODAY)?TODAY:TODAY-1,n=0;
   while(dayHeld(d)){n++;d--;}
@@ -3893,6 +3945,19 @@ function renderHabits(){
     list.appendChild(rc);
     rc.querySelector('#restOff').addEventListener('click',function(){sTap();setRestDay(false);});
     return;
+  }
+  /* Tiklanish kartasi — kun o'tkazgandan keyin bir marta (seriyaga tegmaydi) */
+  var rec=recoveryInfo();
+  if(rec&&store.recoveryFor!==TODAY){
+    var rcard=document.createElement('div');rcard.className='recover';
+    rcard.innerHTML='<button class="rec-x" id="recX" aria-label="Yopish">×</button>'+
+      '<div class="rec-t">'+T('rec_t')+'</div>'+
+      '<p class="rec-s">'+T('rec_s')(rec.lost,Math.round(rec.hours))+'</p>'+
+      '<button class="rec-go" id="recGo">'+T('rec_go')+'</button>';
+    list.appendChild(rcard);
+    function dismissRec(){store.recoveryFor=TODAY;save();var el=$('.recover');if(el)el.remove();}
+    rcard.querySelector('#recX').addEventListener('click',function(){sTap();dismissRec();});
+    rcard.querySelector('#recGo').addEventListener('click',function(){sTap();dismissRec();buzz(10);});
   }
   var mode='today';  /* bosh ekran doim "bugungi" — filtrlar Odatlar ekranida */
   /* uch guruh: faol (qolgani) / bugun bajarilgan / dam. Ishlayotgan odat DOIM faol
@@ -5904,6 +5969,7 @@ $('#avatarInput').addEventListener('change',function(){
 $('#onbReplay').addEventListener('click',function(){
   sTap();location.href='landing.html'; /* kinematik landing saytni qayta ko'rsatadi */
 });
+(function(){var a=$('#aboutBtn');if(a)a.addEventListener('click',function(){sTap();location.href='about.html';});})();
 $('#remTime').value=store.settings.remTime||'';
 $('#alarmTime').value=store.settings.alarmTime||'';
 $('#remMsg').value=store.settings.remMsg||'';
@@ -6568,13 +6634,49 @@ function renderFriends(){
     Social.wards().then(function(list){
       list=list||[];
       if(wsec)wsec.style.display=list.length?'':'none';
-      if(list.length)$('#frWardList').innerHTML=list.map(function(w){
-        return '<div class="fr-row"><span class="fr-rank">👤</span>'+
-          '<span class="fr-nm">'+esc(w.name||w.code)+'</span>'+
-          '<span class="fr-unread" data-unread-for="'+esc(w.code)+'" style="display:none"></span>'+
-          '<span class="fr-badge">'+esc(w.code)+'</span>'+
-          '<button class="fr-chat" data-chat="'+esc(w.code)+'" data-chatname="'+esc(w.name||w.code)+'" data-chatkind="ward">💬</button></div>';
-      }).join('');
+      if(list.length){
+        $('#frWardList').innerHTML=list.map(function(w){
+          var nm=esc(w.name||w.code);
+          var fh=(w.focusH!=null)?w.focusH+T('ward_h'):'—';
+          var hb=(w.habits!=null)?w.habits:'—';
+          /* batafsil vazifalar ro'yxati (ustoz shogird kunini ko'radi) */
+          var tasks='';
+          if(w.tasks&&w.tasks.length){
+            tasks=w.tasks.map(function(t){
+              var mins=(t.timer===false)?T('ward_done'):(t.mins+T('ward_m'));
+              return '<div class="ward-task"><span class="wt-dot'+(t.timer===false?' check':'')+'"></span>'+
+                '<span class="wt-nm">'+esc(t.name)+'</span><span class="wt-mins">'+mins+'</span></div>';
+            }).join('');
+          }else{
+            tasks='<div class="ward-empty">'+T('ward_none')+'</div>';
+          }
+          return '<div class="ward" data-ward="'+esc(w.code)+'">'+
+            '<div class="ward-head">'+
+              '<span class="ward-av">👤</span>'+
+              '<span class="ward-nm">'+nm+'</span>'+
+              '<span class="fr-unread" data-unread-for="'+esc(w.code)+'" style="display:none"></span>'+
+              '<span class="ward-sum">'+fh+'</span>'+
+              '<span class="ward-cev">›</span>'+
+            '</div>'+
+            '<div class="ward-body"><div class="ward-in">'+
+              '<div class="ward-kpis">'+
+                '<div class="ward-kpi"><b>'+fh+'</b><span>'+T('ward_focus')+'</span></div>'+
+                '<div class="ward-kpi"><b>'+hb+'</b><span>'+T('ward_habits')+'</span></div>'+
+              '</div>'+
+              '<div class="ward-tlbl">'+T('ward_today')+'</div>'+
+              tasks+
+              '<div class="ward-foot"><button class="ward-chat" data-chat="'+esc(w.code)+'" data-chatname="'+nm+'" data-chatkind="ward">💬 '+T('ward_msg')+'</button></div>'+
+            '</div></div>'+
+          '</div>';
+        }).join('');
+        /* qatorni ochish/yopish */
+        $$('#frWardList .ward-head').forEach(function(hd){
+          hd.addEventListener('click',function(e){
+            if(e.target.closest('.ward-chat'))return;
+            hd.parentNode.classList.toggle('open');sTap();
+          });
+        });
+      }
       refreshUnread(Social.friends().map(function(x){return x.code;}).concat(list.map(function(w){return w.code;})));
     },function(){if(wsec)wsec.style.display='none';refreshUnread(Social.friends().map(function(x){return x.code;}));}); /* wards xato -> do'st/ustoz nuqtalari baribir yangilanadi */
   } else { if(wsec)wsec.style.display='none'; }
