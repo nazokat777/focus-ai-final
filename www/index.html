@@ -807,6 +807,11 @@ input{font-family:inherit}
 .reduce .sheet.open{transition:transform .25s ease}
 /* Ilovaning o'z tasdiqlash oynasi — native confirm() o'rniga.
    Chrome dialogi sayt manzilini ko'rsatardi va tizim uslubida edi. */
+/* KRITIK: tasdiqlash oynasi HAMMA qatlam ustida bo'lishi SHART.
+   .sheet z-index:80, lekin .detail=120 va .pinlock=140 (shaffofmas) —
+   ular ostida qolsa dialog KO'RINMAYDI (PIN unutilsa ilova qulflanib qolardi). */
+#askSheet{z-index:200}
+.scrim.ask-top{z-index:199}
 .ask-msg{font-size:15px;line-height:1.55;white-space:pre-line;color:var(--text);margin:2px 0 18px}
 .ask-btns{display:flex;gap:10px}
 .ask-b{flex:1;padding:14px 12px;border-radius:14px;font-size:15px;font-weight:600;
@@ -2961,7 +2966,7 @@ function safeImg(u){
   /* Ruxsat: data:image base64 YOKI loyiha ichidagi assets/ yo'li (query-string bilan,
      masalan assets/dark.png?v=3). Xavfli belgilar (" ) < > bo'shliq) yo'q — bular
      backgroundImage:url("...") dan chiqib injection qilishga imkon bermaydi. */
-  if(!/^data:image\/(png|jpe?g|gif|webp|avif);base64,[A-Za-z0-9+/=]+$/i.test(u)
+  if(!/^data:image\/(png|jpe?g|gif|webp|avif|heic|heif|bmp);base64,[A-Za-z0-9+/=]+$/i.test(u)
      && !/^assets\/[\w.\-\/?=&%]+$/.test(u)) return '';
   return u;
 }
@@ -3727,13 +3732,17 @@ function renderHomeBg(){
   var cands=[];
   if(light){ if(store.user.heroLight)cands.push(store.user.heroLight); cands.push('assets/light.png?v=3','assets/hero-light.png'); }
   else { if(store.user.hero)cands.push(store.user.hero); cands.push('assets/dark.png?v=3','assets/hero.png'); }
+  /* safeImg'ni OLDINDAN qo'llaymiz: yaroqsiz manzil ro'yxatga tushmasin.
+     Ilgari u onload ichida edi — yaroqsiz rasm yuklanib, url("") yozilib,
+     zaxira nomzodga o'tmay fon butunlay yo'qolardi. */
+  cands=cands.map(safeImg).filter(Boolean);
   var sig=(light?'L:':'D:')+cands.join('|');
   if(sig===_bgSet&&el.style.backgroundImage&&el.style.display!=='none')return;
   var fx=$('#homeFx');
   (function tryNext(i){
     if(i>=cands.length){el.style.backgroundImage='';el.style.display='none';if(fx)fx.style.display='none';return;}
     var im=new Image();
-    im.onload=function(){_bgSet=sig;el.style.backgroundImage='url("'+safeImg(cands[i])+'")';el.style.display='';if(fx){fx.style.display='';positionHomeFx(im);}};
+    im.onload=function(){_bgSet=sig;el.style.backgroundImage='url("'+cands[i]+'")';el.style.display='';if(fx){fx.style.display='';positionHomeFx(im);}};
     im.onerror=function(){tryNext(i+1);};
     im.src=cands[i];
   })(0);
@@ -4142,14 +4151,14 @@ function ask(msg,onYes,opt){
   n.textContent=opt.no||T('ask_no');
   y.classList.toggle('danger',!!opt.danger);
   y.classList.toggle('yes',!opt.danger);
-  function close(){ sh.classList.remove('open'); if(sc)sc.classList.remove('open'); y.onclick=null; n.onclick=null; }
+  function close(){ sh.classList.remove('open'); if(sc){sc.classList.remove('open');sc.classList.remove('ask-top');} y.onclick=null; n.onclick=null; }
   y.onclick=function(){ close(); sTap(); setTimeout(function(){ try{onYes();}catch(e){} },170); };
   n.onclick=function(){ close(); sTap(); };
-  if(sc)sc.classList.add('open');
+  if(sc){sc.classList.add('ask-top');sc.classList.add('open');}
   sh.classList.add('open');
 }
 function askOpen(){ var a=$('#askSheet'); return !!(a&&a.classList.contains('open')); }
-function askClose(){ var a=$('#askSheet'),sc=$('#scrim'); if(a)a.classList.remove('open'); if(sc)sc.classList.remove('open'); }
+function askClose(){ var a=$('#askSheet'),sc=$('#scrim'); if(a)a.classList.remove('open'); if(sc){sc.classList.remove('open');sc.classList.remove('ask-top');} }
 function openSheet(o){$('#scrim').classList.toggle('open',o);$('#sheet').classList.toggle('open',o);
   if(o)staggerRise($$('#sheet>*'),26,120); /* maydonlar sheet kelishi bilan to'lqin bo'lib kiradi */
   $('#device').classList.toggle('modal',o); /* ostki qatlam chekinadi — chuqurlik hissi */
@@ -6212,15 +6221,14 @@ $('#pills').addEventListener('click',function(e){
     var P=(window.Capacitor&&window.Capacitor.Plugins)||{};
     if(!P.App||!P.App.addListener)return;
     P.App.addListener('backButton',function(){
-      /* 1) ustki qatlamlar — Escape bilan bir xil tartib */
-      var ov=[
-        ['#pinlock',function(){}],                          /* PIN — yopilmasin */
-        ['#alarmOv',function(){}]                           /* budilnik — yopilmasin */
-      ];
-      for(var i=0;i<ov.length;i++){
-        var e=$(ov[i][0]); if(e&&e.classList.contains('open'))return;   /* jim: yopmaymiz */
-      }
+      /* 0) tasdiqlash oynasi BIRINCHI — u PIN/budilnik USTIDA ham ochilishi mumkin
+         (masalan "PINni unutdingizmi?"). Aks holda uni yopib bo'lmay qolardi. */
       if(askOpen()){askClose();return;}
+      /* 1) ustki qatlamlar — bular yopilmaydi (PIN va budilnik qasddan) */
+      var ov=['#pinlock','#alarmOv'];
+      for(var i=0;i<ov.length;i++){
+        var e=$(ov[i]); if(e&&e.classList.contains('open'))return;   /* jim: yopmaymiz */
+      }
       if($('#rSheet')&&$('#rSheet').classList.contains('open')){openRSheet(false);return;}
       if($('#sheet')&&$('#sheet').classList.contains('open')){openSheet(false);return;}
       if($('#chat')&&$('#chat').classList.contains('open')){closeChat();return;}
