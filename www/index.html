@@ -794,6 +794,16 @@ input{font-family:inherit}
 .sheet::-webkit-scrollbar{display:none}
 .sheet.open{transform:none;transition:transform .55s var(--spring)} /* ochilish — prujinali, yopilish — tekis */
 .reduce .sheet.open{transition:transform .25s ease}
+/* Ilovaning o'z tasdiqlash oynasi — native confirm() o'rniga.
+   Chrome dialogi sayt manzilini ko'rsatardi va tizim uslubida edi. */
+.ask-msg{font-size:15px;line-height:1.55;white-space:pre-line;color:var(--text);margin:2px 0 18px}
+.ask-btns{display:flex;gap:10px}
+.ask-b{flex:1;padding:14px 12px;border-radius:14px;font-size:15px;font-weight:600;
+  border:1px solid var(--line);background:var(--elev);color:var(--text);
+  transition:transform var(--t1) var(--ease),background var(--t2) var(--ease)}
+.ask-b:active{transform:scale(.95)}
+.ask-b.yes{background:var(--neon);border-color:var(--neon);color:var(--onneon)}
+.ask-b.danger{background:rgba(255,122,122,.14);border-color:rgba(255,122,122,.5);color:var(--danger)}
 .sheet .grip{width:40px;height:4px;border-radius:2px;background:rgba(var(--neon-br-rgb),.2);margin:0 auto 14px}
 .sheet h3{font-size:17px;font-weight:600;margin-bottom:12px}
 .f-lbl{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin:14px 0 8px}
@@ -2099,6 +2109,16 @@ input{font-family:inherit}
 
   <!-- ADD HABIT SHEET -->
   <div class="scrim" id="scrim"></div>
+
+  <!-- Tasdiqlash oynasi (native confirm() o'rniga) -->
+  <div class="sheet" id="askSheet">
+    <div class="grip"></div>
+    <div class="ask-msg" id="askMsg"></div>
+    <div class="ask-btns">
+      <button class="ask-b" id="askNo"></button>
+      <button class="ask-b yes" id="askYes"></button>
+    </div>
+  </div>
   <div class="sheet" id="sheet">
     <div class="grip"></div>
     <h3 data-i18n="new_habit"></h3>
@@ -2491,7 +2511,7 @@ uz:{tagline:"Vaqt — eng adolatli o'lchov.",growth:"O'sish",streak:"Seriya",tod
   momentum:"Sur'ating",momentum_sub:"Barqarorlik jamlanadi.",best_streak:"Eng uzun",total_hrs:"Jami soat",done_goals:"Yutuqlar",
   week:"Shu hafta",weeks8:"Oxirgi 8 hafta",achievements:"Nishonlar",days:"kun",focus_need:"Diqqat kerak",fn_ok:"Hammasi izchil — zo'r ketyapsan! ✨",fn_none:"Hali odat yo'q — birinchisini qo'shing",fn_new:"Ma'lumot yig'ilmoqda — bir necha kundan keyin ko'rinadi",
   gap_skip:function(n){return "«"+n+"» taymeri uzoq ochiq qolibdi — bu vaqt hisoblanmadi, taymer to'xtatildi";},
-  bak_save:"Saqlash",focus_done_bg:"Fokus blokingiz tugagan edi — vaqt hisobga qo'shildi ✓",focus_end_t:"Fokus bloki tugadi",back_exit:"Chiqish uchun yana bir marta bosing",coach_offline:"Internet yo'q — murabbiy javob bera olmaydi. Ulanib, qayta yozing.",coach_err:"Murabbiyga ulanib bo'lmadi. Birozdan keyin qayta urining.",coach_local_pfx:"⚡ Oflayn maslahat:",rem_denied:"⚠ Bildirishnomalarga ruxsat yo'q — eslatma kelmaydi. Telefon sozlamalaridan ruxsat bering.",rem_web:"⚠ Brauzer versiyasida eslatma faqat ilova ochiq bo'lganda keladi. To'liq eslatma uchun ilovani o'rnating.",focus_end_b:function(m){return m+" daqiqa fokus hisobga yozildi ✓";},
+  bak_save:"Saqlash",focus_done_bg:"Fokus blokingiz tugagan edi — vaqt hisobga qo'shildi ✓",focus_end_t:"Fokus bloki tugadi",back_exit:"Chiqish uchun yana bir marta bosing",coach_offline:"Internet yo'q — murabbiy javob bera olmaydi. Ulanib, qayta yozing.",coach_err:"Murabbiyga ulanib bo'lmadi. Birozdan keyin qayta urining.",coach_local_pfx:"⚡ Oflayn maslahat:",rem_denied:"⚠ Bildirishnomalarga ruxsat yo'q — eslatma kelmaydi. Telefon sozlamalaridan ruxsat bering.",rem_web:"⚠ Brauzer versiyasida eslatma faqat ilova ochiq bo'lganda keladi. To'liq eslatma uchun ilovani o'rnating.",ask_yes:"Ha",ask_no:"Bekor",ask_delete:"O'chirish",focus_end_b:function(m){return m+" daqiqa fokus hisobga yozildi ✓";},
   cmp_more:function(h,p){return "Bu hafta <b>"+h+" soat</b> fokus qilding — o'tgan haftaga nisbatan <b>+"+p+"%</b> 💪";},
   cmp_less:function(h,p){return "Bu hafta <b>"+h+" soat</b> — o'tgan haftadan "+p+"% kam. Bugun bitta sessiya boshla!";},
   cmp_first:function(h){return "Bu hafta <b>"+h+" soat</b> fokus qilding. Ajoyib boshlanish!";},
@@ -2604,7 +2624,7 @@ ru:{tagline:"Время — самая честная мера.",growth:"Рос�
   momentum:"Твой темп",momentum_sub:"Постоянство накапливается.",best_streak:"Лучшая серия",total_hrs:"Всего часов",done_goals:"Победы",
   week:"Эта неделя",weeks8:"Последние 8 недель",achievements:"Значки",days:"дн.",focus_need:"Нужно внимание",fn_ok:"Всё стабильно — отлично! ✨",fn_none:"Пока нет привычек — добавьте первую",fn_new:"Данные собираются — появятся через несколько дней",
   gap_skip:function(n){return "Таймер «"+n+"» долго оставался включённым — это время не засчитано, таймер остановлен";},
-  bak_save:"Сохранить",focus_done_bg:"Ваш фокус-блок завершился — время засчитано ✓",focus_end_t:"Фокус-блок завершён",back_exit:"Нажмите ещё раз, чтобы выйти",coach_offline:"Нет интернета — наставник не может ответить. Подключитесь и напишите снова.",coach_err:"Не удалось связаться с наставником. Попробуйте позже.",coach_local_pfx:"⚡ Офлайн-совет:",rem_denied:"⚠ Нет разрешения на уведомления — напоминание не придёт. Разрешите в настройках телефона.",rem_web:"⚠ В браузере напоминание приходит только когда приложение открыто. Установите приложение.",focus_end_b:function(m){return m+" минут фокуса засчитано ✓";},
+  bak_save:"Сохранить",focus_done_bg:"Ваш фокус-блок завершился — время засчитано ✓",focus_end_t:"Фокус-блок завершён",back_exit:"Нажмите ещё раз, чтобы выйти",coach_offline:"Нет интернета — наставник не может ответить. Подключитесь и напишите снова.",coach_err:"Не удалось связаться с наставником. Попробуйте позже.",coach_local_pfx:"⚡ Офлайн-совет:",rem_denied:"⚠ Нет разрешения на уведомления — напоминание не придёт. Разрешите в настройках телефона.",rem_web:"⚠ В браузере напоминание приходит только когда приложение открыто. Установите приложение.",ask_yes:"Да",ask_no:"Отмена",ask_delete:"Удалить",focus_end_b:function(m){return m+" минут фокуса засчитано ✓";},
   cmp_more:function(h,p){return "На этой неделе <b>"+h+" ч</b> фокуса — на <b>+"+p+"%</b> больше прошлой 💪";},
   cmp_less:function(h,p){return "На этой неделе <b>"+h+" ч</b> — на "+p+"% меньше прошлой. Начни сессию сегодня!";},
   cmp_first:function(h){return "На этой неделе <b>"+h+" ч</b> фокуса. Отличное начало!";},
@@ -2717,7 +2737,7 @@ en:{tagline:"Time is the fairest measure.",growth:"Growth",streak:"Streak",today
   momentum:"Your momentum",momentum_sub:"Consistency compounds.",best_streak:"Best streak",total_hrs:"Total hrs",done_goals:"Wins",
   week:"This week",weeks8:"Last 8 weeks",achievements:"Badges",days:"days",focus_need:"Needs focus",fn_ok:"All on track — great job! ✨",fn_none:"No habits yet — add your first",fn_new:"Collecting data — visible in a few days",
   gap_skip:function(n){return "«"+n+"» timer was left running for a long time — that time wasn't counted, timer stopped";},
-  bak_save:"Save",focus_done_bg:"Your focus block had finished — time counted ✓",focus_end_t:"Focus block finished",back_exit:"Press again to exit",coach_offline:"No internet — the coach can't reply. Reconnect and try again.",coach_err:"Couldn't reach the coach. Please try again shortly.",coach_local_pfx:"⚡ Offline tip:",rem_denied:"⚠ Notifications not allowed — reminders won't arrive. Enable them in phone settings.",rem_web:"⚠ In the browser, reminders only fire while the app is open. Install the app for full reminders.",focus_end_b:function(m){return m+" minutes of focus counted ✓";},
+  bak_save:"Save",focus_done_bg:"Your focus block had finished — time counted ✓",focus_end_t:"Focus block finished",back_exit:"Press again to exit",coach_offline:"No internet — the coach can't reply. Reconnect and try again.",coach_err:"Couldn't reach the coach. Please try again shortly.",coach_local_pfx:"⚡ Offline tip:",rem_denied:"⚠ Notifications not allowed — reminders won't arrive. Enable them in phone settings.",rem_web:"⚠ In the browser, reminders only fire while the app is open. Install the app for full reminders.",ask_yes:"Yes",ask_no:"Cancel",ask_delete:"Delete",focus_end_b:function(m){return m+" minutes of focus counted ✓";},
   cmp_more:function(h,p){return "This week you focused <b>"+h+"h</b> — <b>+"+p+"%</b> vs last week 💪";},
   cmp_less:function(h,p){return "This week <b>"+h+"h</b> — "+p+"% less than last week. Start a session today!";},
   cmp_first:function(h){return "You focused <b>"+h+"h</b> this week. Great start!";},
@@ -4041,6 +4061,26 @@ $('#photoInput').addEventListener('change',function(){
     photoData=data;$('#photoLbl').textContent=T('photo_ok');
   });
 });
+/* ask(matn, ha_bo'lsa, {danger,yes,no}) — ilovaning o'z tasdiqlash oynasi.
+   Native confirm() sinxron edi; bu asinxron, shuning uchun chaqiruvchi kod
+   davomini callback ichiga ko'chiriladi. Element topilmasa — confirm'ga qaytadi. */
+function ask(msg,onYes,opt){
+  opt=opt||{};
+  var sh=$('#askSheet'),m=$('#askMsg'),y=$('#askYes'),n=$('#askNo'),sc=$('#scrim');
+  if(!sh||!m||!y||!n){ if(confirm(msg))onYes(); return; }
+  m.textContent=msg;
+  y.textContent=opt.yes||T('ask_yes');
+  n.textContent=opt.no||T('ask_no');
+  y.classList.toggle('danger',!!opt.danger);
+  y.classList.toggle('yes',!opt.danger);
+  function close(){ sh.classList.remove('open'); if(sc)sc.classList.remove('open'); y.onclick=null; n.onclick=null; }
+  y.onclick=function(){ close(); sTap(); setTimeout(function(){ try{onYes();}catch(e){} },170); };
+  n.onclick=function(){ close(); sTap(); };
+  if(sc)sc.classList.add('open');
+  sh.classList.add('open');
+}
+function askOpen(){ var a=$('#askSheet'); return !!(a&&a.classList.contains('open')); }
+function askClose(){ var a=$('#askSheet'),sc=$('#scrim'); if(a)a.classList.remove('open'); if(sc)sc.classList.remove('open'); }
 function openSheet(o){$('#scrim').classList.toggle('open',o);$('#sheet').classList.toggle('open',o);
   if(o)staggerRise($$('#sheet>*'),26,120); /* maydonlar sheet kelishi bilan to'lqin bo'lib kiradi */
   $('#device').classList.toggle('modal',o); /* ostki qatlam chekinadi — chuqurlik hissi */
@@ -4111,7 +4151,7 @@ $('#device').addEventListener('click',function(e){
   var el=e.target.closest('[data-help]');if(!el)return;
   toast(T('help_'+el.getAttribute('data-help')));
 });
-$('#scrim').addEventListener('click',function(){openSheet(false);});
+$('#scrim').addEventListener('click',function(){ if(askOpen()){askClose();return;} openSheet(false);});
 var pickType='timed',editingId=null;
 /* topilma #1: sheet'ni yangi/tahrirlash rejimiga sozlash */
 function syncSheetUI(){
@@ -4511,7 +4551,9 @@ $('#dEdit').addEventListener('click',function(){
 });
 $('#dDelete').addEventListener('click',function(){
   var h=getH(openDetailId);if(!h)return;
-  if(!confirm(T('del_confirm')(h.name)))return;
+  ask(T('del_confirm')(h.name),function(){ _doDeleteHabit(h); },{danger:true,yes:T('ask_delete')});
+});
+function _doDeleteHabit(h){
   /* qaytarish uchun o'rin va nusxani saqlaymiz — o'chirish endi qaytarilmas emas */
   var idx=0,i;
   for(i=0;i<store.habits.length;i++)if(store.habits[i].id===h.id){idx=i;break;}
@@ -4522,7 +4564,7 @@ $('#dDelete').addEventListener('click',function(){
     store.habits.splice(Math.min(idx,store.habits.length),0,snap);
     save();renderHabits();refreshChips();sGo();buzz(10);toast(T('undo_ok'));scheduleReminders();
   });
-});
+}
 
 /* ============ deep mode — yuztuban (bonus + avtomatik zen) ============ */
 var deepOn=false,orientReady=false;
@@ -5688,13 +5730,13 @@ $('#pinTog').addEventListener('click',function(){
   if(store.settings.pinHash){
     store.settings.pinHash=null;save();
     $('#pinTog').classList.remove('on');sTap();
-  }else{if(confirm(T('pin_warn')))pinOpen('set');} /* audit #2: yoqishdan oldin ogohlantirish */
+  }else{ ask(T('pin_warn'),function(){pinOpen('set');}); } /* audit #2: yoqishdan oldin ogohlantirish */
 });
 /* audit #2: pinlock ichida Bekor (set) / PINni unutdingizmi (enter -> tozalab qayta boshlash) */
 $('#pinAlt').addEventListener('click',function(){
   sTap();
   if(pinMode==='set'){$('#pinlock').classList.remove('open');} /* saqlanmagan — shunchaki yopamiz */
-  else if(confirm(T('pin_reset_confirm'))){try{window._skipUnloadSave=true;localStorage.clear();}catch(e){}location.reload();}
+  else ask(T('pin_reset_confirm'),function(){try{window._skipUnloadSave=true;localStorage.clear();}catch(e){}location.reload();},{danger:true,yes:T('ask_delete')});
 });
 
 /* ============ murabbiy — offline, foydalanuvchi statistikasiga qarab shaxsiy ============ */
@@ -6086,6 +6128,7 @@ $('#pills').addEventListener('click',function(e){
   onEnter('rwName',function(){$('#rwSave').click();});
   document.addEventListener('keydown',function(e){
     if(e.key!=='Escape'&&e.key!=='Esc')return;
+    if(askOpen()){askClose();return;}
     if($('#rSheet')&&$('#rSheet').classList.contains('open')){openRSheet(false);return;}
     if($('#sheet')&&$('#sheet').classList.contains('open')){openSheet(false);return;}
     if($('#chat')&&$('#chat').classList.contains('open')){closeChat();return;} /* eng ustki overlay — closeChat taymerni tozalaydi */
@@ -6107,6 +6150,7 @@ $('#pills').addEventListener('click',function(e){
       for(var i=0;i<ov.length;i++){
         var e=$(ov[i][0]); if(e&&e.classList.contains('open'))return;   /* jim: yopmaymiz */
       }
+      if(askOpen()){askClose();return;}
       if($('#rSheet')&&$('#rSheet').classList.contains('open')){openRSheet(false);return;}
       if($('#sheet')&&$('#sheet').classList.contains('open')){openSheet(false);return;}
       if($('#chat')&&$('#chat').classList.contains('open')){closeChat();return;}
@@ -6330,11 +6374,12 @@ function importData(file){
       var data=JSON.parse(rd.result);
       if(!data||!data.habits||!Object.prototype.toString.call(data.habits).match(/Array/)){toast(T('imp_bad'));return;}
       if(data.schemaVersion&&data.schemaVersion>SCHEMA_VERSION){toast(T('imp_newer'));return;}
-      if(!confirm(T('imp_confirm')(data.habits.length)))return;
-      var clean=sanitizeStore(data); if(!clean){toast(T('imp_bad'));return;}
-      window._skipUnloadSave=true; /* reload'da eski store qayta yozilmasin */
-      localStorage.setItem(KEY,JSON.stringify(clean));
-      location.reload();
+      ask(T('imp_confirm')(data.habits.length),function(){
+        var clean=sanitizeStore(data); if(!clean){toast(T('imp_bad'));return;}
+        window._skipUnloadSave=true; /* reload'da eski store qayta yozilmasin */
+        localStorage.setItem(KEY,JSON.stringify(clean));
+        location.reload();
+      },{danger:true});
     }catch(e){toast(T('imp_bad'));}
   };
   rd.readAsText(file);
