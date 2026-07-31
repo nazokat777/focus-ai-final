@@ -3,16 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <script>
-/* Landing darvozasi: birinchi tashrif -> landing.html.
-   FAQAT WEB'da. Native APK'da landing KO'RSATILMAYDI, chunki:
-   (a) u reklama sahifasi — ilovani allaqachon o'rnatgan odamga keraksiz,
-   (b) uning videolari (13MB) APK hajmini ikki barobar oshirardi va ular
-       APK'dan chiqarilgan — landing native'da jonsiz ko'rinardi.
-   Native foydalanuvchi to'g'ridan-to'g'ri onboardingga tushadi. */
+/* Landing darvozasi: birinchi tashrif -> landing.html (web VA native APK).
+   Native'da videolar APK ichida (siqilgan, ~4MB) -> oflayn ham to'liq ishlaydi.
+   Faqat bir marta: "Ilovani ochish" bosilgach fai_landing_seen qo'yiladi. */
 (function(){try{
-  var native=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform())
-             ||location.protocol==='file:'||location.hostname==='localhost';
-  if(!native&&!localStorage.getItem('fai_landing_seen')){
+  if(!localStorage.getItem('fai_landing_seen')){
     location.replace('landing.html');
   }
 }catch(e){}})();

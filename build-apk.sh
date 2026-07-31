@@ -19,7 +19,9 @@ npx cap sync android 2>&1 | tail -1
 
 echo "── 3/4  APK ichidan keraksizlarni chiqarish"
 rm -f "$ASSETS/focusai.apk"                 # rekursiv APK
-rm -f "$ASSETS/assets/video/"*.mp4          # web landing videolari
+# Videolar QOLADI: APK ichida landing ochiladi va u oflayn ham jonli
+# ko'rinishi kerak. Asl videolar allaqachon optimal siqilgan (720p) —
+# qayta siqish faqat 10% tejaydi va sifatni buzadi.
 echo "     assets: $(du -sh "$ASSETS" 2>/dev/null | cut -f1)"
 
 echo "── 4/4  build"
@@ -33,16 +35,16 @@ MB=$(python3 -c "print(f'{$SIZE/1048576:.1f}')" 2>/dev/null || echo "?")
 
 # tekshiruv: rekursiv apk yoki video qolmaganmi
 AAPT="D:/Android/Sdk/build-tools/34.0.0/aapt.exe"
-BAD=$("$AAPT" list FocusAI.apk 2>/dev/null | grep -cE "focusai\.apk|\.mp4" | head -1)
+BAD=$("$AAPT" list FocusAI.apk 2>/dev/null | grep -c "focusai\.apk" | head -1)
 BAD=${BAD:-0}
 
 echo ""
 echo "APK: ${MB} MB  ($SIZE bayt)"
 if [ "$BAD" -gt 0 ]; then
-  echo "❌ OGOHLANTIRISH: ichida $BAD ta rekursiv apk/video qoldi!"
+  echo "❌ OGOHLANTIRISH: ichida rekursiv APK qoldi!"
   exit 1
 else
-  echo "✅ toza (rekursiv apk yo'q, video yo'q)"
+  echo "✅ toza (rekursiv APK yo'q; landing videolari bor — sifat saqlangan)"
 fi
 echo ""
 echo "Endi tarqatish uchun:  bash deploy.sh"
