@@ -3,7 +3,7 @@
      • OFLAYN KAFOLAT — APK ichidagi (bundled) fayllar doim mavjud, internetsiz to'liq ishlaydi.
      • AVTO-YANGILANISH — internet bo'lsa saytdan (Vercel) eng oxirgi kod olinadi va keshlanadi.
    Native APK'da origin = https://localhost (bundled), web'da = vercel origin. */
-var CACHE  = 'focusai-v6';   /* Google login qo'shildi — eski kesh majburan tozalanadi */
+var CACHE  = 'focusai-v7';   /* Google login qo'shildi — eski kesh majburan tozalanadi */
 var REMOTE = 'https://focus-ai-final.vercel.app';
 var NET_TIMEOUT = 4000;          /* sekin internet ilovani ushlab qolmasin */
 
@@ -47,6 +47,12 @@ self.addEventListener('fetch', function(e){
   if(req.method !== 'GET') return;
   var url = new URL(req.url);
   if(url.origin !== self.location.origin) return;   /* faqat o'z origin */
+
+  /* VIDEO/MEDIA — SW UMUMAN ARALASHMAYDI.
+     Brauzer video uchun Range so'rovi yuboradi (bytes=0-...). Kesh esa to'liq 200
+     javob qaytaradi — natijada video O'YNAMAYDI, faqat poster ko'rinadi.
+     Shuning uchun media so'rovlarini tarmoqqa to'g'ridan-to'g'ri qo'yib yuboramiz. */
+  if(req.headers.get('range') || /\.(mp4|webm|ogg|mov|m4v|mp3|wav)$/i.test(url.pathname)) return;
 
   var isHTML = req.mode === 'navigate' ||
                (req.headers.get('accept') || '').indexOf('text/html') !== -1;
