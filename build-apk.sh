@@ -33,7 +33,8 @@ MB=$(python3 -c "print(f'{$SIZE/1048576:.1f}')" 2>/dev/null || echo "?")
 
 # tekshiruv: rekursiv apk yoki video qolmaganmi
 AAPT="D:/Android/Sdk/build-tools/34.0.0/aapt.exe"
-BAD=$("$AAPT" list FocusAI.apk 2>/dev/null | grep -cE "focusai\.apk|\.mp4" || echo 0)
+BAD=$("$AAPT" list FocusAI.apk 2>/dev/null | grep -cE "focusai\.apk|\.mp4" | head -1)
+BAD=${BAD:-0}
 
 echo ""
 echo "APK: ${MB} MB  ($SIZE bayt)"
