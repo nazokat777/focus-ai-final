@@ -2900,6 +2900,10 @@ if(!store.hhN)store.hhN={};
 if(!store.hhLast)store.hhLast={};
 if(!store.dayHour)store.dayHour={};
 TODAY=dayKey(); /* store yuklandi — ofsetni hisobga olib qayta hisoblaymiz */
+/* TIL SINXRON: landing saytida (fai_lang) tanlangan til ilovaga ham o'tadi. */
+try{ var _fl=localStorage.getItem('fai_lang');
+  if(_fl&&['uz','ru','en'].indexOf(_fl)>-1){ store.settings.lang=_fl; }
+}catch(e){}
 var _saveWarned=false;
 function save(){
   try{localStorage.setItem(KEY,JSON.stringify(store));_saveWarned=false;}
@@ -6357,6 +6361,7 @@ function updateLangBtn(){var c=$('#langCur');if(c)c.textContent=(store.settings.
 $('#langBtn').addEventListener('click',function(){
   var order=['uz','ru','en'],i=order.indexOf(store.settings.lang);
   store.settings.lang=order[(i+1)%order.length];save();sTap();
+  try{localStorage.setItem('fai_lang',store.settings.lang);}catch(e){}
   refreshAll(); /* applyI18N + renderHabits + refreshChips + computeTarget — birliklar ham yangilanadi */
   updateLangBtn();navInd();scheduleReminders();
   if($('#v-stats').classList.contains('active'))drawStats();
