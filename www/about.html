@@ -1,0 +1,365 @@
+<!doctype html>
+<html lang="uz" data-theme="dark"><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#030806">
+<style>
+html{color-scheme:dark}html,body,*{-webkit-print-color-adjust:exact!important;print-color-adjust:exact!important}@media print{body{background:#030806!important}#backBtn{display:none!important}@page{margin:8mm}}*{margin:0}html{-webkit-text-size-adjust:100%}</style>
+</head><body>
+<a href="index.html" id="backBtn" style="position:fixed;top:calc(env(safe-area-inset-top) + 14px);left:14px;z-index:99;display:inline-flex;align-items:center;gap:6px;font-family:var(--mono);font-size:13px;color:var(--signal);text-decoration:none;background:var(--panel);border:1px solid var(--line-hard);border-radius:11px;padding:9px 13px;backdrop-filter:blur(8px)">‹ Ortga</a>
+<title>Focus AI — imkoniyatlar varaqasi</title>
+
+<style>
+  /* Ranglar Focus AI ilovasining o'z tokenlaridan — bir belgigacha bir xil.
+     Manba: www/index.html :root (qorong'i) va .device[data-theme="light"] (yorug'). */
+  :root{
+    --ground:#030806;                    /* app --bg   */
+    --panel:#081209;                     /* app --elev */
+    --panel-2:#0c1a0f;                   /* app --elev2 */
+    --line:rgba(90,255,160,.09);         /* app --line */
+    --line-hard:rgba(90,255,160,.22);
+    --signal:#39FF8C;                    /* app --neon */
+    --signal-br:#7CFFB5;                 /* app --neon-br */
+    --signal-rgb:57,255,140;             /* app --neon-rgb */
+    --signal-dim:rgba(57,255,140,.13);
+    --on-signal:#04130a;                 /* app --onneon */
+    --text:#EAFBF0;                      /* app --text */
+    --muted:#7a9784;                     /* app --muted */
+
+    --mono:'JetBrains Mono','SF Mono',ui-monospace,'Cascadia Mono','Roboto Mono',Menlo,Consolas,monospace;
+    --sans:'Space Grotesk','Inter var',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',sans-serif;
+
+    --r:20px;                            /* app --r — katta kartalar */
+    --r-md:16px; --r-sm:12px;
+    --ease:cubic-bezier(.22,1,.36,1);    /* app --ease */
+    --t2:220ms;                          /* app --t2 */
+
+    --measure:66ch;
+    --s1:.35rem; --s2:.7rem; --s3:1.15rem; --s4:1.9rem; --s5:3rem; --s6:4.6rem;
+  }
+  
+  :root[data-theme="dark"]{
+    --ground:#030806; --panel:#081209; --panel-2:#0c1a0f;
+    --line:rgba(90,255,160,.09); --line-hard:rgba(90,255,160,.22);
+    --signal:#39FF8C; --signal-br:#7CFFB5; --signal-rgb:57,255,140;
+    --signal-dim:rgba(57,255,140,.13); --on-signal:#04130a;
+    --text:#EAFBF0; --muted:#7a9784;
+  }
+  
+
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--ground); color:var(--text);
+    font-family:var(--sans); font-size:16px; line-height:1.62;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:74rem; margin:0 auto; padding:var(--s5) 1.5rem var(--s6)}
+  @media(max-width:640px){ .wrap{padding:var(--s4) 1.1rem var(--s5)} }
+
+  /* ── o'lchov chizig'i: taymer halqasining tikchalari ── */
+  .rule{
+    height:9px; margin:var(--s5) 0 var(--s4);
+    background-image:linear-gradient(90deg,var(--line-hard) 1px,transparent 1px);
+    background-size:9px 9px; background-position:0 bottom;
+    background-repeat:repeat-x; border-bottom:1px solid var(--line);
+  }
+
+  /* ── shapka ── */
+  .eyebrow{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--muted); margin:0 0 var(--s3);
+  }
+  h1{
+    font-family:var(--sans); font-weight:800; letter-spacing:-.03em;
+    font-size:clamp(2.1rem,6.4vw,3.5rem); line-height:1.04;
+    margin:0 0 var(--s3); text-wrap:balance; max-width:20ch;
+  }
+  .lede{max-width:var(--measure); color:var(--muted); font-size:1.06rem; margin:0}
+  .lede strong{color:var(--text); font-weight:600}
+
+  /* ── tezis: da'vo vs o'lchov ── */
+  .thesis{
+    display:grid; grid-template-columns:1fr 1fr; gap:1px;
+    background:var(--line); border:1px solid var(--line);
+    border-radius:var(--r); overflow:hidden; margin:var(--s4) 0 0;
+  }
+  @media(max-width:560px){ .thesis{grid-template-columns:1fr} }
+  .th-cell{background:var(--panel); padding:1.15rem 1.25rem}
+  .th-k{
+    font-family:var(--mono); font-size:.66rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--muted); margin:0 0 .55rem;
+  }
+  .th-v{margin:0; font-size:1.02rem; line-height:1.5}
+  .th-cell.on{background:var(--panel-2); box-shadow:inset 3px 0 0 var(--signal)}
+  .th-cell.on .th-k{color:var(--signal)}
+
+  /* ── raqamlar qatori ── */
+  .figs{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));
+    gap:1px; background:var(--line); border:1px solid var(--line);
+    border-radius:var(--r); overflow:hidden; margin:var(--s3) 0 0;
+  }
+  .fig{background:var(--panel); padding:1rem 1.1rem}
+  .fig b{
+    display:block; font-family:var(--mono); font-variant-numeric:tabular-nums;
+    font-size:1.7rem; font-weight:700; color:var(--signal); letter-spacing:-.02em;
+  }
+  .fig span{
+    display:block; font-family:var(--mono); font-size:.63rem; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--muted); margin-top:.3rem;
+  }
+
+  /* ── bo'lim ── */
+  section{margin:0}
+  h2{
+    font-size:1.42rem; font-weight:700; letter-spacing:-.018em;
+    margin:0 0 .4rem; text-wrap:balance;
+  }
+  .sec-note{color:var(--muted); margin:0 0 var(--s3); max-width:var(--measure); font-size:.97rem}
+
+  /* ── imkoniyat qatorlari: chapda mono yorliq ── */
+  .rows{display:flex; flex-direction:column; gap:1px; background:var(--line);
+        border:1px solid var(--line); border-radius:var(--r-md); overflow:hidden}
+  .row{
+    background:var(--panel); display:grid; grid-template-columns:13.5rem 1fr;
+    gap:1.4rem; padding:.95rem 1.15rem; align-items:baseline;
+  }
+  @media(max-width:700px){
+    .row{grid-template-columns:1fr; gap:.3rem; padding:.9rem 1rem}
+  }
+  .k{
+    font-family:var(--mono); font-size:.74rem; letter-spacing:.06em;
+    color:var(--signal); font-weight:500; line-height:1.5;
+  }
+  .v{margin:0; font-size:.97rem; color:var(--text); line-height:1.55}
+  .v em{color:var(--muted); font-style:normal}
+  .v code{
+    font-family:var(--mono); font-size:.85em; background:var(--signal-dim);
+    padding:.08em .38em; border-radius:5px; color:var(--signal);
+  }
+
+  /* ── platforma teglari ── */
+  .tags{display:flex; flex-wrap:wrap; gap:.45rem; margin:var(--s3) 0 0}
+  .tag{
+    font-family:var(--mono); font-size:.68rem; letter-spacing:.07em;
+    padding:.36rem .66rem; border-radius:10px;
+    border:1px solid var(--line-hard); color:var(--muted); background:var(--panel);
+  }
+  .tag.on{color:var(--signal); border-color:var(--signal); background:var(--signal-dim)}
+
+  /* ── halollik bloki ── */
+  .honest{
+    border:1px solid var(--line-hard); border-left:3px solid var(--signal);
+    background:var(--panel); border-radius:0 var(--r-md) var(--r-md) 0;
+    padding:1.15rem 1.3rem; margin:var(--s3) 0 0;
+  }
+  .honest h3{
+    font-family:var(--mono); font-size:.7rem; letter-spacing:.18em;
+    text-transform:uppercase; color:var(--signal); margin:0 0 .6rem; font-weight:600;
+  }
+  .honest ul{margin:0; padding-left:1.1rem; display:flex; flex-direction:column; gap:.45rem}
+  .honest li{color:var(--text); font-size:.96rem}
+  .honest li em{color:var(--muted); font-style:normal}
+
+  footer{
+    margin-top:var(--s5); padding-top:var(--s3); border-top:1px solid var(--line);
+    font-family:var(--mono); font-size:.72rem; color:var(--muted);
+    display:flex; flex-wrap:wrap; gap:.5rem 1.6rem;
+  }
+  footer a{color:var(--signal); text-decoration:none; border-bottom:1px solid var(--line-hard)}
+  footer a{transition:border-color var(--t2) var(--ease)}
+  footer a:hover{border-bottom-color:var(--signal)}
+  a:focus-visible,.tag:focus-visible{outline:2px solid var(--signal); outline-offset:2px}
+</style>
+
+<div class="wrap">
+
+  <p class="eyebrow">Focus AI · imkoniyatlar varaqasi · 2026</p>
+  <h1>Vaqt — eng adolatli o'lchov.</h1>
+  <p class="lede">Focus AI — <strong>vaqtga asoslangan odatlar kuzatuvchisi</strong>. Uning boshqa ilovalardan farqi bitta jumlada: boshqalari sizdan <em>so'raydi</em>, bu esa <strong>o'lchaydi</strong>.</p>
+
+  <div class="thesis">
+    <div class="th-cell">
+      <p class="th-k">Odatdagi ilova</p>
+      <p class="th-v">Kun oxirida “Kitob o'qidingmi?” deb so'raydi. Siz ✓ bosasiz. Statistika — sizning <strong>da'vongiz</strong>.</p>
+    </div>
+    <div class="th-cell on">
+      <p class="th-k">Focus AI</p>
+      <p class="th-v">Taymer haqiqiy sarflangan vaqtni sanaydi. Statistika — <strong>o'lchov natijasi</strong>, uni soxtalashtirib bo'lmaydi.</p>
+    </div>
+  </div>
+
+  <div class="figs">
+    <div class="fig"><b>5</b><span>asosiy ekran</span></div>
+    <div class="fig"><b>3</b><span>til · uz ru en</span></div>
+    <div class="fig"><b>3</b><span>bosh-ekran widgeti</span></div>
+    <div class="fig"><b>12</b><span>nishon</span></div>
+    <div class="fig"><b>100%</b><span>oflayn ishlaydi</span></div>
+  </div>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Odatlar</h2>
+    <p class="sec-note">Har bir odat — o'lchanadigan majburiyat. Ikki turi bor, chunki hamma narsani soat bilan o'lchab bo'lmaydi.</p>
+    <div class="rows">
+      <div class="row"><div class="k">Taymerli odat</div><p class="v">Vaqt sanaladi — sport, kitob, til. <em>Kunlik norma (daqiqa) + umumiy maqsad (10 000 soatgacha).</em></p></div>
+      <div class="row"><div class="k">Belgilanadigan odat</div><p class="v">Bajarildi/bajarilmadi — namoz, tabletka, suv. <em>Vaqt o'lchanmaydi, seriya sanaladi.</em></p></div>
+      <div class="row"><div class="k">Haftalik jadval</div><p class="v">Har odat uchun kunlar tanlanadi — Du–Ya. Dushanba–chorshanba–juma sport, qolgan kunlar tinch.</p></div>
+      <div class="row"><div class="k">Shaxsiylashtirish</div><p class="v">Rang, ikonka, rasm — har odat o'z kimligiga ega bo'ladi.</p></div>
+      <div class="row"><div class="k">To'liq boshqaruv</div><p class="v">Qo'shish, tahrirlash, nomini o'zgartirish, o'chirish. <em>O'chirishda tasdiqlash + qaytarish imkoni.</em></p></div>
+      <div class="row"><div class="k">Odatlar ekrani</div><p class="v">Alohida ro'yxat: hammasi / bugungi / bajarilgan / bajarilmagan bo'yicha saralash.</p></div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Taymer va fokus</h2>
+    <p class="sec-note">Ilovaning yuragi. Vaqt <code>accMs + (hozir − boshlangan)</code> formulasi bilan hisoblanadi — <em>sanoq emas, o'lchov</em>: ilova yopilsa ham, telefon uxlasa ham vaqt to'g'ri qoladi.</p>
+    <div class="rows">
+      <div class="row"><div class="k">Sessiya boshqaruvi</div><p class="v">Boshlash · Pauza · Davom · Yakunlash · Qayta. Halqa kunlik normaga nisbatan to'ladi.</p></div>
+      <div class="row"><div class="k">Fokus bloklari</div><p class="v">25 / 50 / 90 daqiqa tayyor rejimlar yoki aylanma disk bilan istalgan vaqt.</p></div>
+      <div class="row"><div class="k">Chuqur rejim</div><p class="v">Telefonni yuztuban qo'ysangiz — chalg'imaysiz va <strong>+10% bonus vaqt</strong> olasiz. Akselerometr bilan aniqlanadi.</p></div>
+      <div class="row"><div class="k">Muhit fonlari</div><p class="v">O'rmon yomg'iri · Gulxan · Tungi osmon · Qulay xona — butun ekranga yoyiladi.</p></div>
+      <div class="row"><div class="k">Suzuvchi taymer</div><p class="v">Boshqa ilovalar ustida ko'rinadi, barmoq bilan ko'chiriladi, <strong>chimchilab kattalashtiriladi</strong>. Ilova yopiq bo'lsa ham ishlaydi.</p></div>
+      <div class="row"><div class="k">Parallel taymerlar</div><p class="v">Bir vaqtda 2 ta ish boshlasangiz — pastda 2 ta jonli hisoblagich, 3 ta bo'lsa 3 ta. Bosilsa o'z sessiyasi ochiladi.</p></div>
+      <div class="row"><div class="k">Zen rejim</div><p class="v">Ekranda faqat raqam qoladi. Har o'tgan daqiqani <em>bitta neon nur</em> belgilab o'tadi.</p></div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Statistika va tahlil</h2>
+    <p class="sec-note">O'lchangan vaqt insaytga aylanadi. Har bir ko'rsatkich — haqiqiy ma'lumotdan, taxmin emas.</p>
+    <div class="rows">
+      <div class="row"><div class="k">Bugungi progress</div><p class="v">Halqa + haftalik trend chizig'i + kunlik ustunlar.</p></div>
+      <div class="row"><div class="k">Faol soatlar xaritasi</div><p class="v">7 kun × 24 soat issiqlik xaritasi — <strong>qaysi soatda eng samarali ekaningizni</strong> ilova o'zi topadi.</p></div>
+      <div class="row"><div class="k">Kuch indeksi</div><p class="v">Har odat uchun izchillik ko'rsatkichi (EMA). Bir o'tkazilgan kun hammasini nolga tushirmaydi.</p></div>
+      <div class="row"><div class="k">Vaqt taqsimoti</div><p class="v">Donut diagramma — vaqtingiz aslida qayerga ketyapti.</p></div>
+      <div class="row"><div class="k">10 000 soat yo'li</div><p class="v">Mastery ko'rsatkichi — ustalikkacha qancha qolgani.</p></div>
+      <div class="row"><div class="k">Marra bashorati</div><p class="v">Joriy sur'atda maqsadga qachon yetishingiz — <em>aniq sana emas, halol diapazon</em>.</p></div>
+      <div class="row"><div class="k">Diqqat kerak</div><p class="v">Eng ortda qolgan 3 odat. <em>Ma'lumot yetarli bo'lmasa — maqtamaydi ham, aybламaydi ham.</em></p></div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>AI murabbiy</h2>
+    <p class="sec-note">Robot-maskot sizning haqiqiy statistikangizni ko'radi va shunga qarab gapiradi.</p>
+    <div class="rows">
+      <div class="row"><div class="k">Shaxsiy maslahat</div><p class="v">Bugungi vaqtingiz, seriyangiz va darajangizdan xabardor holda javob beradi.</p></div>
+      <div class="row"><div class="k">Jonli suhbat</div><p class="v">Istalgan savolni yozasiz — <strong>Llama 3.3 70B</strong> (Groq) javob beradi, ~1 soniyada.</p></div>
+      <div class="row"><div class="k">Xavfsiz ko'prik</div><p class="v">AI kaliti serverда yashirin — ilova kodida yo'q, o'g'irlab bo'lmaydi.</p></div>
+      <div class="row"><div class="k">Oflayn halolligi</div><p class="v">Internet bo'lmasa — <em>soxta javob bermaydi</em>, ochiq aytadi va oflayn maslahatni shunday belgilaydi.</p></div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Motivatsiya</h2>
+    <p class="sec-note">Mukofot tizimi o'lchangan natijaga bog'langan — sovg'a “shunchaki” berilmaydi.</p>
+    <div class="rows">
+      <div class="row"><div class="k">Seriya (streak)</div><p class="v">Ketma-ket kunlar. Dam kuni belgilansa — seriya buzilmaydi, lekin <em>soxtalashtirilmaydi ham</em>.</p></div>
+      <div class="row"><div class="k">12 nishon</div><p class="v">Seriya uchun 6 ta: 3 · 7 · 14 · 30 · 100 · 365 kun. Soat uchun 6 ta: 1 · 10 · 50 · 100 · 500 · 1000 soat.</p></div>
+      <div class="row"><div class="k">6 daraja</div><p class="v">Boshlovchi → O'quvchi → Izlanuvchi → Usta → Ustoz → <strong>Afsona</strong>.</p></div>
+      <div class="row"><div class="k">Tanga va olmos</div><p class="v">Kunlik norma bajarilsa — tanga. <em>Hamma odat bajarilsa</em> — olmos.</p></div>
+      <div class="row"><div class="k">Shaxsiy do'kon</div><p class="v">O'z mukofotlaringizni yaratasiz va yig'ilgan tanga bilan sotib olasiz.</p></div>
+      <div class="row"><div class="k">Marra nishonlari</div><p class="v">Norma bajarilganda karta bo'ylab tabrik to'lqini.</p></div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Ijtimoiy qatlam</h2>
+    <p class="sec-note">Nazorat va musobaqa — lekin faqat siz ruxsat bergan ma'lumot ulashiladi.</p>
+    <div class="rows">
+      <div class="row"><div class="k">Do'stlar</div><p class="v"><code>ABC123</code> ko'rinishidagi kod bilan qo'shiladi. Qurilmalararo jonli ishlaydi.</p></div>
+      <div class="row"><div class="k">Ustoz / shogird</div><p class="v">Ustoz shogirdlarini kuzatadi — o'qituvchi yoki ota-ona uchun.</p></div>
+      <div class="row"><div class="k">Haftalik liga</div><p class="v">7 kunlik reyting. O'zingiz ro'yxatda ajratib ko'rsatilasiz.</p></div>
+      <div class="row"><div class="k">Yozishma</div><p class="v">Do'st, ustoz va shogird bilan chat — o'qilmagan xabar belgisi bilan.</p></div>
+      <div class="row"><div class="k">Ko'rinish nazorati</div><p class="v">Nima ulashilishini o'zingiz tanlaysiz: soatlar, vazifalar, taymersiz ish.</p></div>
+      <div class="row"><div class="k">Do'st marrasi</div><p class="v">Do'stingiz marraga yetsa — tabrik kartasi va bir tegishda xabar.</p></div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Eslatma va intizom</h2>
+    <div class="rows">
+      <div class="row"><div class="k">Kunlik eslatma</div><p class="v">O'z matningiz bilan. <strong>Ilova yopiq bo'lsa ham keladi.</strong></p></div>
+      <div class="row"><div class="k">Har odatga alohida</div><p class="v">Sport 07:00, kitob 21:00 — har biri o'z vaqtida, faqat o'z kunlarida.</p></div>
+      <div class="row"><div class="k">Budilnik</div><p class="v">Ikki rejim: <em>oddiy</em> yoki <em>matematik</em> — misolni yechmaguncha o'chmaydi.</p></div>
+      <div class="row"><div class="k">Dam rejimi</div><p class="v">“Bugun dam olaman” — odatlar ekrandan yig'iladi, eslatma kelmaydi, seriya buzilmaydi.</p></div>
+      <div class="row"><div class="k">PIN qulf</div><p class="v">Ilovaga kirishni 4 raqamli kod bilan yopish.</p></div>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Platforma va ishonchlilik</h2>
+    <p class="sec-note">Bitta kod bazasi — Android ilovasi ham, veb-sayt ham. Internetga bog'liq emas.</p>
+    <div class="rows">
+      <div class="row"><div class="k">To'liq oflayn</div><p class="v">Barcha ma'lumot qurilmada. Internetsiz <strong>hamma funksiya</strong> ishlaydi — ovozlar ham sintezlanadi, audio fayl yuklanmaydi.</p></div>
+      <div class="row"><div class="k">Avto-yangilanish</div><p class="v">Gibrid Service Worker: internet bo'lsa eng oxirgi versiyani oladi, bo'lmasa ichkaridagi nusxadan ishlaydi.</p></div>
+      <div class="row"><div class="k">3 ta widget</div><p class="v">Seriya · Odatlar · Progress. Ilovani ochmasdan ko'rasiz, <strong>o'lchamini erkin o'zgartirasiz</strong>.</p></div>
+      <div class="row"><div class="k">Google bilan kirish</div><p class="v">Bulut zaxira — telefon almashsa yoki ilova o'chsa, hammasi tiklanadi.</p></div>
+      <div class="row"><div class="k">Fayl zaxira</div><p class="v">Bulutsiz ham: ma'lumotni faylga saqlab, keyin tiklash.</p></div>
+      <div class="row"><div class="k">Uch til</div><p class="v">O'zbek · Rus · Ingliz — 372 ta matn har uchala tilda to'liq.</p></div>
+      <div class="row"><div class="k">Ikki mavzu</div><p class="v">Qorong'i va yorug' — har biri alohida sozlangan.</p></div>
+    </div>
+    <div class="tags">
+      <span class="tag on">Android APK</span>
+      <span class="tag on">Veb (PWA)</span>
+      <span class="tag">Capacitor 6</span>
+      <span class="tag">Framework yo'q</span>
+      <span class="tag">Build bosqichi yo'q</span>
+      <span class="tag">7 234 qator</span>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Halollik — kod darajasida</h2>
+    <p class="sec-note">“Halol ilova” shior emas. Quyidagilar <strong>kodga o'rnatilgan darvozalar</strong> — ular statistikani chiroyli ko'rsatish imkonini bermaydi.</p>
+    <div class="honest">
+      <h3>O'rnatilgan cheklovlar</h3>
+      <ul>
+        <li>Taymer 3 soatdan uzun ochiq qolsa — <strong>o'sha vaqt hisoblanmaydi</strong>. <em>Tun bo'yi ochiq qolgan taymer “9 soat mehnat” bo'lib yozilmaydi.</em></li>
+        <li>Faqat bugungi kun belgilanadi — <strong>o'tmishni o'zgartirib bo'lmaydi</strong>.</li>
+        <li>Ma'lumot yetarli bo'lmaganda ilova <strong>maqtamaydi</strong> — “Ma'lumot yig'ilmoqda” deydi.</li>
+        <li>Bashorat aniq sana bermaydi — <strong>diapazon</strong> beradi, va faqat 14 kunlik ma'lumotdan keyin.</li>
+        <li>Internet yo'q bo'lsa AI <strong>soxta javob bermaydi</strong> — ochiq aytadi.</li>
+        <li>Xato bo'lsa aybni foydalanuvchiga yuklamaydi — <em>“Serverga ulanib bo'lmadi”, “fokus qiling!” emas.</em></li>
+      </ul>
+    </div>
+  </section>
+
+  <div class="rule"></div>
+
+  <section>
+    <h2>Xavfsizlik</h2>
+    <p class="sec-note">Mustaqil audit o'tkazildi va topilgan barcha zaifliklar yopildi.</p>
+    <div class="rows">
+      <div class="row"><div class="k">Baza himoyasi</div><p class="v">Shaxsiy ma'lumot (yozishmalar, bulut zaxirasi) — <strong>faqat egasiga</strong>. Begona hech narsani o'chira olmaydi.</p></div>
+      <div class="row"><div class="k">Sirlar</div><p class="v">Hech qanday kalit yoki parol kodda yo'q. AI kaliti serverда, imzo paroli repodan tashqarida.</p></div>
+      <div class="row"><div class="k">Kiritish himoyasi</div><p class="v">Tashqi fayl yoki bulutdan kelgan ma'lumot tozalanadi — zararli kod kiritib bo'lmaydi.</p></div>
+      <div class="row"><div class="k">Tashqi bog'liqlik</div><p class="v">Kutubxonalar lokal — CDN orqali hujum yo'li yopiq. CSP siyosati faol.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Focus AI · Lumnaara</span>
+    <span>focus-ai-final.vercel.app</span>
+    <span>Kod ochiq: github.com/nazokat777/focus-ai-final</span>
+  </footer>
+
+</div>
+</body></html>
