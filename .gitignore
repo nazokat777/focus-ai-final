@@ -25,6 +25,9 @@ videolar/
 android/local.properties
 # build natijalari
 *.apk
+# TARQATISH APK si — git'da BO'LISHI SHART: Vercel GitHub'dan deploy qiladi,
+# git'da bo'lmasa har push saytdagi /focusai.apk ni 404 qiladi.
+!www/focusai.apk
 *.aab
 
 # imzo parollari (mashinaga xos, hech qachon commit qilinmasin)
