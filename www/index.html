@@ -6,7 +6,7 @@
 /* Landing darvozasi: birinchi tashrif -> landing.html (web VA native APK).
    Native'da videolar APK ichida (siqilgan, ~4MB) -> oflayn ham to'liq ishlaydi.
    Faqat bir marta: "Ilovani ochish" bosilgach fai_landing_seen qo'yiladi. */
-window.FAI_BUILD='15';  /* 15 = race fix mustahkamlandi (latch zaharlanishi bartaraf, self-fire Social'dan keyin) */
+window.FAI_BUILD='16';  /* 16 = race fix + pullBackupAuth hang himoyasi + enterApp ekranni to'liq egallaydi */
 (function(){try{
   /* AUTH QAYTISHI: Google/email tasdig'idan keyin URL'da code/token/xato bo'ladi.
      Bunda landing'ga YO'NALTIRMASLIK shart — aks holda location.replace ?code= ni
@@ -3412,9 +3412,11 @@ function syncMyName(){
      o'zlari ensureProfile() ni chaqiradi). */
 }
 function enterApp(name){
-  store.user.name=name;save();
+  store.user.name=name;store.user.onboarded=true;save(); /* kirgan bo'lsa onboarding tugagan deb belgilaymiz — keyingi ochilishda slaydlar chiqmaydi */
   syncMyName(); /* ismni darhol profilga yozamiz */
+  /* ekranni to'liq egallaymiz — muvaffaqiyatli kirishda onboarding/splash ustma-ust qolmasin */
   $('#auth').classList.add('gone');
+  try{var _o=$('#onb');if(_o)_o.classList.add('gone');var _s=$('#splash');if(_s)_s.classList.add('gone');}catch(e){}
   sGo();buzz(12);
   applyI18N();refreshAll();
   setTimeout(coachMark,900); /* coachmark: yangi foydalanuvchi kirdi */
@@ -6763,10 +6765,17 @@ window.onSupabaseReady=function(){if(window.__sbReadyRan)return;/* Social hali u
         }catch(e){}
       };
       if((!store.habits||!store.habits.length)&&Social.pullBackupAuth){ /* yangi qurilma: bulutda zaxira bo'lsa avto-tikla */
-        Social.pullBackupAuth().then(function(row){
+        /* HANG HIMOYASI: pullBackupAuth osilib qolsa (sekin/uzuq internet) setName
+           HECH QACHON chaqirilmasdi -> auth ekrani yopilmasdi. Settled-guard + 6s timeout:
+           kirish har doim yakunlanadi. */
+        var _pbSettled=false;
+        var _pbDone=function(row){
+          if(_pbSettled)return; _pbSettled=true;
           if(row&&row.data){try{var _c2=sanitizeRaw(row.data); if(!_c2){setName();return;} localStorage.setItem(KEY,_c2);window._skipUnloadSave=true;location.reload();}catch(e){setName();}}
           else setName();
-        },setName);
+        };
+        Social.pullBackupAuth().then(_pbDone,function(){_pbDone(null);});
+        setTimeout(function(){_pbDone(null);},6000);
       } else { setName(); if(store.user.name)cloudBackupSoon(); }
     }catch(e){}
   });}catch(e){}try{markCloudStatus();}catch(e){}};

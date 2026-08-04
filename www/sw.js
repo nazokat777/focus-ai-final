@@ -3,7 +3,7 @@
      • OFLAYN KAFOLAT — APK ichidagi (bundled) fayllar doim mavjud, internetsiz to'liq ishlaydi.
      • AVTO-YANGILANISH — internet bo'lsa saytdan (Vercel) eng oxirgi kod olinadi va keshlanadi.
    Native APK'da origin = https://localhost (bundled), web'da = vercel origin. */
-var CACHE  = 'focusai-v16';  /* ⚑ race fix mustahkamlandi (latch guard + self-fire Social'dan keyin); FAI_BUILD=15 */
+var CACHE  = 'focusai-v17';  /* race fix + pullBackupAuth hang himoyasi + enterApp to'liq egallash; FAI_BUILD=16 */
 var REMOTE = 'https://focus-ai-final.vercel.app';
 var NET_TIMEOUT = 4000;          /* sekin internet ilovani ushlab qolmasin */
 
