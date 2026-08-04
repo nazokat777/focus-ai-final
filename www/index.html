@@ -1925,6 +1925,7 @@ input{font-family:inherit}
       <div class="hint" id="authEmailHint"></div>
     </div>
     <div class="hint" data-i18n="auth_hint"></div>
+    <div class="hint" id="authDiag" style="display:none;font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7;word-break:break-word;margin-top:6px"></div>
   </div>
 
   <div class="head">
@@ -7033,7 +7034,9 @@ window.addEventListener('beforeunload',function(){
     /* PKCE — deep-link bilan qaytgan `code`ni sessiyaga almashtirish uchun shart (APK) */
     try {
       sb = window.supabase.createClient(window.SB_URL, window.SB_KEY, {
-        auth: { flowType: 'pkce', detectSessionInUrl: true, persistSession: true, autoRefreshToken: true }
+        /* detectSessionInUrl: false -> code'ni O'ZIMIZ almashtiramiz (web'da ham, APK'da ham).
+           Shunда almashinuv XATOSI ko'rinади (ilgari jim yiqilardi) va onboardingда ko'rsатамиз. */
+        auth: { flowType: 'pkce', detectSessionInUrl: false, persistSession: true, autoRefreshToken: true }
       });
     } catch (e) { sb = null; }
     return sb;
@@ -7312,27 +7315,10 @@ window.addEventListener('beforeunload',function(){
       c.auth.getSession().then(function (r) { _authUser = (r && r.data && r.data.session && r.data.session.user) || null; _emitAuth(); }, function () {});
       c.auth.onAuthStateChange(function (ev, session) { _authUser = (session && session.user) || null; _emitAuth(); });
     } catch (e) {}
-    /* WEB DIAGNOSTIKA: OAuth/email qaytishida natijani aniqlaymiz.
-       - URL'da xato bo'lsa (Supabase/Google rad etgan) -> matnini ko'rsatamiz.
-       - code bor bo'lsa -> detectSessionInUrl almashtirishi kerak; 4s ichida sessiya
-         bo'lmasa "almashinmadi" -> muammo aynan almashinuvda (verifier/CSP/kalit). */
-    try {
-      var _q = (location.search || '') + (location.hash || '');
-      var _em = _q.match(/[?&#](?:error_description|error_code|error)=([^&#]+)/);
-      if (_em) {
-        try { if (typeof toast === 'function') toast(T('auth_fail') + ' (' + decodeURIComponent(_em[1]).replace(/\+/g, ' ').slice(0, 60) + ')'); } catch (e) {}
-      } else if (/[?&#]code=/.test(_q)) {
-        try { if (typeof toast === 'function') toast(T('auth_wait')); } catch (e) {}
-        setTimeout(function () {
-          try {
-            c.auth.getSession().then(function (rr) {
-              if (rr && rr.data && rr.data.session) { try { if (typeof toast === 'function') toast(T('auth_ok')); } catch (e) {} }
-              else { try { if (typeof toast === 'function') toast(T('auth_fail') + ' (almashinmadi)'); } catch (e) {} }
-            }, function () {});
-          } catch (e) {}
-        }, 4000);
-      }
-    } catch (e) {}
+    /* WEB: OAuth/email qaytishini O'ZIMIZ qayta ishlaymiz (code -> sessiya).
+       Saqlangan diagnostika bo'lsa onboardingda ko'rsatamiz. */
+    try { _renderAuthDiag(); } catch (e) {}
+    try { if (!isNativeApp()) _handleWebAuthReturn(); } catch (e) {}
     /* APK: brauzerdan deep-link bilan qaytishni tinglaymiz */
     try {
       var P = (window.Capacitor && window.Capacitor.Plugins) || {};
@@ -7395,34 +7381,80 @@ window.addEventListener('beforeunload',function(){
        Ilgari xato function(){} bilan yutilardi va ekran auth'da qotib qolardi. */
     try { if (typeof toast === 'function') toast(T('auth_fail') + (why ? ' (' + why + ')' : '')); } catch (e) {}
   }
+  /* ── Auth diagnostikasi: natijani localStorage'ga yozamiz + onboardingda ko'rsatamiz ──
+     Toast tez yo'qoladi; foydalanuvchi o'qib ulgurmaydi. Bu esa ekranda TURADI. */
+  function _authDiag(msg) {
+    try { localStorage.setItem('fai_authdiag', (msg || '') + ' · ' + new Date().toTimeString().slice(0, 8)); } catch (e) {}
+    try { _renderAuthDiag(); } catch (e) {}
+  }
+  function _renderAuthDiag() {
+    try {
+      var el = document.getElementById('authDiag'); if (!el) return;
+      var d = ''; try { d = localStorage.getItem('fai_authdiag') || ''; } catch (e) {}
+      el.textContent = d ? ('auth: ' + d) : '';
+      el.style.display = d ? 'block' : 'none';
+    } catch (e) {}
+  }
+  function _cleanAuthUrl() {
+    try { if (window.history && history.replaceState) history.replaceState(null, '', location.origin + location.pathname); } catch (e) {}
+  }
+  /* WEB: URL'dagi ?code=/xato ni O'ZIMIZ qayta ishlaymiz (detectSessionInUrl o'chirilgan) */
+  function _handleWebAuthReturn() {
+    var c = client(); if (!c || !c.auth) return;
+    var q = (location.search || '') + (location.hash || '');
+    var em = q.match(/[?&#](?:error_description|error_code|error)=([^&#]+)/);
+    if (em) {
+      var et = decodeURIComponent(em[1]).replace(/\+/g, ' ').slice(0, 80);
+      _authDiag('rad etildi: ' + et); _authFail(et.slice(0, 40)); _cleanAuthUrl(); return;
+    }
+    var code = (q.match(/[?&]code=([^&#]+)/) || [])[1];
+    if (!code) return;
+    try { if (typeof toast === 'function') toast(T('auth_wait')); } catch (e) {}
+    _authDiag('almashinuv…');
+    c.auth.exchangeCodeForSession(decodeURIComponent(code)).then(function (r) {
+      if (r && r.data && r.data.session) {
+        _authUser = r.data.session.user; _authDiag('OK');
+        try { if (typeof toast === 'function') toast(T('auth_ok')); } catch (e) {}
+        _cleanAuthUrl(); _emitAuth();
+      } else {
+        var msg = r && r.error ? (r.error.message || '').slice(0, 80) : "sessiya yo'q";
+        _authDiag('almashinmadi: ' + msg); _authFail(msg.slice(0, 40)); _cleanAuthUrl();
+      }
+    }, function (e) {
+      var msg = String(e && e.message || e).slice(0, 80);
+      _authDiag('almashinmadi: ' + msg); _authFail(msg.slice(0, 40)); _cleanAuthUrl();
+    });
+  }
   function _handleAuthDeepLink(url) {
     var c = client(); if (!c || !c.auth || !url) return;
     /* DIAGNOSTIKA: deep-link KELDI. Agar foydalanuvchi Google'dan qaytganda bu
        xabarni KO'RMASA — demak Supabase deep-link'ga qaytarmayapti (Redirect URL
        ro'yxatida uz.lumnaara.focusai://auth yo'q). Ko'rsa — kod almashinuvi bosqichida. */
     try { if (typeof toast === 'function') toast(T('auth_wait')); } catch (e) {}
+    _authDiag('deep-link keldi');
     try {
       var P = (window.Capacitor && window.Capacitor.Plugins) || {};
       if (P.Browser && P.Browser.close) { try { P.Browser.close(); } catch (e) {} }
 
       /* Google/Supabase xato qaytargan bo'lsa — aytamiz (ilgari e'tiborsiz edi) */
       var err = (url.match(/[?&#]error(?:_description)?=([^&#]+)/) || [])[1];
-      if (err) { _authFail(decodeURIComponent(err).slice(0, 40)); return; }
+      if (err) { var et = decodeURIComponent(err).slice(0, 60); _authDiag('rad etildi: ' + et); _authFail(et.slice(0, 40)); return; }
 
       var code = (url.match(/[?&]code=([^&#]+)/) || [])[1];
       if (code && c.auth.exchangeCodeForSession) {
         c.auth.exchangeCodeForSession(decodeURIComponent(code))
           .then(function (r) {
             if (r && r.data && r.data.session) {
-              _authUser = r.data.session.user;
+              _authUser = r.data.session.user; _authDiag('OK');
               try { if (typeof toast === 'function') toast(T('auth_ok')); } catch (e) {}
               _emitAuth(); return;
             }
-            _authFail(r && r.error ? (r.error.message || '').slice(0, 40) : 'sessiya topilmadi');
-          }, function (e) { _authFail(String(e && e.message || e).slice(0, 40)); });
+            var m1 = r && r.error ? (r.error.message || '').slice(0, 60) : 'sessiya topilmadi';
+            _authDiag('almashinmadi: ' + m1); _authFail(m1.slice(0, 40));
+          }, function (e) { var m2 = String(e && e.message || e).slice(0, 60); _authDiag('almashinmadi: ' + m2); _authFail(m2.slice(0, 40)); });
         return;
       }
-      _authFail('kod topilmadi');
+      _authDiag('kod topilmadi'); _authFail('kod topilmadi');
       /* XAVFSIZLIK: implicit (#access_token=...) yo'li OLIB TASHLANDI.
          Ilova PKCE ishlatadi (flowType:'pkce'), ya'ni bu shox hech qachon o'z
          oqimimizda kerak emas edi — u faqat HUJUM uchun foydali edi: istalgan
