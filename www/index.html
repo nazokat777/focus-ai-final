@@ -7,7 +7,16 @@
    Native'da videolar APK ichida (siqilgan, ~4MB) -> oflayn ham to'liq ishlaydi.
    Faqat bir marta: "Ilovani ochish" bosilgach fai_landing_seen qo'yiladi. */
 (function(){try{
-  if(!localStorage.getItem('fai_landing_seen')){
+  /* AUTH QAYTISHI: Google/email tasdig'idan keyin URL'da code/token/xato bo'ladi.
+     Bunda landing'ga YO'NALTIRMASLIK shart — aks holda location.replace ?code= ni
+     TASHLAB yuboradi, sessiya almashinmaydi va foydalanuvchi onboardingga qaytadi.
+     (Email havolasi ko'pincha fai_landing_seen o'rnatilmagan yangi kontekstda ochiladi.) */
+  var s = (location.search||'') + (location.hash||'');
+  var isAuth = /[?&#](code|access_token|refresh_token|token_hash|error|error_description|error_code)=/.test(s)
+            || /[?&#]type=(recovery|magiclink|signup|invite|email_change|email)/.test(s);
+  if(isAuth){
+    try{ localStorage.setItem('fai_landing_seen','1'); }catch(e){}   /* sessiya o'rnatilgach qayta bounce bo'lmasin */
+  } else if(!localStorage.getItem('fai_landing_seen')){
     location.replace('landing.html');
   }
 }catch(e){}})();
