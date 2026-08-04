@@ -6,6 +6,7 @@
 /* Landing darvozasi: birinchi tashrif -> landing.html (web VA native APK).
    Native'da videolar APK ichida (siqilgan, ~4MB) -> oflayn ham to'liq ishlaydi.
    Faqat bir marta: "Ilovani ochish" bosilgach fai_landing_seen qo'yiladi. */
+window.FAI_BUILD='13';  /* build markeri — foydalanuvchi eski keshdami yoki yangi koddami, skrinshotdan bilamiz */
 (function(){try{
   /* AUTH QAYTISHI: Google/email tasdig'idan keyin URL'da code/token/xato bo'ladi.
      Bunda landing'ga YO'NALTIRMASLIK shart — aks holda location.replace ?code= ni
@@ -3367,7 +3368,7 @@ function refreshBakTxt(){
     if(done)return;done=true;
     $('#splash').classList.add('gone');
     if(!store.user.onboarded){onbGo(0);$('#onb').classList.remove('gone');} /* onbGo -> birinchi slayd motioni */
-    else if(!store.user.name)$('#auth').classList.remove('gone');
+    else if(!store.user.name){$('#auth').classList.remove('gone');try{if(window.__renderAuthDiag)window.__renderAuthDiag();}catch(e){}}
     else setTimeout(coachMark,900); /* coachmark: app ochildi (mavjud foydalanuvchi) */
   }
 })();
@@ -7395,10 +7396,11 @@ window.addEventListener('beforeunload',function(){
     try {
       var el = document.getElementById('authDiag'); if (!el) return;
       var d = ''; try { d = localStorage.getItem('fai_authdiag') || ''; } catch (e) {}
-      el.textContent = d ? ('auth: ' + d) : '';
-      el.style.display = d ? 'block' : 'none';
+      el.textContent = 'build ' + (window.FAI_BUILD || '?') + ' · ' + (d || "urinish yo'q");
+      el.style.display = 'block';
     } catch (e) {}
   }
+  try { window.__renderAuthDiag = _renderAuthDiag; } catch (e) {}
   function _cleanAuthUrl() {
     try { if (window.history && history.replaceState) history.replaceState(null, '', location.origin + location.pathname); } catch (e) {}
   }
