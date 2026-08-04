@@ -7342,9 +7342,14 @@ window.addEventListener('beforeunload',function(){
   function signInGoogle() {
     var c = client(); if (!c || !c.auth) return Promise.resolve(false);
 
-    /* ── WEB: oddiy redirect ── */
+    /* ── WEB: oddiy redirect ──
+       MUHIM: redirectTo = location.origin (SAYT ILDIZI = Supabase "Site URL").
+       Supabase Site URL'ga qaytishga DOIM ruxsat beradi — Redirect URL ro'yxatiga
+       qo'shish shart emas. Ilgari `origin + pathname` (/index.html) ishlatilardi;
+       agar u ro'yxatda bo'lmasa Supabase `code`ni tashlab Site URL'ga qaytarardi
+       -> sessiya o'rnatilmay onboardingga qaytardi. Ildizga qaytish buni bartaraf etadi. */
     if (!isNativeApp()) {
-      var redirect; try { redirect = location.origin + location.pathname; } catch (e) {}
+      var redirect; try { redirect = location.origin; } catch (e) {}
       return c.auth.signInWithOAuth({ provider: 'google', options: redirect ? { redirectTo: redirect } : {} })
         .then(function (r) { return !(r && r.error); }, function () { return false; });
     }
@@ -7409,7 +7414,8 @@ window.addEventListener('beforeunload',function(){
   }
   function signInEmail(email) {
     var c = client(); if (!c || !c.auth) return Promise.resolve(false);
-    var redirect; try { redirect = location.origin + location.pathname; } catch (e) {}
+    /* Site URL'ga qaytamiz (ro'yxatga qo'shish shart emas) — havola tashlab yuborilmaydi */
+    var redirect; try { redirect = location.origin; } catch (e) {}
     return c.auth.signInWithOtp({ email: email, options: redirect ? { emailRedirectTo: redirect } : {} })
       .then(function (r) { return !(r && r.error); }, function () { return false; });
   }
