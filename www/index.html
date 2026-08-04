@@ -6,7 +6,7 @@
 /* Landing darvozasi: birinchi tashrif -> landing.html (web VA native APK).
    Native'da videolar APK ichida (siqilgan, ~4MB) -> oflayn ham to'liq ishlaydi.
    Faqat bir marta: "Ilovani ochish" bosilgach fai_landing_seen qo'yiladi. */
-window.FAI_BUILD='14';  /* build markeri — 14 = onSupabaseReady race tuzatilgan */
+window.FAI_BUILD='15';  /* 15 = race fix mustahkamlandi (latch zaharlanishi bartaraf, self-fire Social'dan keyin) */
 (function(){try{
   /* AUTH QAYTISHI: Google/email tasdig'idan keyin URL'da code/token/xato bo'ladi.
      Bunda landing'ga YO'NALTIRMASLIK shart — aks holda location.replace ?code= ni
@@ -6742,7 +6742,7 @@ function renderLeague(){
 function _lgRetry(){return '<button class="act-btn" id="lgRetry" style="margin:8px auto 0;display:block">'+T('fr_retry')+'</button>';}
 function _lgBind(){var b=$('#lgRetry');if(b)b.addEventListener('click',function(){sTap();renderLeague();});}
 /* bulut kutubxonasi kech yuklansa, ochiq do'stlar panelini yangilaymiz (kalitlar qo'yilganda) */
-window.onSupabaseReady=function(){if(window.__sbReadyRan)return;window.__sbReadyRan=true;try{syncMyName();}catch(e){}try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}try{if(window.Social&&Social.initAuth)Social.initAuth();if(window.Social&&Social.onAuth)Social.onAuth(function(u){
+window.onSupabaseReady=function(){if(window.__sbReadyRan)return;/* Social hali ulanmagan bo'lsa LATCHNI QO'YMASDAN qaytamiz — aks holda erta chaqiruv latchni "zaharlaydi" va keyingi haqiqiy chaqiruv no-op bo'ladi */if(!(window.Social&&window.Social.initAuth))return;window.__sbReadyRan=true;try{syncMyName();}catch(e){}try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}try{if(window.Social&&Social.initAuth)Social.initAuth();if(window.Social&&Social.onAuth)Social.onAuth(function(u){
     try{renderAuthUI();}catch(e){}
     if(!u)return;
     try{
@@ -6770,15 +6770,9 @@ window.onSupabaseReady=function(){if(window.__sbReadyRan)return;window.__sbReady
       } else { setName(); if(store.user.name)cloudBackupSoon(); }
     }catch(e){}
   });}catch(e){}try{markCloudStatus();}catch(e){}};
-/* ⚑ KRITIK YECHIM (root-cause): supabase.min.js Service Worker keshidan deyarli
-   ONI yuklanadi va uning `onload`i, bu 7000-qatorli inline skript onSupabaseReady'ni
-   ANIQLASHIDAN OLDIN otishi mumkin edi. O'shanda `if(window.onSupabaseReady)` FALSE
-   bo'lib, onSupabaseReady HECH QACHON chaqirilmasdi -> initAuth ishlamasdi ->
-   getSession/onAuthStateChange/_handleWebAuthReturn/deep-link listener O'RNATILMASDI
-   -> OAuth `code` ALMASHINMASDI -> har login onboardingga qaytardi (do'stlar/liga esa
-   client()ni bevosita chaqirgani uchun ishlayverardi). Yechim: agar kutubxona
-   ALLAQACHON yuklangan bo'lsa, hoziroq o'zimiz chaqiramiz (idempotent guard bilan). */
-if(window.supabase){try{window.onSupabaseReady();}catch(e){}}
+/* ⚑ onSupabaseReady race YECHIMI: bu YERDA o'zimiz chaqirMAYMIZ — window.Social hali
+   aniqlanmagan (u ~7518-satrda). Haqiqiy o'z-o'zini chaqirish Social tayyor bo'lgach,
+   Social=... dan KEYIN turadi. Bu yerdagi erta chaqiruv faqat latchni zaharlar edi. */
 /* audit #3: internet holati o'zgarsa — ochiq do'stlar panelini qayta chizamiz (badge + banner) */
 function _frNetSync(){try{if($('#friends')&&$('#friends').classList.contains('open'))renderFriends();}catch(e){}}
 window.addEventListener('online',_frNetSync);window.addEventListener('offline',_frNetSync);
@@ -7516,6 +7510,13 @@ window.addEventListener('beforeunload',function(){
     hiddenSet: hiddenSet, setHidden: setHidden, isHidden: isHidden, myTasksToday: myTasksToday,
     visGet: visGet, visSet: visSet
   };
+  /* ⚑ ROOT-CAUSE YECHIMI: window.Social endi tayyor. supabase.min.js Service Worker
+     keshidan tez yuklangan bo'lsa, uning onload'i onSupabaseReady aniqlanishidan OLDIN
+     otib, o'tkazib yuborilgan bo'lishi mumkin edi -> initAuth ishlamasdi -> login
+     onboardingga qaytardi. Endi Social ulanganidan keyin O'ZIMIZ chaqiramiz (idempotent
+     latch bilan; agar onload keyin otsa, no-op bo'ladi). Kutubxona hali yuklanmagan
+     bo'lsa (window.supabase yo'q) — onload o'zi chaqiradi. */
+  try{ if(window.supabase && window.onSupabaseReady) window.onSupabaseReady(); }catch(e){}
 })();
 </script>
 </body>
