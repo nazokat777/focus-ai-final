@@ -1925,7 +1925,7 @@ input{font-family:inherit}
       <div class="hint" id="authEmailHint"></div>
     </div>
     <div class="hint" data-i18n="auth_hint"></div>
-    <div class="hint" id="authDiag" style="display:none;font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.7;word-break:break-word;margin-top:6px"></div>
+    <div id="authDiag" style="display:none;font-family:'JetBrains Mono',monospace;font-size:13px;line-height:1.4;color:#39FF8C;background:rgba(57,255,140,.08);border:1px solid rgba(57,255,140,.35);border-radius:10px;padding:10px 12px;word-break:break-word;margin-top:14px;text-align:left"></div>
   </div>
 
   <div class="head">
@@ -3427,6 +3427,10 @@ $('#authGo').addEventListener('click',function(){
 /* Google bilan ro'yxatdan o'tish / kirish (entry ekranida) */
 (function(){var g=$('#authGoogle');if(g)g.addEventListener('click',function(){
   if(typeof Social==='undefined'||!Social.cloud||!Social.cloud()||!Social.signInGoogle){toast(T('cloud_off'));return;}
+  /* DIAGNOSTIKA izchilligi: bu qadam localStorage'ga yoziladi. Qaytgach:
+     - hali "google bosildi" tursa -> code qaytmadi/qayta ishlanmadi (yo'naltirish muammosi)
+     - "almashinmadi: X" -> exchange xatosi;  "OK" -> sessiya bor lekin ekran yopilmadi */
+  try{localStorage.setItem('fai_authdiag','google bosildi, yo\'naltirilyapti · '+new Date().toTimeString().slice(0,8));}catch(e){}
   toast(T('auth_redirect'));Social.signInGoogle();
 });})();
 /* Mehmon sifatida davom etish -> ism kiritish bosqichi; Email -> magic-link bosqichi */
