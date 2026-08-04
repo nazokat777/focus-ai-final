@@ -7312,6 +7312,27 @@ window.addEventListener('beforeunload',function(){
       c.auth.getSession().then(function (r) { _authUser = (r && r.data && r.data.session && r.data.session.user) || null; _emitAuth(); }, function () {});
       c.auth.onAuthStateChange(function (ev, session) { _authUser = (session && session.user) || null; _emitAuth(); });
     } catch (e) {}
+    /* WEB DIAGNOSTIKA: OAuth/email qaytishida natijani aniqlaymiz.
+       - URL'da xato bo'lsa (Supabase/Google rad etgan) -> matnini ko'rsatamiz.
+       - code bor bo'lsa -> detectSessionInUrl almashtirishi kerak; 4s ichida sessiya
+         bo'lmasa "almashinmadi" -> muammo aynan almashinuvda (verifier/CSP/kalit). */
+    try {
+      var _q = (location.search || '') + (location.hash || '');
+      var _em = _q.match(/[?&#](?:error_description|error_code|error)=([^&#]+)/);
+      if (_em) {
+        try { if (typeof toast === 'function') toast(T('auth_fail') + ' (' + decodeURIComponent(_em[1]).replace(/\+/g, ' ').slice(0, 60) + ')'); } catch (e) {}
+      } else if (/[?&#]code=/.test(_q)) {
+        try { if (typeof toast === 'function') toast(T('auth_wait')); } catch (e) {}
+        setTimeout(function () {
+          try {
+            c.auth.getSession().then(function (rr) {
+              if (rr && rr.data && rr.data.session) { try { if (typeof toast === 'function') toast(T('auth_ok')); } catch (e) {} }
+              else { try { if (typeof toast === 'function') toast(T('auth_fail') + ' (almashinmadi)'); } catch (e) {} }
+            }, function () {});
+          } catch (e) {}
+        }, 4000);
+      }
+    } catch (e) {}
     /* APK: brauzerdan deep-link bilan qaytishni tinglaymiz */
     try {
       var P = (window.Capacitor && window.Capacitor.Plugins) || {};
